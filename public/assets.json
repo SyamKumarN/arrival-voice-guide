@@ -1,0 +1,18 @@
+[
+  "/",
+  "/index.html",
+  "/styles.css",
+  "/main.js",
+  "/manifest.webmanifest",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/js/text.js",
+  "/js/numbers.js",
+  "/js/parser.js",
+  "/js/decide.js",
+  "/js/price.js",
+  "/js/phrases.js",
+  "/js/dialog.js",
+  "/data/airports.json",
+  "/data/rates-sample.json"
+]

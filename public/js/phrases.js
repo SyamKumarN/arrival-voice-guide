@@ -198,6 +198,181 @@ const EXTRA = {
 };
 for (const l of Object.keys(EXTRA)) Object.assign(T[l], EXTRA[l]);
 
+// ---------- Round 3: confirm, advice topics, off-topic, metro, tips ----------
+const AIRPORT_Q = { en: EXTRA.en.askAirport, hi: EXTRA.hi.askAirport, te: EXTRA.te.askAirport };
+const SAFE_EXIT = {
+  en: " I've opened a card you can show to staff. Say 'exchange money' if you'd like directions to an exchange counter.",
+  hi: " स्टाफ को दिखाने के लिए मैंने एक कार्ड खोल दिया है। एक्सचेंज काउंटर का रास्ता चाहिए तो 'पैसे बदलने हैं' बोलिए।",
+  te: " సిబ్బందికి చూపించడానికి ఒక కార్డ్ తెరిచాను. ఎక్స్ఛేంజ్ కౌంటర్ దారి కావాలంటే 'డబ్బు మార్చాలి' అని చెప్పండి.",
+};
+const NO_ROUTE = {
+  en: {
+    sim: (n) => `I don't have step-by-step directions to the SIM counters at ${n} yet. SIM counters are usually in the arrivals hall after customs. Follow the signs or ask at the info desk.`,
+    taxi: (n) => `I don't have step-by-step directions to the taxi stand at ${n} yet. The taxi stand is usually reached from the arrivals hall after customs. Follow the signs or ask at the info desk. Use only the official taxi stand, and ignore people offering rides in the hall.`,
+    metro: (n) => `If ${n} has a metro or train link, it's signposted from the arrivals hall. Follow the signs or ask at the info desk.`,
+  },
+  hi: {
+    sim: (n) => `${n} में सिम काउंटर तक का पूरा रास्ता अभी मेरे पास नहीं है। सिम काउंटर आमतौर पर कस्टम्स के बाद अराइवल्स हॉल में होते हैं। बोर्ड देखिए या इन्फ़ॉर्मेशन डेस्क पर पूछिए।`,
+    taxi: (n) => `${n} में टैक्सी स्टैंड तक का पूरा रास्ता अभी मेरे पास नहीं है। टैक्सी स्टैंड आमतौर पर कस्टम्स के बाद अराइवल्स हॉल से होकर मिलता है। बोर्ड देखिए या इन्फ़ॉर्मेशन डेस्क पर पूछिए। सिर्फ़ आधिकारिक टैक्सी स्टैंड इस्तेमाल कीजिए, और हॉल में राइड ऑफ़र करने वालों को नज़रअंदाज़ कीजिए।`,
+    metro: (n) => `अगर ${n} में मेट्रो या ट्रेन है, तो उसके बोर्ड अराइवल्स हॉल से लगे होते हैं। बोर्ड देखिए या इन्फ़ॉर्मेशन डेस्क पर पूछिए।`,
+  },
+  te: {
+    sim: (n) => `${n}లో సిమ్ కౌంటర్‌కి పూర్తి దారి ఇంకా నా దగ్గర లేదు. సిమ్ కౌంటర్లు సాధారణంగా కస్టమ్స్ తర్వాత అరైవల్స్ హాల్‌లో ఉంటాయి. బోర్డులు చూడండి లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి.`,
+    taxi: (n) => `${n}లో టాక్సీ స్టాండ్‌కి పూర్తి దారి ఇంకా నా దగ్గర లేదు. టాక్సీ స్టాండ్ సాధారణంగా కస్టమ్స్ తర్వాత అరైవల్స్ హాల్ నుంచి వెళ్తే వస్తుంది. బోర్డులు చూడండి లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి. అధికారిక టాక్సీ స్టాండ్ మాత్రమే వాడండి, హాల్‌లో రైడ్ ఆఫర్ చేసేవాళ్ళను పట్టించుకోకండి.`,
+    metro: (n) => `${n}లో మెట్రో లేదా రైలు ఉంటే, అరైవల్స్ హాల్ నుంచి బోర్డులు ఉంటాయి. బోర్డులు చూడండి లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి.`,
+  },
+};
+
+// Spoken one at a time. Money tips and traps stay under 15 words each.
+export const TIP_LISTS = {
+  money: {
+    en: ['Change only enough at the airport for a taxi, SIM and snack.',
+      'Use your forex card or a city ATM. Always choose local currency.',
+      "Avoid cash withdrawals on a credit card. They're usually expensive."],
+    hi: ['एयरपोर्ट पर सिर्फ़ टैक्सी, सिम और नाश्ते जितने पैसे बदलिए।',
+      'बाकी के लिए फॉरेक्स कार्ड या शहर का एटीएम; हमेशा लोकल करेंसी चुनिए।',
+      'क्रेडिट कार्ड से कैश मत निकालिए, यह आमतौर पर महँगा पड़ता है।'],
+    te: ['ఎయిర్‌పోర్ట్‌లో టాక్సీ, సిమ్, స్నాక్‌కి సరిపడా మాత్రమే మార్చండి.',
+      'మిగతాదానికి ఫారెక్స్ కార్డ్ లేదా నగర ఏటీఎం వాడండి; లోకల్ కరెన్సీ ఎంచుకోండి.',
+      'క్రెడిట్ కార్డ్‌తో క్యాష్ తీయకండి, సాధారణంగా ఖరీదు.'],
+  },
+  traps: {
+    en: ['Airport counters often give poor rates. Change only a little here.',
+      '"Zero commission" can hide a weak rate. Compare the final amount.',
+      'Asked rupees or local currency? Always pick the local currency.',
+      'Credit card cash withdrawals are expensive. Avoid them.',
+      'Ignore ride offers in the hall. Meet drivers only at official pickup points.'],
+    hi: ['एयरपोर्ट काउंटर अक्सर कम रेट देते हैं। यहाँ थोड़ा ही बदलिए।',
+      '"ज़ीरो कमीशन" के पीछे कमज़ोर रेट हो सकता है। फ़ाइनल रकम देखिए।',
+      'रुपये या लोकल करेंसी पूछें, तो हमेशा लोकल करेंसी चुनिए।',
+      'क्रेडिट कार्ड से कैश निकालना महँगा है। इससे बचिए।',
+      'हॉल में राइड ऑफ़र अनदेखा कीजिए; ड्राइवर से सिर्फ़ आधिकारिक पिकअप पॉइंट पर मिलिए।'],
+    te: ['ఎయిర్‌పోర్ట్ కౌంటర్లు తరచూ తక్కువ రేటు ఇస్తాయి. ఇక్కడ కొంచెమే మార్చండి.',
+      '"జీరో కమిషన్" వెనుక తక్కువ రేటు ఉండొచ్చు. ఫైనల్ మొత్తం చూడండి.',
+      'రూపాయలా, లోకల్ కరెన్సీనా అని అడిగితే, లోకల్ కరెన్సీనే ఎంచుకోండి.',
+      'క్రెడిట్ కార్డ్‌తో క్యాష్ తీయడం ఖరీదు. దాన్ని మానుకోండి.',
+      'హాల్‌లో రైడ్ ఆఫర్లు పట్టించుకోకండి; డ్రైవర్‌ని అధికారిక పికప్ పాయింట్‌లోనే కలవండి.'],
+  },
+  atm: {
+    en: ['If the ATM offers rupees or local currency, choose local currency.',
+      'Use ATMs inside the airport or a bank branch. Cover your PIN.',
+      'Read the fee shown on screen before you press OK.',
+      'Keep a backup card separate from your wallet.'],
+    hi: ['एटीएम रुपये या लोकल करेंसी पूछे, तो लोकल करेंसी चुनिए।',
+      'एयरपोर्ट के अंदर या बैंक शाखा का एटीएम इस्तेमाल कीजिए। पिन ढककर डालिए।',
+      'OK दबाने से पहले स्क्रीन पर दिखी फ़ीस पढ़िए।',
+      'एक बैकअप कार्ड बटुए से अलग रखिए।'],
+    te: ['ఏటీఎం రూపాయలా, లోకల్ కరెన్సీనా అని అడిగితే లోకల్ కరెన్సీ ఎంచుకోండి.',
+      'ఎయిర్‌పోర్ట్ లోపల లేదా బ్యాంక్ బ్రాంచ్ ఏటీఎం వాడండి. పిన్ కనిపించకుండా కొట్టండి.',
+      'OK నొక్కే ముందు స్క్రీన్ మీద చూపించే ఫీజు చదవండి.',
+      'ఒక బ్యాకప్ కార్డ్ పర్సు నుంచి వేరుగా ఉంచండి.'],
+  },
+  taxi: {
+    en: ['Use only the official taxi stand or ride apps. Ignore people offering rides.',
+      "Check the meter is on, or agree the fare first if there's no meter.",
+      'Meet your driver only at the official pickup point. Check car number and name.',
+      'Never share OTPs with strangers. Hand luggage only to your confirmed driver.',
+      'Keep some small local cash for your first ride.'],
+    hi: ['सिर्फ़ आधिकारिक टैक्सी स्टैंड या राइड ऐप इस्तेमाल कीजिए। राइड ऑफ़र करने वालों को अनदेखा कीजिए।',
+      'मीटर चालू है, देखिए; मीटर न हो तो किराया पहले तय कीजिए।',
+      'ड्राइवर से सिर्फ़ आधिकारिक पिकअप पॉइंट पर मिलिए। गाड़ी नंबर और नाम जाँचिए।',
+      'किसी अनजान को OTP मत बताइए। सामान सिर्फ़ अपने कन्फ़र्म ड्राइवर को दीजिए।',
+      'पहली राइड के लिए थोड़े लोकल छुट्टे पैसे रखिए।'],
+    te: ['అధికారిక టాక్సీ స్టాండ్ లేదా రైడ్ యాప్‌లే వాడండి. రైడ్ ఆఫర్ చేసేవాళ్ళని పట్టించుకోకండి.',
+      'మీటర్ ఆన్‌లో ఉందో చూడండి; మీటర్ లేకపోతే ముందే ఛార్జీ మాట్లాడుకోండి.',
+      'డ్రైవర్‌ని అధికారిక పికప్ పాయింట్‌లోనే కలవండి. కార్ నంబర్, పేరు చెక్ చేయండి.',
+      'తెలియనివాళ్ళకు OTP చెప్పకండి. లగేజ్ మీ కన్ఫర్మ్ అయిన డ్రైవర్‌కే ఇవ్వండి.',
+      'మొదటి రైడ్ కోసం కొంచెం లోకల్ చిల్లర ఉంచుకోండి.'],
+  },
+};
+const CARD_TIPS = {
+  forex: {
+    en: "Your forex card already holds the currency. Use it for card payments, and withdraw cash at an ATM only if you need it. Check your card's ATM fee before withdrawing.",
+    hi: 'आपके फॉरेक्स कार्ड में करेंसी पहले से है। कार्ड से भुगतान कीजिए, और ज़रूरत हो तभी एटीएम से कैश निकालिए। निकालने से पहले अपने कार्ड की एटीएम फ़ीस जाँच लीजिए।',
+    te: 'మీ ఫారెక్స్ కార్డ్‌లో కరెన్సీ ముందే ఉంటుంది. కార్డ్‌తో చెల్లించండి, అవసరమైతేనే ఏటీఎంలో క్యాష్ తీసుకోండి. తీసుకునే ముందు మీ కార్డ్ ఏటీఎం ఫీజు చెక్ చేసుకోండి.',
+  },
+  credit: {
+    en: 'A credit card is good for card payments, but cash withdrawals from it are usually expensive, with fees and interest from day one. Avoid taking cash with it.',
+    hi: 'क्रेडिट कार्ड भुगतान के लिए अच्छा है, पर इससे कैश निकालना आमतौर पर महँगा होता है: फ़ीस और पहले दिन से ब्याज। इससे कैश मत निकालिए।',
+    te: 'క్రెడిట్ కార్డ్ చెల్లింపులకు మంచిది, కానీ దానితో క్యాష్ తీయడం సాధారణంగా ఖరీదు: ఫీజు, మొదటి రోజు నుంచే వడ్డీ. దానితో క్యాష్ తీయకండి.',
+  },
+  debit: {
+    en: 'A debit card works at ATMs, but your bank may charge a foreign withdrawal fee and a currency markup. Withdraw fewer times, in larger amounts. Check with your bank.',
+    hi: 'डेबिट कार्ड एटीएम पर चलता है, पर आपका बैंक विदेशी निकासी फ़ीस और करेंसी मार्कअप ले सकता है। कम बार, ज़्यादा रकम निकालिए। अपने बैंक से पूछ लीजिए।',
+    te: 'డెబిట్ కార్డ్ ఏటీఎంలో పనిచేస్తుంది, కానీ మీ బ్యాంక్ విదేశీ విత్‌డ్రాయల్ ఫీజు, కరెన్సీ మార్కప్ వసూలు చేయవచ్చు. తక్కువ సార్లు, ఎక్కువ మొత్తం తీయండి. మీ బ్యాంక్‌ని అడగండి.',
+  },
+};
+TIP_LISTS.cards = Object.fromEntries(['en', 'hi', 'te'].map((l) => [l, ['forex', 'credit', 'debit'].map((k) => CARD_TIPS[k][l])]));
+
+/** Language help (shown on the staff card and in "Save for my trip"; tips only). */
+export const LANG_TIP = {
+  en: 'Before you fly, download the offline language pack in a translator app (e.g. Google Translate) for the local language. At the airport, use its conversation mode or camera to read signs. Show the Ask-staff card to staff or a taxi driver.',
+  hi: 'उड़ान से पहले किसी ट्रांसलेटर ऐप (जैसे Google Translate) में वहाँ की भाषा का ऑफ़लाइन पैक डाउनलोड कर लीजिए। एयरपोर्ट पर उसका बातचीत मोड या कैमरा इस्तेमाल करके बोर्ड पढ़िए। स्टाफ या टैक्सी ड्राइवर को "स्टाफ से पूछें" कार्ड दिखाइए।',
+  te: 'ప్రయాణానికి ముందే ఏదైనా ట్రాన్స్‌లేటర్ యాప్‌లో (ఉదా. Google Translate) అక్కడి భాష ఆఫ్‌లైన్ ప్యాక్ డౌన్‌లోడ్ చేసుకోండి. ఎయిర్‌పోర్ట్‌లో దాని సంభాషణ మోడ్ లేదా కెమెరాతో బోర్డులు చదవండి. సిబ్బందికి లేదా టాక్సీ డ్రైవర్‌కి "స్టాఫ్‌ని అడగండి" కార్డ్ చూపించండి.',
+};
+
+const EXTRA3 = {
+  en: {
+    noRouteDest: (dest, name) => NO_ROUTE.en[dest](name) + SAFE_EXIT.en,
+    confirmAsk: (name, t) => `${name}${t ? ', ' + t : ''}. Is that right? Say yes or no.`,
+    confirmNo: "Okay, let's fix that. " + AIRPORT_Q.en,
+    tipHeader: { money: 'Here are 3 quick money tips.', traps: '5 traps to avoid.', atm: 'ATM tips.', taxi: 'Taxi and pickup tips.', cards: 'Card tips.' },
+    tipLine: (i, n, text) => `Tip ${i} of ${n}. ${text}`,
+    tipMore: ' Say next for more.',
+    tipsDone: "That's all the tips.",
+    backToRoute: ' Say repeat to hear your current step.',
+    info: {
+      transit: "Connecting flight? Don't go through immigration or exit the airport. Follow the Transfer or Flight Connections signs, and ask airline staff if you're unsure.",
+      closed: 'If this counter is closed, try the next exchange counter in the arrivals hall, or use an airport ATM and choose the local currency.',
+      howmuch: 'Change only what you need for the first day: a taxi, a SIM and a meal. Use your card or a city ATM for the rest.',
+      dcc: 'Always choose the local currency, not rupees. Paying in rupees usually means a worse rate.',
+      forex: CARD_TIPS.forex.en, credit: CARD_TIPS.credit.en, debit: CARD_TIPS.debit.en,
+    },
+    offtopic: "I'm your airport arrival guide. I can help with currency exchange, SIM, taxi and metro, and checking an exchange rate. For this, please ask the airport staff. I've opened a card with your question to show them.",
+    voiceNeedsNet: 'Voice needs internet. Connect to airport Wi-Fi or use the buttons.',
+  },
+  hi: {
+    noRouteDest: (dest, name) => NO_ROUTE.hi[dest](name) + SAFE_EXIT.hi,
+    confirmAsk: (name, t) => `${name}${t ? ', ' + t : ''}। क्या यह सही है? हाँ या नहीं बोलिए।`,
+    confirmNo: 'ठीक है, सही करते हैं। ' + AIRPORT_Q.hi,
+    tipHeader: { money: 'पैसों की 3 छोटी सलाह।', traps: '5 धोखे, जिनसे बचना है।', atm: 'एटीएम की सलाह।', taxi: 'टैक्सी और पिकअप की सलाह।', cards: 'कार्ड की सलाह।' },
+    tipLine: (i, n, text) => `${n} में से टिप ${i}। ${text}`,
+    tipMore: ' अगली के लिए आगे बोलिए।',
+    tipsDone: 'बस, इतनी ही सलाह।',
+    backToRoute: ' अपना मौजूदा कदम सुनने के लिए दोबारा बोलिए।',
+    info: {
+      transit: 'कनेक्टिंग फ़्लाइट है? इमिग्रेशन से होकर बाहर मत जाइए। ट्रांसफ़र या फ़्लाइट कनेक्शन के बोर्ड देखिए, और शक हो तो एयरलाइन स्टाफ से पूछिए।',
+      closed: 'यह काउंटर बंद हो तो अराइवल्स हॉल में अगला एक्सचेंज काउंटर देखिए, या एयरपोर्ट के एटीएम से पैसे निकालिए और लोकल करेंसी चुनिए।',
+      howmuch: 'सिर्फ़ पहले दिन की ज़रूरत जितने पैसे बदलिए: टैक्सी, सिम और एक बार का खाना। बाकी के लिए कार्ड या शहर का एटीएम इस्तेमाल कीजिए।',
+      dcc: 'हमेशा लोकल करेंसी चुनिए, रुपये नहीं। रुपये में भुगतान पर अक्सर रेट खराब मिलता है।',
+      forex: CARD_TIPS.forex.hi, credit: CARD_TIPS.credit.hi, debit: CARD_TIPS.debit.hi,
+    },
+    offtopic: 'मैं आपकी एयरपोर्ट अराइवल गाइड हूँ। मैं करेंसी एक्सचेंज, सिम, टैक्सी, मेट्रो और रेट जाँचने में मदद कर सकती हूँ। इसके लिए कृपया एयरपोर्ट स्टाफ से पूछिए। उन्हें दिखाने के लिए आपके सवाल वाला कार्ड खोल दिया है।',
+    voiceNeedsNet: 'आवाज़ के लिए इंटरनेट चाहिए। एयरपोर्ट वाई-फ़ाई से जुड़िए या बटन इस्तेमाल कीजिए।',
+  },
+  te: {
+    noRouteDest: (dest, name) => NO_ROUTE.te[dest](name) + SAFE_EXIT.te,
+    confirmAsk: (name, t) => `${name}${t ? ', ' + t : ''}. ఇది సరైనదేనా? అవును లేదా కాదు అని చెప్పండి.`,
+    confirmNo: 'సరే, సరిచేద్దాం. ' + AIRPORT_Q.te,
+    tipHeader: { money: '3 చిన్న డబ్బు చిట్కాలు.', traps: 'జాగ్రత్తపడాల్సిన 5 మోసాలు.', atm: 'ఏటీఎం చిట్కాలు.', taxi: 'టాక్సీ, పికప్ చిట్కాలు.', cards: 'కార్డ్ చిట్కాలు.' },
+    tipLine: (i, n, text) => `${n}లో ${i}వ చిట్కా. ${text}`,
+    tipMore: ' ఇంకా వినడానికి నెక్స్ట్ అని చెప్పండి.',
+    tipsDone: 'చిట్కాలు అయిపోయాయి.',
+    backToRoute: ' మీ ప్రస్తుత అడుగు వినడానికి మళ్ళీ అని చెప్పండి.',
+    info: {
+      transit: 'కనెక్టింగ్ ఫ్లైట్ ఉందా? ఇమ్మిగ్రేషన్ దాటి బయటకు వెళ్ళకండి. ట్రాన్స్‌ఫర్ లేదా ఫ్లైట్ కనెక్షన్స్ బోర్డులు చూడండి, సందేహం ఉంటే ఎయిర్‌లైన్ సిబ్బందిని అడగండి.',
+      closed: 'ఈ కౌంటర్ మూసి ఉంటే, అరైవల్స్ హాల్‌లో తర్వాతి ఎక్స్ఛేంజ్ కౌంటర్ చూడండి, లేదా ఎయిర్‌పోర్ట్ ఏటీఎం వాడి లోకల్ కరెన్సీ ఎంచుకోండి.',
+      howmuch: 'మొదటి రోజుకి కావాల్సినంత మాత్రమే మార్చండి: టాక్సీ, సిమ్, ఒక భోజనం. మిగతాదానికి కార్డ్ లేదా నగరంలోని ఏటీఎం వాడండి.',
+      dcc: 'ఎప్పుడూ లోకల్ కరెన్సీనే ఎంచుకోండి, రూపాయలు కాదు. రూపాయల్లో చెల్లిస్తే సాధారణంగా రేటు తక్కువగా వస్తుంది.',
+      forex: CARD_TIPS.forex.te, credit: CARD_TIPS.credit.te, debit: CARD_TIPS.debit.te,
+    },
+    offtopic: 'నేను మీ ఎయిర్‌పోర్ట్ అరైవల్ గైడ్‌ని. కరెన్సీ ఎక్స్ఛేంజ్, సిమ్, టాక్సీ, మెట్రో, రేటు చెక్ చేయడంలో సహాయం చేయగలను. దీని కోసం దయచేసి ఎయిర్‌పోర్ట్ సిబ్బందిని అడగండి. వాళ్ళకు చూపించడానికి మీ ప్రశ్నతో కార్డ్ తెరిచాను.',
+    voiceNeedsNet: 'వాయిస్‌కి ఇంటర్నెట్ కావాలి. ఎయిర్‌పోర్ట్ వై-ఫైకి కనెక్ట్ అవ్వండి లేదా బటన్లు వాడండి.',
+  },
+};
+for (const l of Object.keys(EXTRA3)) Object.assign(T[l], EXTRA3[l]);
+export const tipList = (key, lang) => (TIP_LISTS[key] && (TIP_LISTS[key][short(lang)] || TIP_LISTS[key].en)) || [];
+
 // ---------- Ask-staff card ----------
 // Short, polite questions. Arabic for Dubai, Thai for Bangkok, English for Singapore,
 // Hindi + English for Bengaluru and Delhi. Telugu is used only when the airport isn't known.
@@ -208,6 +383,40 @@ export const STAFF = {
   hi: { exchange: 'कृपया बताइए, करेंसी एक्सचेंज काउंटर कहाँ है?', sim: 'कृपया बताइए, सिम कार्ड कहाँ मिलेगा?', taxi: 'कृपया बताइए, टैक्सी स्टैंड कहाँ है?' },
   te: { exchange: 'దయచేసి చెప్పండి, కరెన్సీ ఎక్స్ఛేంజ్ కౌంటర్ ఎక్కడ ఉంది?', sim: 'దయచేసి చెప్పండి, సిమ్ కార్డ్ ఎక్కడ దొరుకుతుంది?', taxi: 'దయచేసి చెప్పండి, టాక్సీ స్టాండ్ ఎక్కడ ఉంది?' },
 };
+// Metro and the off-topic questions the guide hands over to staff
+const STAFF_MORE = {
+  en: {
+    metro: 'Excuse me, where is the metro or train?', toilet: 'Excuse me, where is the toilet?',
+    prayer: 'Excuse me, where is the prayer room?', food: 'Excuse me, where can I get food or coffee?',
+    shop: 'Excuse me, where are the shops and duty free?', lounge: 'Excuse me, where is the lounge?',
+    lostbag: "Excuse me, my bag hasn't arrived. Where is the baggage services desk?",
+  },
+  ar: {
+    metro: 'من فضلك، أين المترو أو القطار؟', toilet: 'من فضلك، أين دورة المياه؟',
+    prayer: 'من فضلك، أين المصلى؟', food: 'من فضلك، أين يمكنني شراء طعام أو قهوة؟',
+    shop: 'من فضلك، أين المحلات والسوق الحرة؟', lounge: 'من فضلك، أين صالة الانتظار؟',
+    lostbag: 'من فضلك، حقيبتي لم تصل. أين مكتب خدمات الأمتعة؟',
+  },
+  th: {
+    metro: 'ขอโทษครับ/ค่ะ รถไฟฟ้าอยู่ที่ไหน', toilet: 'ขอโทษครับ/ค่ะ ห้องน้ำอยู่ที่ไหน',
+    prayer: 'ขอโทษครับ/ค่ะ ห้องละหมาดอยู่ที่ไหน', food: 'ขอโทษครับ/ค่ะ ร้านอาหารหรือร้านกาแฟอยู่ที่ไหน',
+    shop: 'ขอโทษครับ/ค่ะ ร้านค้าและดิวตี้ฟรีอยู่ที่ไหน', lounge: 'ขอโทษครับ/ค่ะ เลานจ์อยู่ที่ไหน',
+    lostbag: 'ขอโทษครับ/ค่ะ กระเป๋าของฉันไม่มา ติดต่อแผนกสัมภาระได้ที่ไหน',
+  },
+  hi: {
+    metro: 'कृपया बताइए, मेट्रो या ट्रेन कहाँ है?', toilet: 'कृपया बताइए, शौचालय कहाँ है?',
+    prayer: 'कृपया बताइए, प्रार्थना कक्ष कहाँ है?', food: 'कृपया बताइए, खाना या कॉफ़ी कहाँ मिलेगी?',
+    shop: 'कृपया बताइए, दुकानें और ड्यूटी फ़्री कहाँ हैं?', lounge: 'कृपया बताइए, लाउंज कहाँ है?',
+    lostbag: 'मेरा सामान नहीं आया। बैगेज सर्विस डेस्क कहाँ है?',
+  },
+  te: {
+    metro: 'దయచేసి చెప్పండి, మెట్రో లేదా రైలు ఎక్కడ ఉంది?', toilet: 'దయచేసి చెప్పండి, టాయిలెట్ ఎక్కడ ఉంది?',
+    prayer: 'దయచేసి చెప్పండి, ప్రార్థన గది ఎక్కడ ఉంది?', food: 'దయచేసి చెప్పండి, భోజనం లేదా కాఫీ ఎక్కడ దొరుకుతుంది?',
+    shop: 'దయచేసి చెప్పండి, షాపులు, డ్యూటీ ఫ్రీ ఎక్కడ ఉన్నాయి?', lounge: 'దయచేసి చెప్పండి, లాంజ్ ఎక్కడ ఉంది?',
+    lostbag: 'నా బ్యాగ్ రాలేదు. బ్యాగేజ్ సర్వీస్ డెస్క్ ఎక్కడ ఉంది?',
+  },
+};
+for (const l of Object.keys(STAFF_MORE)) Object.assign(STAFF[l], STAFF_MORE[l]);
 export const STAFF_VOICE = { en: 'en-IN', ar: 'ar-AE', th: 'th-TH', hi: 'hi-IN', te: 'te-IN' };
 export const STAFF_DIR = { ar: 'rtl' };
 
@@ -298,4 +507,37 @@ const UI_EXTRA = {
   },
 };
 for (const l of Object.keys(UI_EXTRA)) Object.assign(UI[l], UI_EXTRA[l]);
+
+// Round 3 labels: tips, save for my trip, slower speech, tap choices, more staff-card topics
+const UI_EXTRA3 = {
+  en: {
+    tipsBtn: 'Money tips', trapsBtn: 'Traps to avoid', saveBtn: 'Save for my trip', saving: 'Saving…',
+    saved: (d, r) => `Saved on this phone (${d}): routes, counters, staff cards and rates from ${r}. The buttons work offline; voice needs internet.`,
+    saveFailed: 'Could not save. Try again with internet.', install: 'Add to home screen',
+    slower: 'Speak slower', yes: 'Yes', no: 'No', ratesSaved: 'Rates saved on this phone', langTipTitle: 'Language help:',
+    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag' },
+    tries: ['Dubai terminal 3, I need currency', 'I want a SIM', 'taxi stand', "I'm lost", 'I have a connecting flight', 'I have a forex card', 'They give 1700 dirhams for 500 dollars'],
+  },
+  hi: {
+    tipsBtn: 'पैसों की सलाह', trapsBtn: 'धोखों से बचें', saveBtn: 'यात्रा के लिए सेव करें', saving: 'सेव हो रहा है…',
+    saved: (d, r) => `इस फ़ोन पर सेव हो गया (${d}): रास्ते, काउंटर, स्टाफ कार्ड और ${r} के रेट। बटन बिना इंटरनेट के चलेंगे; आवाज़ के लिए इंटरनेट चाहिए।`,
+    saveFailed: 'सेव नहीं हुआ। इंटरनेट के साथ फिर कोशिश कीजिए।', install: 'होम स्क्रीन पर जोड़ें',
+    slower: 'धीरे बोलिए', yes: 'हाँ', no: 'नहीं', ratesSaved: 'इस फ़ोन पर सेव किए रेट', langTipTitle: 'भाषा में मदद:',
+    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया' },
+    tries: ['dubai terminal teen, paise badalne hain', 'मुझे सिम चाहिए', 'होटल जाने के लिए टैक्सी', 'पता नहीं कहाँ हूँ', 'मेरी कनेक्टिंग फ़्लाइट है', 'मेरे पास फॉरेक्स कार्ड है', '500 dollar ke satrah sau dirham de rahe hain'],
+  },
+  te: {
+    tipsBtn: 'డబ్బు చిట్కాలు', trapsBtn: 'మోసాలు జాగ్రత్త', saveBtn: 'ప్రయాణం కోసం సేవ్ చేయి', saving: 'సేవ్ అవుతోంది…',
+    saved: (d, r) => `ఈ ఫోన్‌లో సేవ్ అయింది (${d}): దారులు, కౌంటర్లు, స్టాఫ్ కార్డ్‌లు, ${r} రేట్లు. బటన్లు ఇంటర్నెట్ లేకుండా పనిచేస్తాయి; వాయిస్‌కి ఇంటర్నెట్ కావాలి.`,
+    saveFailed: 'సేవ్ కాలేదు. ఇంటర్నెట్‌తో మళ్ళీ ప్రయత్నించండి.', install: 'హోమ్ స్క్రీన్‌కి జోడించు',
+    slower: 'నెమ్మదిగా మాట్లాడు', yes: 'అవును', no: 'కాదు', ratesSaved: 'ఈ ఫోన్‌లో సేవ్ చేసిన రేట్లు', langTipTitle: 'భాషా సహాయం:',
+    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు' },
+    tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'సిమ్ కావాలి', 'హోటల్‌కి టాక్సీ', 'నేను ఎక్కడున్నానో తెలియదు', 'నాకు కనెక్టింగ్ ఫ్లైట్ ఉంది', 'నా దగ్గర ఫారెక్స్ కార్డ్ ఉంది', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
+  },
+};
+for (const l of Object.keys(UI_EXTRA3)) {
+  const { dest, ...rest } = UI_EXTRA3[l];
+  Object.assign(UI[l], rest);
+  UI[l].dest = { ...UI[l].dest, ...dest };
+}
 export const ui = (lang) => UI[short(lang)] || UI.en;

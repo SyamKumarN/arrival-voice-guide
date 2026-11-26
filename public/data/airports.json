@@ -151,9 +151,9 @@
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Say how much you want to change, and ask for the final amount in dirhams before you pay.",
-          "hi": "जितने पैसे बदलने हैं बताइए, और पैसे देने से पहले दिरहम में फ़ाइनल अमाउंट पूछिए।",
-          "te": "ఎంత మార్చాలో చెప్పండి. డబ్బు ఇచ్చే ముందు దిర్హామ్‌లలో ఫైనల్ మొత్తం ఎంతో అడగండి.",
+          "en": "Say how much you want to change, and ask for the final amount in dirhams before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "जितने पैसे बदलने हैं बताइए, और पैसे देने से पहले दिरहम में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "ఎంత మార్చాలో చెప్పండి. డబ్బు ఇచ్చే ముందు దిర్హామ్‌లలో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
           "stage": "arrivals"
         },
         "sim_counter": {
@@ -175,9 +175,15 @@
           "stage": "arrivals"
         },
         "taxi_queue": {
-          "en": "Join the official taxi queue. Keep your hotel name and address ready to show the driver.",
-          "hi": "आधिकारिक टैक्सी की लाइन में लगिए। ड्राइवर को दिखाने के लिए होटल का नाम और पता तैयार रखिए।",
-          "te": "అధికారిక టాక్సీ లైన్‌లో నిలబడండి. డ్రైవర్‌కి చూపించడానికి హోటల్ పేరు, అడ్రస్ సిద్ధంగా ఉంచుకోండి.",
+          "en": "Join the official taxi queue. Check the meter is on, and keep your hotel name and address ready to show the driver.",
+          "hi": "आधिकारिक टैक्सी की लाइन में लगिए। मीटर चालू है, यह देखिए, और ड्राइवर को दिखाने के लिए होटल का नाम और पता तैयार रखिए।",
+          "te": "అధికారిక టాక్సీ లైన్‌లో నిలబడండి. మీటర్ ఆన్‌లో ఉందో చూడండి, డ్రైవర్‌కి చూపించడానికి హోటల్ పేరు, అడ్రస్ సిద్ధంగా ఉంచుకోండి.",
+          "stage": "arrivals"
+        },
+        "taxi_touts": {
+          "en": "Ignore anyone in the hall offering you a ride. Use only the official taxi stand.",
+          "hi": "हॉल में राइड ऑफ़र करने वालों को नज़रअंदाज़ कीजिए। सिर्फ़ आधिकारिक टैक्सी स्टैंड का इस्तेमाल कीजिए।",
+          "te": "హాల్‌లో రైడ్ ఆఫర్ చేసేవాళ్ళను పట్టించుకోకండి. అధికారిక టాక్సీ స్టాండ్ మాత్రమే వాడండి.",
           "stage": "arrivals"
         }
       },
@@ -257,6 +263,7 @@
             "immigration",
             "bags",
             "customs_t1",
+            "taxi_touts",
             "taxi_signs",
             "taxi_queue"
           ],
@@ -264,6 +271,7 @@
             "immigration",
             "bags",
             "customs_t2",
+            "taxi_touts",
             "taxi_signs",
             "taxi_queue"
           ],
@@ -271,6 +279,7 @@
             "immigration",
             "bags",
             "customs_t3",
+            "taxi_touts",
             "taxi_signs",
             "taxi_queue"
           ]
@@ -358,9 +367,9 @@
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in rupees before you pay.",
-          "hi": "पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए।",
-          "te": "డబ్బు ఇచ్చే ముందు రూపాయల్లో ఫైనల్ మొత్తం ఎంతో అడగండి.",
+          "en": "Ask for the final amount in rupees before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "డబ్బు ఇచ్చే ముందు రూపాయల్లో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
           "stage": "arrivals"
         }
       },
@@ -484,9 +493,9 @@
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in rupees before you pay.",
-          "hi": "पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए।",
-          "te": "డబ్బు ఇచ్చే ముందు రూపాయల్లో ఫైనల్ మొత్తం ఎంతో అడగండి.",
+          "en": "Ask for the final amount in rupees before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "డబ్బు ఇచ్చే ముందు రూపాయల్లో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
           "stage": "arrivals"
         }
       },
@@ -631,9 +640,9 @@
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in Singapore dollars before you pay.",
-          "hi": "पैसे देने से पहले सिंगापुर डॉलर में फ़ाइनल अमाउंट पूछिए।",
-          "te": "డబ్బు ఇచ్చే ముందు సింగపూర్ డాలర్లలో ఫైనల్ మొత్తం ఎంతో అడగండి.",
+          "en": "Ask for the final amount in Singapore dollars before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "पैसे देने से पहले सिंगापुर डॉलर में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "డబ్బు ఇచ్చే ముందు సింగపూర్ డాలర్లలో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
           "stage": "arrivals"
         }
       },
@@ -758,9 +767,9 @@
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in baht before you pay.",
-          "hi": "पैसे देने से पहले बाट में फ़ाइनल अमाउंट पूछिए।",
-          "te": "డబ్బు ఇచ్చే ముందు బాట్‌లో ఫైనల్ మొత్తం ఎంతో అడగండి.",
+          "en": "Ask for the final amount in baht before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "पैसे देने से पहले बाट में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "డబ్బు ఇచ్చే ముందు బాట్‌లో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
           "stage": "arrivals"
         }
       },

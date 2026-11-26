@@ -3,7 +3,7 @@
 
 import { handle, initialState, currentRoute, stepText } from './js/dialog.js';
 import { parse, score } from './js/parser.js';
-import { ui, say, terminalLabel, currencyName, staffLines, STAFF_VOICE, STAFF_DIR, speakable } from './js/phrases.js';
+import { ui, say, terminalLabel, currencyName, staffLines, STAFF_VOICE, STAFF_DIR, speakable, LANG_TIP } from './js/phrases.js';
 import { formatMoney } from './js/price.js';
 import { pick, short } from './js/text.js';
 
@@ -41,8 +41,12 @@ async function load() {
     const live = await getJSON('/api/rates');
     if (!live || !live.rates || !live.rates.AED) throw new Error('bad rates');
     app.rates = live;
+    if (live.source === 'live') store.set('rates', JSON.stringify(live));   // newest rates stay on the phone
   } catch {
-    app.rates = { ...(await getJSON('data/rates-sample.json')), source: 'sample' };
+    // Offline or no server: the last live rates this phone saw, else the bundled sample
+    let saved = null;
+    try { saved = JSON.parse(store.get('rates') || 'null'); } catch { /* ignore */ }
+    app.rates = saved && saved.rates ? { ...saved, source: 'saved' } : { ...(await getJSON('data/rates-sample.json')), source: 'sample' };
   }
   try { app.config = await getJSON('/api/config', 2500); } catch { /* no server: no upgrades */ }
 }
@@ -72,7 +76,7 @@ function stopSpeaking() {
 }
 
 /** Speak text in the chosen language, a sentence at a time (long utterances get cut off in Chrome). */
-async function speak(text, lang) {
+async function speak(text, lang, { keepNotice = false } = {}) {
   // The mic is always off while the guide talks, so it never hears itself.
   muteMic();
   stopSpeaking();
@@ -88,6 +92,7 @@ async function speak(text, lang) {
         const { audio } = await r.json();
         if (token !== speakToken) return;
         audioEl = new Audio('data:audio/wav;base64,' + audio);
+        audioEl.playbackRate = $('slower').checked ? 0.8 : 1;
         audioEl.onended = done; audioEl.onerror = done;
         await audioEl.play();
         return;
@@ -104,11 +109,12 @@ async function speak(text, lang) {
     setStatus('idle');
     return;                         // text is on screen; don't auto-listen without the voice
   }
-  showNotice('');
+  if (!keepNotice) showNotice('');
   const parts = text.split(/(?<=[.!?।])\s+/).filter(Boolean);
   parts.forEach((part, i) => {
     const u = new SpeechSynthesisUtterance(part);
-    u.lang = voice.lang; u.voice = voice; u.rate = short(lang) === 'en' ? 1 : 0.95;
+    u.lang = voice.lang; u.voice = voice;
+    u.rate = (short(lang) === 'en' ? 1 : 0.95) * ($('slower').checked ? 0.75 : 1);   // "Speak slower"
     if (i === parts.length - 1) { u.onend = done; u.onerror = done; }
     synth.speak(u);
   });
@@ -118,8 +124,16 @@ async function speak(text, lang) {
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let rec = null;
 
+/** Speech recognition runs online. Without a connection, say so and point to the buttons. */
+function voiceOffline() {
+  const msg = say(app.state.lang, 'voiceNeedsNet');
+  showNotice(msg);
+  speak(msg, app.state.lang, { keepNotice: true });
+}
+
 function startListening() {
   if (!Recognition) { showNotice(ui(app.state.lang).noVoiceIn); return; }
+  if (navigator.onLine === false) { voiceOffline(); return; }
   stopSpeaking();                 // a tap on the mic interrupts the guide
   muteMic();
   rec = new Recognition();
@@ -138,6 +152,7 @@ function startListening() {
   };
   rec.onerror = (e) => {
     if (e.error === 'not-allowed' || e.error === 'service-not-allowed') showNotice(ui(app.state.lang).noVoiceIn);
+    if (e.error === 'network') { finalAlts = null; setTimeout(voiceOffline, 0); }
   };
   rec.onend = () => {
     rec = null;
@@ -176,7 +191,7 @@ function bestAlternative(alts) {
 /** Hands-free: after the guide finishes talking, listen for "next / repeat / can't find". */
 function afterSpeaking() {
   if (!$('staffCard').hidden) return;      // the card is open: someone is reading it, don't listen
-  const waiting = ['route', 'ask', 'lost'].includes(app.state.mode);
+  const waiting = ['route', 'ask', 'lost', 'confirm', 'tips'].includes(app.state.mode);
   if (!($('handsFree').checked && waiting && Recognition && app.micUsed)) return;
   // Short pause so the speaker's last syllable isn't picked up by the mic.
   clearTimeout(relistenTimer);
@@ -248,9 +263,13 @@ function renderStaffCard() {
   $('staffEn').lang = 'en';
   $('staffSpeak').textContent = L.readAloud;
   $('staffClose').textContent = L.close;
+  $('staffTip').textContent = L.langTipTitle + ' ' + (LANG_TIP[short(app.state.lang)] || LANG_TIP.en);
   const tabs = $('staffTabs');
   tabs.innerHTML = '';
-  ['exchange', 'sim', 'taxi'].forEach((d) => {
+  // The three main questions, plus whatever else they asked about (toilet, metro, missing bag …)
+  const topics = ['exchange', 'sim', 'taxi'];
+  if (!topics.includes(staffShown.intent)) topics.push(staffShown.intent);
+  topics.forEach((d) => {
     const b = document.createElement('button');
     b.type = 'button'; b.textContent = L.dest[d];
     b.setAttribute('aria-pressed', String(d === staffShown.intent));
@@ -308,10 +327,19 @@ function render() {
   $('nextBtn').textContent = L.next;
   $('cantBtn').textContent = L.cantFind;
   $('staffBtn').textContent = L.askStaff;
-  // Step buttons only make sense while a route is being read out
-  $('nextBtn').disabled = state.mode !== 'route';
+  // Step buttons only make sense while a route or a tip list is being read out
+  $('nextBtn').disabled = !['route', 'tips'].includes(state.mode);
   $('cantBtn').disabled = state.mode !== 'route';
-  $('repeatBtn').disabled = !['route', 'done'].includes(state.mode);
+  $('repeatBtn').disabled = !['route', 'done', 'tips'].includes(state.mode);
+  $('tipsBtn').textContent = L.tipsBtn;
+  $('trapsBtn').textContent = L.trapsBtn;
+  $('saveBtn').textContent = L.saveBtn;
+  $('slowerLabel').textContent = L.slower;
+  $('langTipTitle').textContent = L.langTipTitle;
+  $('langTip').textContent = LANG_TIP[short(lang)] || LANG_TIP.en;
+  $('installBtn').textContent = L.install;
+  renderSaved();
+  renderChoices();
   $('sendBtn').textContent = L.send;
   $('typeInput').placeholder = L.typeHere;
   $('youSaidLabel').textContent = L.youSaid + ':';
@@ -403,9 +431,77 @@ function render() {
   // Footer: rates and upgrades
   const r = app.rates;
   const when = r.date || (r.updated ? r.updated.slice(0, 10) : '');
-  $('ratesInfo').textContent = `${r.source === 'live' ? L.ratesLive : L.ratesSample} · ${when}`;
+  $('ratesInfo').textContent = `${r.source === 'live' ? L.ratesLive : r.source === 'saved' ? L.ratesSaved : L.ratesSample} · ${when}`;
   const st = (on) => (on ? L.on : L.keyNotSet);
   $('upgrades').textContent = `${L.natural}: ${st(app.config.naturalVoice)} · ${L.askAny}: ${st(app.config.askAnything)}`;
+}
+
+/** Big tap targets for the question just asked, so the guide works without voice (or offline). */
+function renderChoices() {
+  const { state, data } = app;
+  const L = ui(state.lang);
+  const box = $('choices');
+  box.innerHTML = '';
+  const add = (label, text, primary) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = label;
+    if (primary) b.className = 'primary';
+    b.onclick = () => submit(text);
+    box.append(b);
+  };
+  if (state.expecting === 'airport') {
+    for (const [code, a] of Object.entries(data.airports)) add(pick(a.name, state.lang), a.name.en);
+  } else if (state.expecting === 'terminal' && state.airport) {
+    for (const t of data.airports[state.airport].terminals) add(terminalLabel(t, state.lang), 'terminal ' + t.slice(1));
+  } else if (state.expecting === 'confirm') {
+    add(L.yes, 'yes', true);
+    add(L.no, 'no');
+  } else if (state.mode === 'tips') {
+    add(L.next, 'next', true);
+    add(L.repeat, 'repeat');
+  }
+}
+
+// ---------- Save for my trip (offline) ----------
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; renderSaved(); });
+
+function renderSaved() {
+  const L = ui(app.state.lang);
+  const savedAt = store.get('savedAt');
+  const panel = $('savePanel');
+  if (app.saveState === 'saving') { panel.hidden = false; $('saveStatus').textContent = L.saving; }
+  else if (app.saveState === 'failed') { panel.hidden = false; $('saveStatus').textContent = L.saveFailed; }
+  else if (savedAt) {
+    panel.hidden = !app.saveOpen;
+    const d = new Date(savedAt).toLocaleDateString(app.state.lang, { day: 'numeric', month: 'short' });
+    $('saveStatus').textContent = L.saved(d, store.get('savedRatesDate') || (app.rates && app.rates.date) || '');
+  } else panel.hidden = true;
+  $('installBtn').hidden = !installPrompt;
+}
+
+async function saveTrip() {
+  app.saveOpen = true;
+  app.saveState = 'saving';
+  renderSaved();
+  try {
+    if (!('serviceWorker' in navigator)) throw new Error('no offline support');
+    const reg = await navigator.serviceWorker.ready;
+    const ok = await new Promise((resolve) => {
+      const onMsg = (e) => { if (e.data && e.data.type === 'trip-saved') { navigator.serviceWorker.removeEventListener('message', onMsg); resolve(e.data.ok); } };
+      navigator.serviceWorker.addEventListener('message', onMsg);
+      reg.active.postMessage({ type: 'save-trip', rates: app.rates });
+      setTimeout(() => resolve(false), 15000);
+    });
+    if (!ok) throw new Error('not saved');
+    store.set('savedAt', new Date().toISOString());
+    store.set('savedRatesDate', app.rates.date || '');
+    if (app.rates) store.set('rates', JSON.stringify(app.rates));
+    app.saveState = 'saved';
+  } catch {
+    app.saveState = 'failed';
+  }
+  renderSaved();
 }
 
 // ---------- Events ----------
@@ -440,6 +536,12 @@ function bind() {
   $('staffClose').onclick = () => closeStaffCard();
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('staffCard').hidden) closeStaffCard(); });
   $('restartBtn').onclick = () => { app.lastPrice = null; submit('start over'); };
+  $('tipsBtn').onclick = () => submit('tips');
+  $('trapsBtn').onclick = () => submit('traps');
+  $('saveBtn').onclick = () => saveTrip();
+  $('installBtn').onclick = async () => { if (installPrompt) { installPrompt.prompt(); installPrompt = null; renderSaved(); } };
+  $('slower').checked = store.get('slower') === '1';
+  $('slower').onchange = (e) => store.set('slower', e.target.checked ? '1' : '0');
   $('typeForm').onsubmit = (e) => {
     e.preventDefault();
     const v = $('typeInput').value;
@@ -453,6 +555,10 @@ function bind() {
 // ---------- Start ----------
 (async function start() {
   bind();
+  // Offline support: the service worker stores the guide on the phone (see sw.js)
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('/sw.js').catch(() => { /* still works online */ });
+  }
   try { await load(); } catch (e) {
     $('reply').textContent = 'Could not load the guide data. Please reload.';
     return;

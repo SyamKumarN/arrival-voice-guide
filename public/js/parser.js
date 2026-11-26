@@ -53,6 +53,61 @@ const TAXI_WORDS = [
   'టాక్సీ', 'ట్యాక్సీ', 'టాక్సి', 'క్యాబ్', 'హోటల్',
 ];
 
+const METRO_WORDS = [
+  'metro', 'train', 'rail', 'subway', 'metro station', 'मेट्रो', 'ट्रेन', 'रेल', 'మెట్రో', 'ట్రైన్', 'రైలు',
+];
+
+// ---------- Advice topics (order matters: first match wins) ----------
+const TOPICS = [
+  ['transit', ['transit', 'connecting flight', 'connection flight', 'connecting', 'layover', 'transfer flight', 'next flight',
+    'agli flight', 'connecting flight hai', 'कनेक्टिंग', 'ट्रांज़िट', 'ट्रांजिट', 'ट्रांसफ़र फ्लाइट', 'अगली फ्लाइट', 'अगली फ़्लाइट',
+    'కనెక్టింగ్', 'ట్రాన్సిట్', 'తర్వాతి ఫ్లైట్', 'ఇంకో ఫ్లైట్']],
+  ['closed', ['closed', 'is closed', 'shut', 'band hai', 'band he', 'बंद है', 'बंद हैं', 'बंद', 'మూసి', 'మూసేశారు', 'మూసివేశారు', 'మూసేసి']],
+  ['howmuch', ['how much should i change', 'how much to change', 'how much money should', 'how much cash', 'how much should i exchange',
+    'kitne paise badlu', 'kitne paise badalne', 'kitna badlu', 'kitna change', 'कितने पैसे बदल', 'कितना बदल', 'कितने पैसे',
+    'ఎంత మార్చాలి', 'ఎంత డబ్బు మార్చ', 'ఎంత మార్చుకోవాలి']],
+  ['dcc', ['rupees or', 'in rupees', 'pay in rupees', 'charge in rupees', 'currency conversion', 'card machine', 'dynamic currency',
+    'rupaye ya', 'rupaye mein', 'rupees mein', 'रुपये या', 'रुपये में', 'रुपए में', 'రూపాయల్లోనా', 'రూపాయల్లో']],
+  ['forex', ['forex card', 'forex', 'travel card', 'multi currency card', 'फॉरेक्स', 'फ़ॉरेक्स', 'ఫారెక్స్', 'ఫోరెక్స్']],
+  ['credit', ['credit card', 'credit', 'क्रेडिट', 'క్రెడిట్']],
+  ['debit', ['debit card', 'debit', 'डेबिट', 'డెబిట్']],
+  ['atm', ['atm', 'atms', 'cash machine', 'withdraw', 'withdrawal', 'एटीएम', 'ए टी एम', 'ఏటీఎం', 'ఏటిఎం', 'ఏ టి ఎం']],
+  ['pickup', ['pickup', 'pick up', 'pick me up', 'picking me up', 'my driver', 'driver', 'chauffeur',
+    'पिकअप', 'पिक अप', 'ड्राइवर', 'పికప్', 'పిక్ అప్', 'డ్రైవర్']],
+  ['traps', ['traps', 'trap', 'scam', 'scams', 'traps to avoid', 'dhokhe', 'dhokha', 'thagi', 'धोखे', 'धोखा', 'ठगी', 'మోసాలు', 'మోసం']],
+  ['tips', ['tips', 'tip', 'advice', 'money tips', 'suggestion', 'salah', 'sujhav', 'सलाह', 'टिप्स', 'टिप', 'सुझाव',
+    'చిట్కాలు', 'చిట్కా', 'సలహా', 'సలహాలు', 'టిప్స్']],
+];
+const CARD_WORDS = ['card', 'cards', 'कार्ड', 'కార్డ్', 'కార్డు'];
+
+// ---------- Outside the guide's scope: politely point to airport staff ----------
+const OFFTOPIC = [
+  ['lostbag', ['lost baggage', 'lost luggage', 'lost my bag', 'lost my luggage', 'bag is missing', 'bag missing', 'luggage missing',
+    'baggage missing', 'bag didnt come', 'bag hasnt arrived', 'bag has not arrived', 'bag did not arrive', 'my bag',
+    'samaan nahi aaya', 'saman nahi aaya', 'bag nahi aaya', 'bag kho gaya', 'samaan kho gaya',
+    'सामान नहीं आया', 'सामान खो', 'बैग नहीं आया', 'बैग खो', 'बैग गुम', 'सामान गुम',
+    'బ్యాగ్ రాలేదు', 'లగేజ్ రాలేదు', 'బ్యాగ్ పోయింది', 'లగేజ్ పోయింది', 'సామాను రాలేదు', 'బ్యాగ్ కనిపించడం లేదు']],
+  ['toilet', ['toilet', 'toilets', 'restroom', 'washroom', 'bathroom', 'loo', 'ladies room', 'mens room',
+    'टॉयलेट', 'शौचालय', 'बाथरूम', 'वॉशरूम', 'वाशरूम', 'టాయిలెట్', 'బాత్రూమ్', 'వాష్రూమ్', 'వాష్‌రూమ్', 'మరుగుదొడ్డి']],
+  ['prayer', ['prayer', 'prayer room', 'pray', 'namaz', 'namaaz', 'mosque', 'temple', 'chapel',
+    'नमाज', 'नमाज़', 'प्रार्थना', 'पूजा', 'ప్రార్థన', 'నమాజ్', 'పూజ']],
+  ['lounge', ['lounge', 'lounges', 'लाउंज', 'లాంజ్']],
+  ['shop', ['shop', 'shops', 'shopping', 'books', 'book', 'bookshop', 'book shop', 'alcohol', 'liquor', 'beer', 'wine', 'whisky',
+    'duty free', 'dutyfree', 'perfume', 'chocolate', 'chocolates', 'kitab', 'kitaab', 'sharab', 'daru',
+    'शॉपिंग', 'दुकान', 'किताब', 'शराब', 'दारू', 'ड्यूटी फ्री', 'ड्यूटी फ़्री', 'बियर',
+    'షాపింగ్', 'షాప్', 'దుకాణ', 'పుస్తక', 'మద్యం', 'డ్యూటీ ఫ్రీ', 'బీర్']],
+  ['food', ['food', 'eat', 'hungry', 'restaurant', 'coffee', 'tea', 'snack', 'snacks', 'breakfast', 'lunch', 'dinner', 'water',
+    'khana', 'khaana', 'bhook', 'bhookh', 'chai', 'nashta',
+    'खाना', 'भूख', 'चाय', 'कॉफी', 'कॉफ़ी', 'रेस्टोरेंट', 'रेस्टोरेंट', 'नाश्ता', 'पानी',
+    'భోజనం', 'ఆహారం', 'ఆకలి', 'కాఫీ', 'చాయ్', 'రెస్టారెంట్', 'టిఫిన్', 'తినడానికి', 'నీళ్ళు']],
+];
+
+// ---------- Yes / no (answers to "Is that right?") ----------
+const YES_WORDS = ['yes', 'yeah', 'yep', 'yup', 'correct', 'right', 'thats right', 'ok', 'okay', 'sure', 'haan', 'han', 'haa', 'ji',
+  'haanji', 'sahi', 'theek', 'thik', 'हाँ', 'हां', 'जी', 'सही', 'ठीक', 'अवुनु', 'అవును', 'ఔను', 'సరే', 'కరెక్ట్', 'ఓకే', 'అవునండి'];
+const NO_WORDS = ['no', 'nope', 'wrong', 'not right', 'incorrect', 'nahi', 'nahin', 'nai', 'galat', 'नहीं', 'नही', 'गलत', 'ग़लत',
+  'కాదు', 'లేదు', 'తప్పు'];
+
 // ---------- "What do you see?" answers, for the I'm-lost flow ----------
 const STAGES = {
   immigration: ['passport', 'passports', 'passport counter', 'immigration', 'pasport', 'पासपोर्ट', 'इमिग्रेशन', 'पासपोर्ट काउंटर', 'పాస్పోర్ట్', 'పాస్‌పోర్ట్', 'ఇమ్మిగ్రేషన్'],
@@ -246,11 +301,38 @@ export function parse(raw, ctx = {}) {
   const localCurrency = ctx.localCurrency || null;
   const price = findPrice(tokens, localCurrency);
 
+  // Advice topics (tips, cards, ATM, transit …). The first match wins.
+  let topic = null;
+  for (const [name, words] of TOPICS) {
+    if (hasAny(p, words)) { topic = name; break; }
+  }
+  // A plain "card" means card advice, unless it's a SIM card or the staff card.
+  if (!topic && command !== 'staff' && !hasAny(p, SIM_WORDS) && hasAny(p, CARD_WORDS)) topic = 'cards';
+
   // Intent: where they want to go. SIM and taxi words win over generic money words.
   let intent = null;
   if (hasAny(p, SIM_WORDS)) intent = 'sim';
-  else if (hasAny(p, TAXI_WORDS)) intent = 'taxi';
+  else if (hasAny(p, METRO_WORDS)) intent = 'metro';
+  else if (hasAny(p, TAXI_WORDS) && topic !== 'pickup') intent = 'taxi';
   else if (hasAny(p, EXCHANGE_WORDS) || (price && price.given)) intent = 'exchange';
+
+  // Outside what the guide does (toilets, food, shops …). "My bag hasn't arrived" isn't "I'm lost".
+  let offtopic = null;
+  for (const [name, words] of OFFTOPIC) {
+    if (hasAny(p, words)) { offtopic = name; break; }
+  }
+  if (offtopic === 'lostbag') {
+    if (command === 'lost' || command === 'cantfind') command = null;
+  } else if (offtopic && (intent || topic)) {
+    offtopic = null;                     // "book a cab", "coffee money" → the real request wins
+  }
+
+  // Yes / no, only when we've just asked "Is that right?"
+  let yesno = null;
+  if (ctx.expecting === 'confirm') {
+    if (hasAny(p, NO_WORDS)) yesno = 'no';
+    else if (hasAny(p, YES_WORDS)) yesno = 'yes';
+  }
 
   return {
     raw: String(raw || ''),
@@ -260,6 +342,9 @@ export function parse(raw, ctx = {}) {
     intent,
     command,
     stage,
+    topic,
+    offtopic,
+    yesno,
     price: price && price.given ? { given: price.given, received: price.received } : null,
     amounts: price ? price.pairs : [],
     numbers: findNumbers(tokens, (t) => !!currencyOf(t)).map((n) => n.value),
@@ -269,7 +354,8 @@ export function parse(raw, ctx = {}) {
 /** How much a parse "understood" — used to choose between speech alternatives. */
 export function score(parsed) {
   return (parsed.command ? 3 : 0) + (parsed.stage ? 1 : 0) + (parsed.price ? 4 : 0) + (parsed.airport ? 2 : 0) +
-    (parsed.terminal ? 2 : 0) + (parsed.intent ? 1 : 0);
+    (parsed.terminal ? 2 : 0) + (parsed.intent ? 1 : 0) + (parsed.topic ? 1 : 0) + (parsed.offtopic ? 1 : 0) +
+    (parsed.yesno ? 2 : 0);
 }
 
 export { NUMBER_WORDS, matches };

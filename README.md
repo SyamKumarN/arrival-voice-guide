@@ -15,6 +15,16 @@ This guide lets you just speak:
 - "500 dollar ke satrah sau dirham de rahe hain" tells you it's 7.4% below the mid-market rate, that you should get about 1,836 dirhams, and to ask for the final amount before you pay.
 - "I'm lost" makes it ask what you can see (passport counters, baggage belts, customs, arrivals hall) and pick up the route from there.
 - "Ask staff" shows a big card with the question in the local language (Arabic in Dubai, Thai in Bangkok), reads it out, and lets you show it to someone.
+- Before it starts guiding, it confirms where you are: "Dubai, Terminal 3. Is that right?" You can answer by voice or with a tap.
+
+Beyond the route, it handles the moments that cost travellers money:
+- **Advice:** connecting flights (don't exit, follow the Transfer signs), a closed counter, how much to change (only the first day's needs), and the "rupees or local currency?" question (always local).
+- **Cards and ATMs:** forex, credit and debit card advice, plus ATM tips.
+- **Taxis and pickups:** official stands only, meters, pickup points, OTPs, luggage.
+- **Tips and traps:** "tips" gives three short money tips, "traps" gives five traps to avoid. Both are read one at a time, and each tip is under 15 words.
+- **Out of scope:** for toilets, food, shops, lounges, prayer rooms or a missing bag, it says politely what it does, then shows a staff card with that question in the local language. It never invents a location.
+
+**Save for my trip** keeps everything on the phone: routes, counters, staff cards, language tips and the latest rates. The app can be added to the home screen and works offline with the buttons. Voice recognition needs a connection; offline, the app says so and points to the buttons. A **Speak slower** switch is in the footer.
 
 ## Run it
 
@@ -69,11 +79,19 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
 
 ## Tests
 
-`npm test` runs 294 checks:
-- **Unit tests:** the parser (59 sentences in English, Hindi, Hinglish and Telugu), numbers (18), the price check (9) and conversation flows (8).
-- **Scenario matrix:** 200 conversations, one for every airport × language style × scenario. The scenarios are exchange, SIM, taxi, price check, next/repeat/back, can't find, I'm lost, ask staff, unknown request, missing airport and missing terminal.
+`npm test` runs 698 checks, all without keys or network:
+- **Unit tests:** the parser (120 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (11).
+- **Scenario matrix:** 520 conversations, one for every airport (5) × language style (4) × scenario (26). The scenarios cover:
+  - **Routes:** exchange with confirm, missing airport, missing terminal, confirm "no", SIM, taxi, metro, the full route to the receipt step and the money tips.
+  - **Commands:** next/repeat/back/can't find, the price check, I'm lost, ask staff.
+  - **Off-topic:** toilet, missing bag.
+  - **Advice:** transit, counter closed, how much to change, forex/credit/debit cards, "rupees or local currency?", ATM tips, pickup tips, money tips, traps.
+  - **Unknown requests.**
+- **Content checks:** money tips and traps stay under 15 words in every language, every tip list has the same length in every language, and there's a staff-card question for every topic in Arabic, Thai, Hindi, English and Telugu.
 
-A one-page manual test for a phone is in [docs/phone-test-checklist.md](docs/phone-test-checklist.md).
+Offline support was checked in headless Chrome: the server was stopped mid-test and the whole flow still worked from the phone's storage.
+
+A manual test checklist for a phone is in [docs/phone-test-checklist.md](docs/phone-test-checklist.md).
 
 ## Project layout
 
@@ -81,6 +99,8 @@ A one-page manual test for a phone is in [docs/phone-test-checklist.md](docs/pho
 public/            the app (static files)
   data/            airports.json, rates-sample.json
   js/              parser, numbers, dialog, decide, price, phrases
+  sw.js            offline support ("Save for my trip")
+  manifest.webmanifest, icons/   installable app
 lib/core.js        API logic: config, rates, optional voice and Q&A
 server.js          small Node server for Docker / npm start
 api/index.js       the same API as a Vercel function

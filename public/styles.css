@@ -214,3 +214,18 @@ h1 { font-size: 19px; font-weight: 750; }
   border: 2px solid #fff; background: #fff; color: #000;
 }
 .staff-actions button + button { background: transparent; color: #fff; }
+/* Round 3: tap choices, quick actions, save panel, toggles, staff-card tip */
+.choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.choices:empty { display: none; }
+.choices button {
+  border: 2px solid var(--brand); background: var(--card); color: var(--brand); border-radius: 12px;
+  padding: 10px 16px; font-weight: 700; cursor: pointer; min-height: 44px;
+}
+.choices button.primary { background: var(--brand); color: var(--on-brand); }
+.quick { display: flex; flex-wrap: wrap; gap: 8px; }
+.quick .save-btn { border-color: var(--brand-2); color: var(--brand); font-weight: 650; }
+.save p { margin: 0 0 8px; font-size: 14px; }
+.lang-tip { color: var(--muted); }
+.lang-tip strong { color: var(--ink); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.staff-tip { margin: 0; font-size: 13px; line-height: 1.45; color: #cfd8dc; }
