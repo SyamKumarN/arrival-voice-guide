@@ -1,0 +1,12 @@
+.env
+.env.*
+node_modules
+tests
+screenshots
+Dockerfile
+docker-compose.yml
+.dockerignore
+*.log
+server.js
+README.md
+docs

@@ -1,0 +1,11 @@
+services:
+  arrival-voice:
+    build: .
+    image: arrival-voice:local
+    ports:
+      - "8080:8080"
+    # Keys are optional. Without a .env file the app still starts and works.
+    env_file:
+      - path: .env
+        required: false
+    restart: unless-stopped

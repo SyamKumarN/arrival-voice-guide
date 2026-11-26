@@ -1,0 +1,16 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Logs and local junk
+*.log
+.DS_Store
+Thumbs.db
+screenshots/raw/
+
+.vercel

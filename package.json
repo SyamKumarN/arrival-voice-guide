@@ -1,0 +1,18 @@
+{
+  "name": "arrival-voice",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JesTiny Arrival Guide (Voice): speak your airport and terminal, get walked to a fair currency exchange counter.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/run-tests.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.136.0"
+  }
+}

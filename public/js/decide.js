@@ -1,0 +1,65 @@
+// decide.js — the "Decide" layer: pick the fair counter and build the route.
+
+const QUALITY_RANK = { good: 0, fair: 1, pricey: 2 };
+export const DESTINATIONS = ['exchange', 'sim', 'taxi'];
+
+/** Counters in one terminal, best first (better rate, then landside). */
+export function rankCounters(airport, terminal) {
+  return airport.counters
+    .filter((c) => c.terminal === terminal)
+    .sort((a, b) =>
+      (QUALITY_RANK[a.quality] - QUALITY_RANK[b.quality]) ||
+      ((a.side === 'landside' ? 0 : 1) - (b.side === 'landside' ? 0 : 1)));
+}
+
+/** Does this airport have a step-by-step route for the destination? */
+export function hasRoute(data, code, dest = 'exchange') {
+  const a = data.airports[code];
+  if (!a) return false;
+  return dest === 'exchange' ? !!a.routes : !!(a[dest] && a[dest].routes);
+}
+
+/**
+ * Build everything the guide needs for one airport + terminal + destination.
+ * Returns null if there is no route for that combination.
+ */
+export function buildRoute(data, code, terminal, dest = 'exchange') {
+  const airport = data.airports[code];
+  if (!airport) return null;
+  const src = dest === 'exchange' ? airport : airport[dest];
+  const ids = src && src.routes && src.routes[terminal];
+  if (!ids) return null;
+  const ranked = dest === 'exchange' ? rankCounters(airport, terminal) : [];
+  return {
+    code,
+    terminal,
+    dest,
+    name: airport.name,
+    currency: airport.currency,
+    lastChecked: airport.lastChecked || null,
+    pendingData: !!airport.pendingData,
+    counter: ranked[0] || null,
+    avoid: ranked.filter((c) => c.quality === 'pricey'),
+    steps: ids.map((id) => ({ id, text: airport.steps[id], stage: airport.steps[id].stage })),
+    warnings: dest === 'exchange' ? (airport.warnings || []) : [],
+    fallback: src.fallback || airport.fallback,
+  };
+}
+
+/** Terminals for an airport, e.g. ["T1","T2","T3"]. Single-terminal airports return ["MAIN"]. */
+export function terminalsOf(data, code) {
+  return (data.airports[code] && data.airports[code].terminals) || [];
+}
+
+const STAGE_ORDER = ['immigration', 'baggage', 'customs', 'arrivals'];
+
+/**
+ * "I'm lost" → "I can see baggage belts": the step to continue from.
+ * Picks the first step at that stage, or the first one after it.
+ */
+export function stepForStage(route, stage) {
+  const want = STAGE_ORDER.indexOf(stage);
+  if (want < 0) return -1;
+  const i = route.steps.findIndex((s) => STAGE_ORDER.indexOf(s.stage) >= want);
+  return i;
+}

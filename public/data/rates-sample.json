@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-26",
+  "note": "Sample mid-market rates bundled for offline use, rounded from the live source on 26 Nov 2026. One US dollar as the base. The dirham is pegged, so its value is fixed.",
+  "base": "USD",
+  "rates": {
+    "USD": 1,
+    "AED": 3.6725,
+    "INR": 92.35,
+    "THB": 34.1,
+    "SGD": 1.291,
+    "EUR": 0.912,
+    "GBP": 0.763
+  }
+}
