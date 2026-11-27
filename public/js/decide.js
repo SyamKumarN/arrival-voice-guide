@@ -42,6 +42,8 @@ export function buildRoute(data, code, terminal, dest = 'exchange') {
     counter: ranked[0] || null,
     avoid: ranked.filter((c) => c.quality === 'pricey'),
     steps: ids.map((id) => ({ id, text: airport.steps[id], stage: airport.steps[id].stage })),
+    // Where the route finishes: at a counter (default) or at an ATM (e.g. Bengaluru T1, no counter)
+    endsAt: airport.steps[ids[ids.length - 1]].endsAt || 'counter',
     warnings: dest === 'exchange' ? (airport.warnings || []) : [],
     fallback: src.fallback || airport.fallback,
   };

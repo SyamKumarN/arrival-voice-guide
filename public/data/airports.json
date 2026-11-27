@@ -420,7 +420,8 @@
           "en": "The airport lists no exchange counter in Terminal 1. Use an ATM at the kerbside or in the check-in hall, or change money in Terminal 2.",
           "hi": "एयरपोर्ट की सूची में टर्मिनल 1 में कोई एक्सचेंज काउंटर नहीं है। बाहर कर्बसाइड या चेक-इन हॉल के एटीएम का इस्तेमाल कीजिए, या टर्मिनल 2 में पैसे बदलिए।",
           "te": "ఎయిర్‌పోర్ట్ లిస్ట్ ప్రకారం టెర్మినల్ 1లో ఎక్స్ఛేంజ్ కౌంటర్ లేదు. బయట కర్బ్‌సైడ్ లేదా చెక్-ఇన్ హాల్‌లోని ఏటీఎం వాడండి, లేదా టెర్మినల్ 2లో డబ్బు మార్చండి.",
-          "stage": "arrivals"
+          "stage": "arrivals",
+          "endsAt": "atm"
         }
       },
       "routes": {

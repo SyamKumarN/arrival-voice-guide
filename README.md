@@ -81,8 +81,8 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
 
 ## Tests
 
-`npm test` runs 703 checks, all without keys or network:
-- **Unit tests:** the parser (120 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (16, including the airport data cases: Delhi T2 not listed, Bengaluru T1 with no counter, terminal hints).
+`npm test` runs 706 checks, all without keys or network:
+- **Unit tests:** the parser (120 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (19, including the airport data cases: Delhi T2 not listed, Bengaluru T1 ending at an ATM, terminal hints).
 - **Scenario matrix:** 520 conversations, one for every airport (5) × language style (4) × scenario (26). The scenarios cover:
   - **Routes:** exchange with confirm, missing airport, missing terminal, confirm "no", SIM, taxi, metro, the full route to the receipt step and the money tips.
   - **Commands:** next/repeat/back/can't find, the price check, I'm lost, ask staff.

@@ -314,7 +314,27 @@ export const FLOW_CASES = [
       ['yes', { kind: 'step', mode: 'route', step: 0 }],
       ['next', { step: 1 }],
       ['next', { step: 2, has: 'no exchange counter in Terminal 1' }],
+      ['next', { kind: 'tips', mode: 'tips', has: 'Choose the local currency on screen and check the fee before you press OK', hasNot: 'final amount' }],
     ],
+  },
+  {
+    name: 'Bengaluru T1 (Hindi / Telugu): ATM closing line',
+    lang: 'hi-IN',
+    turns: [['बेंगलुरु टर्मिनल १ पैसे बदलने हैं', { kind: 'confirm' }], ['हाँ', { step: 0 }], ['आगे', { step: 1 }], ['आगे', { step: 2 }],
+      ['आगे', { kind: 'tips', has: 'OK दबाने से पहले फ़ीस', hasNot: 'फ़ाइनल' }]],
+  },
+  {
+    name: 'Bengaluru T1 (Telugu): ATM closing line',
+    lang: 'te-IN',
+    turns: [['బెంగళూరు టెర్మినల్ 1 డబ్బు మార్చాలి', { kind: 'confirm' }], ['అవును', { step: 0 }], ['తర్వాత', { step: 1 }], ['తర్వాత', { step: 2 }],
+      ['తర్వాత', { kind: 'tips', has: 'OK నొక్కే ముందు ఫీజు', hasNot: 'ఫైనల్' }]],
+  },
+  {
+    name: 'Bengaluru T2: counter ending keeps "final amount in hand"',
+    lang: 'en-IN',
+    turns: [['Bengaluru terminal 2 change money', { kind: 'confirm' }], ['yes', { step: 0 }],
+      ['next', { step: 1 }], ['next', { step: 2 }], ['next', { step: 3 }], ['next', { step: 4 }],
+      ['next', { kind: 'tips', has: 'Ask for the final amount in hand before you pay', hasNot: 'press OK' }]],
   },
   {
     name: 'Bengaluru T2 (Hindi): Thomas Cook route',
@@ -367,6 +387,7 @@ export function runSuite(data, rates) {
       const got = { kind: out.reply.kind, mode: state.mode, step: state.step, expecting: state.expecting, airport: state.airport, terminal: state.terminal };
       for (const [k, v] of Object.entries(want)) {
         if (k === 'has') { if (!out.reply.text.includes(v)) problems.push(`turn ${i + 1} "${text}": reply missing "${v}" → ${out.reply.text}`); }
+        else if (k === 'hasNot') { if (out.reply.text.includes(v)) problems.push(`turn ${i + 1} "${text}": reply should not contain "${v}" → ${out.reply.text}`); }
         else if (got[k] !== v) problems.push(`turn ${i + 1} "${text}": ${k} wanted ${v}, got ${got[k]}`);
       }
     });

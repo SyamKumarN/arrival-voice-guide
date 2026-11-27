@@ -203,7 +203,7 @@ export function handle(prev, sentence, data, rates) {
     if (p.command === 'next') {
       if (state.step + 1 >= route.steps.length) {
         state.mode = 'done';
-        const done = say(lang, 'done')(state.dest);
+        const done = say(lang, 'done')(state.dest === 'exchange' && route.endsAt === 'atm' ? 'atm' : state.dest);
         // Once, after the exchange route: three short money tips
         if (state.dest === 'exchange' && !state.tipsGiven) {
           state.tipsGiven = true;

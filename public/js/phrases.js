@@ -141,7 +141,8 @@ const EXTRA = {
       ? `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. ${r.counter.quality === 'unknown' ? 'Exchange counter' : 'Best option'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. I'll take you there step by step.`
       : `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. Route to the ${DEST.en[r.dest]}. I'll take you there step by step.`,
     done: (dest) => ({
-      exchange: "You're there. Ask for the final amount before you pay. Safe travels!",
+      exchange: "You're there. Ask for the final amount in hand before you pay. Safe travels!",
+      atm: "You're there. Choose the local currency on screen and check the fee before you press OK. Safe travels!",
       sim: "You're at the SIM counters. Check the price and the data before you pay. Safe travels!",
       taxi: "You're at the taxi stand. Keep your hotel address handy. Safe travels!",
     })[dest || 'exchange'],
@@ -163,7 +164,8 @@ const EXTRA = {
       ? `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। ${r.counter.quality === 'unknown' ? 'एक्सचेंज काउंटर' : 'सबसे अच्छा विकल्प'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}। मैं आपको एक-एक कदम बताऊँगी।`
       : `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। ${DEST.hi[r.dest]} का रास्ता। मैं आपको एक-एक कदम बताऊँगी।`,
     done: (dest) => ({
-      exchange: 'आप पहुँच गए। पैसे देने से पहले फ़ाइनल अमाउंट पूछिए। शुभ यात्रा!',
+      exchange: 'आप पहुँच गए। पैसे देने से पहले पूछिए कि हाथ में फ़ाइनल कितनी रकम मिलेगी। शुभ यात्रा!',
+      atm: 'आप पहुँच गए। स्क्रीन पर लोकल करेंसी चुनिए और OK दबाने से पहले फ़ीस देख लीजिए। शुभ यात्रा!',
       sim: 'आप सिम काउंटर पर पहुँच गए। पैसे देने से पहले दाम और डेटा पूछ लीजिए। शुभ यात्रा!',
       taxi: 'आप टैक्सी स्टैंड पर पहुँच गए। होटल का पता पास रखिए। शुभ यात्रा!',
     })[dest || 'exchange'],
@@ -185,7 +187,8 @@ const EXTRA = {
       ? `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. ${r.counter.quality === 'unknown' ? 'ఎక్స్ఛేంజ్ కౌంటర్' : 'మంచి ఎంపిక'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. ఒక్కో అడుగు చెప్తాను.`
       : `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. ${DEST.te[r.dest]}కి దారి. ఒక్కో అడుగు చెప్తాను.`,
     done: (dest) => ({
-      exchange: 'మీరు చేరుకున్నారు. డబ్బు ఇచ్చే ముందు ఫైనల్ మొత్తం అడగండి. శుభ ప్రయాణం!',
+      exchange: 'మీరు చేరుకున్నారు. డబ్బు ఇచ్చే ముందు, చేతికి ఫైనల్‌గా ఎంత వస్తుందో అడగండి. శుభ ప్రయాణం!',
+      atm: 'మీరు చేరుకున్నారు. స్క్రీన్‌పై లోకల్ కరెన్సీ ఎంచుకోండి, OK నొక్కే ముందు ఫీజు చూసుకోండి. శుభ ప్రయాణం!',
       sim: 'మీరు సిమ్ కౌంటర్ దగ్గరికి చేరుకున్నారు. డబ్బు ఇచ్చే ముందు ధర, డేటా అడగండి. శుభ ప్రయాణం!',
       taxi: 'మీరు టాక్సీ స్టాండ్ దగ్గరికి చేరుకున్నారు. హోటల్ అడ్రస్ దగ్గర ఉంచుకోండి. శుభ ప్రయాణం!',
     })[dest || 'exchange'],
