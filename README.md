@@ -89,9 +89,10 @@ Everything above works with no keys:
 
 ## Optional keys
 
-Copy `.env.example` to `.env` (never commit it), or for the live site, set them as Vercel environment variables.
+**The app runs without any of these.** With none set, it works fully on its built-in rules and data. Copy `.env.example` to `.env` (never commit it), or for the live site, set them as Vercel environment variables. Every variable the app reads is listed there with an empty placeholder.
 
-- `SARVAM_API_KEY`: a more natural voice for spoken replies.
+- `SARVAM_API_KEY`: a more natural voice for spoken replies. Without it, the phone's own voice is used.
+- `SARVAM_TTS_MODEL`, `SARVAM_SPEAKER`: the Sarvam voice model and speaker (defaults `bulbul:v2`, `anushka`).
 - `AI_API_KEY`: AI understanding (an Anthropic API key).
   - **What it does:** every sentence goes to the AI first, together with the conversation so far: airport, terminal, current step and all steps, the last thing the app said, and any amount said earlier. This is how free-form speech gets understood, such as "there's a long corridor, people are walking", "I've taken my bag" or "they're giving only 1500".
   - **What it can't do:** the AI only fills in a fixed form, choosing from the app's own lists. The app then answers from its own data, so the AI never writes the answer or names a place.
@@ -99,6 +100,10 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
   - **Speed:** the server is warmed up when the page loads, so the first sentence isn't slow.
   - **Limits and privacy:** 30 calls a minute per visitor, and nothing the person says is logged.
   - **Model:** `claude-haiku-5-5` by default; set `AI_MODEL` to use another.
+- `RATES_URL`: where live mid-market rates come from (default: a free, no-key source). If it fails, the dated sample rates are used.
+- `PORT`: the port for `docker compose up` / `npm start` (default 8080).
+
+The page footer shows which build is running ("build abc1234" = the GitHub commit the live site was deployed from).
 
 ## Tests
 

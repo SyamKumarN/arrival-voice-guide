@@ -239,3 +239,6 @@ h1 { font-size: 19px; font-weight: 750; }
 .history .you { font-weight: 600; }
 .history .you::before { content: '“'; }
 .history .you::after { content: '”'; }
+
+/* Footer: which commit this deploy came from */
+.build { opacity: 0.6; font-size: 12px; margin-top: 2px; }

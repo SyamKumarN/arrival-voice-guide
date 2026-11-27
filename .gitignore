@@ -14,3 +14,5 @@ Thumbs.db
 screenshots/raw/
 
 .vercel
+# Written at deploy time with the commit hash shown in the footer
+public/build.json

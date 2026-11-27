@@ -52,6 +52,8 @@ async function load() {
     app.rates = saved && saved.rates ? { ...saved, source: 'saved' } : { ...(await getJSON('data/rates-sample.json')), source: 'sample' };
   }
   try { app.config = await getJSON('/api/config', 2500); } catch { /* no server: no upgrades */ }
+  // Which commit this deploy came from (build.json is written at deploy time; absent when run locally)
+  getJSON('build.json', 2500).then((b) => { if (b && b.commit) $('build').textContent = 'build ' + b.commit; }).catch(() => {});
   // Warm the AI route up now, so the first sentence isn't slow (no AI call is made)
   if (app.config.aiUnderstanding && navigator.onLine !== false) {
     fetch('/api/understand', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"warmup":true}' }).catch(() => {});

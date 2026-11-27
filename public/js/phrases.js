@@ -602,7 +602,7 @@ for (const l of Object.keys(EXTRA7)) Object.assign(T[l], EXTRA7[l]);
 const EXTRA8 = {
   en: {
     verdictLine: (c) => `${pctText(c, 'en')} ${verdictText(c.verdict, 'en')} Compare another counter if you can, and ask for the final amount.`,
-    hotelbook: "I can't book hotels; ask your booking app or the info desk.",
+    hotelbook: "I can't book hotels; use your booking app or ask the info desk.",
     hotelask: 'Do you need a taxi to your hotel, or directions to the exit?',
     onward: (place) => `From the airport you can take the official taxi or a bus; for buses to ${place}, ask the information desk. Say "taxi" for the taxi stand route.`,
     onwardPlace: { pattaya: 'Pattaya', city: 'the city' },
