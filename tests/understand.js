@@ -108,6 +108,11 @@ export async function runUnderstand(data, rates) {
     const t3 = 'delhi T3, I want to change leftover dirhams to rupees';
     check('AI leftover tip for "I want to change leftover dirhams": exchange wins', formToParsed(G({ intent: 'leftover_currency' }), parse(t3, {}), null) === null);
   }
+  {
+    const st2 = { ...initialState('en-IN'), airport: 'SIN', terminal: 'T1', mode: 'route', step: 1, confirmed: true };
+    const r2 = handle(st2, 'got both suitcases', data, rates, { parsed: formToParsed(G({ intent: 'step_done' }), parse('got both suitcases', {}), st2) });
+    check('AI step_done "got both suitcases": exactly one step on', r2.state.step === 2, String(r2.state.step));
+  }
   check('AI form "none" → the rules decide', formToParsed(G({}), parse('next', {})) === null);
 
   // Guards: anything off the list is dropped, never passed on

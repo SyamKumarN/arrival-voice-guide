@@ -41,7 +41,8 @@ const INFO_TOPICS = ['leftover', 'excessbag', 'transit', 'closed', 'howmuch', 'd
 
 // Words too common to tell steps apart
 const STEP_STOP = new Set(['follow', 'signs', 'sign', 'your', 'there', 'after', 'collect', 'from', 'with', 'into', 'look', 'then', 'before',
-  'walk', 'take', 'clear', 'here', 'they', 'them', 'this', 'that', 'what', 'when', 'have', 'usually', 'counter', 'counters', 'money', 'change']);
+  'walk', 'take', 'clear', 'here', 'they', 'them', 'this', 'that', 'what', 'when', 'have', 'usually', 'counter', 'counters', 'money', 'change',
+  'both', 'some', 'also', 'only', 'large', 'amount', 'neither', 'charge', 'commission', 'board', 'boards', 'level', 'hall', 'arrival', 'arrivals']);
 const stepWords = (text) => String(text || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/)
   .filter((w) => w.length >= 4 && !STEP_STOP.has(w)).map((w) => w.replace(/s$/, ''));
 /** The route step (from the current one on) whose English words best match what they said; -1 if none. */
@@ -387,7 +388,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
         return out(state, reply('step', lead + ' ' + stepText(state, route)));
       }
     }
-    if (!p.command && (p.placeTalk || p.progress) && !p.stage && (!p.intent || p.intent === 'metro')) {
+    if (!p.command && p.placeTalk && !p.progress && !p.stage && (!p.intent || p.intent === 'metro')) {
       // "I'm at the Train to City signs", "going down the escalator to the basement": match the step's own words
       const i = matchStep(route, p.norm, state.step);
       if (i >= 0 && i !== state.step) {

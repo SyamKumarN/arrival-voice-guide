@@ -164,7 +164,7 @@ const STAGES = {
     'corridor', 'long corridor', 'walkway', 'travelator', 'people walking', 'officer', 'officers', 'escalator', 'escalators', 'duty free',
     'पासपोर्ट', 'इमिग्रेशन', 'पासपोर्ट काउंटर', 'ड्यूटी फ्री', 'ड्यूटी फ़्री', 'गलियारा', 'कॉरिडोर', 'लोग चल रहे', 'अफ़सर', 'अफसर', 'ऑफिसर', 'एस्केलेटर',
     'పాస్పోర్ట్', 'పాస్‌పోర్ట్', 'ఇమ్మిగ్రేషన్', 'డ్యూటీ ఫ్రీ', 'కారిడార్', 'కారిడర్', 'నడుస్తున్నారు', 'ఆఫీసర్', 'అధికారులు', 'ఎస్కలేటర్'],
-  baggage: ['baggage', 'bags', 'bag', 'belt', 'belts', 'luggage', 'carousel', 'trolley', 'trolleys', 'samaan', 'saman', 'shops',
+  baggage: ['baggage', 'bags', 'bag', 'belt', 'belts', 'luggage', 'carousel', 'trolley', 'trolleys', 'suitcase', 'suitcases', 'samaan', 'saman', 'shops',
     'बैगेज', 'सामान', 'बेल्ट', 'लगेज', 'बैग', 'ट्रॉली', 'दुकानें',
     'బ్యాగేజ్', 'బెల్ట్', 'లగేజ్', 'సామాను', 'బ్యాగ', 'ట్రాలీ', 'షాపులు'],
   customs: ['customs', 'custom', 'green channel', 'red channel', 'scanner', 'x ray', 'कस्टम', 'ग्रीन चैनल', 'रेड चैनल', 'కస్టమ్', 'గ్రీన్ చానెల్', 'స్కానర్'],
@@ -179,7 +179,7 @@ const PLACE_WORDS = ['im in', 'i am in', 'im at', 'i am at', 'i can see', 'i see
 // "Taken / done / reached": the current step is finished
 // "Where is the belt?" asks for a place; it doesn't say where they are
 const QUESTION_WORDS = ['where', 'which way', 'how do i get', 'kahan', 'kidhar', 'कहाँ', 'कहां', 'किधर', 'ఎక్కడ', 'ఎటు', 'ఎలా వెళ్ళాలి'];
-const DONE_WORDS = ['done', 'taken', 'took', 'got my bags', 'got my bag', 'got the bags', 'collected', 'reached', 'finished', 'completed',
+const DONE_WORDS = ['done', 'taken', 'took', 'got my bags', 'got my bag', 'got the bags', 'got both', 'got all', 'got everything', 'got it', 'collected', 'reached', 'finished', 'completed',
   'cleared', 'passed', 'im through', 'i am through', 'ho gaya', 'ho gayi', 'le liya', 'le liye', 'mil gaya', 'mil gaye', 'pahunch gaya',
   'हो गया', 'हो गई', 'ले लिया', 'ले लिए', 'ले ली', 'मिल गया', 'मिल गए', 'पहुँच गया', 'पहुंच गया', 'पहुँच गई', 'कर लिया', 'पार कर लिया',
   'తీసుకున్నా', 'తీసేసుకున్నా', 'అయిపోయింది', 'అయింది', 'చేరుకున్నా', 'వచ్చేశా', 'దాటాను', 'దాటేశా', 'పూర్తయింది', 'కలెక్ట్ చేశా'];

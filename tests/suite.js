@@ -701,6 +701,9 @@ export const FLOW_CASES = [
     turns: [['bangkok suvarnabhumi, how do i get to superrich', { kind: 'confirm' }], ['correct', { kind: 'step', step: 0 }],
       ['im at the train to city signs now', { kind: 'step', step: 3 }], ['going down the escalator to basement', { kind: 'step', step: 4 }],
       ['reached', { kind: 'step', step: 5, has: 'SuperRich' }]] },
+  { name: 'Sim: "got both suitcases" → the next step (customs), not a jump to the counter', lang: 'en-IN',
+    turns: [['changi T1 change money', { kind: 'confirm' }], ['yep', { step: 0 }], ['ok i passed the automated gates', { kind: 'step', step: 1 }],
+      ['got both suitcases', { kind: 'step', step: 2 }]] },
 ];
 
 // ---------- Runner ----------
