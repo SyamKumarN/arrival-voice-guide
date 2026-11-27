@@ -3,13 +3,15 @@
 import { readFileSync } from 'node:fs';
 import { runSuite } from './suite.js';
 import { runMatrix } from './matrix.js';
+import { runListen } from './listen.js';
+import { runUnderstand } from './understand.js';
 
 const load = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'));
 const data = load('../public/data/airports.json');
 const rates = load('../public/data/rates-sample.json');
 const verbose = process.argv.includes('--verbose');
 
-const results = [...runSuite(data, rates), ...runMatrix(data, rates)];
+const results = [...runSuite(data, rates), ...runMatrix(data, rates), ...runListen(), ...(await runUnderstand(data, rates))];
 const groups = {};
 for (const r of results) {
   const g = (groups[r.group] ||= { pass: 0, fail: 0 });

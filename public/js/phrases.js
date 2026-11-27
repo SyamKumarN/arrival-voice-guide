@@ -383,6 +383,45 @@ const EXTRA3 = {
   },
 };
 for (const l of Object.keys(EXTRA3)) Object.assign(T[l], EXTRA3[l]);
+
+// Round 5: phone-test fixes (amounts, price check, nobody here, app help, ATM locations)
+const EXTRA4 = {
+  en: {
+    amountFair: (amount, from, fair, to, lang) => `For ${formatMoney(amount)} ${currencyName(from, lang)}, the fair amount at the mid-market rate is about ${formatMoney(fair)} ${currencyName(to, lang)}. Counters give a bit less; ask for the final amount.`,
+    amountNeed: 'Tell me the amount and the currency you want, for example: how many dirhams for 500 dollars?',
+    atmHere: (where) => `${where} Choose the local currency on screen and check the fee before you press OK.`,
+    atmUnknown: (name) => `I don't have exact ATM locations for ${name || 'this airport'}. ATMs are usually in the arrivals hall after Customs: follow the ATM signs or ask at the info desk. I've opened a card you can show staff.`,
+    info: {
+      nostaff: "If nobody is around, follow the Information or 'i' signs to the info desk. You can also show this card to any airport staff or security officer.",
+      apphelp: "Before you fly, open this app on Wi-Fi and tap 'Save for my trip'. Routes, staff cards and the latest rates are then kept on your phone and work in flight mode with the buttons. To add it to your home screen, open Chrome's menu and tap 'Add to home screen'. Voice still needs internet.",
+    },
+  },
+  hi: {
+    amountFair: (amount, from, fair, to, lang) => `${formatMoney(amount)} ${currencyName(from, lang)} के लिए मिड-मार्केट रेट पर सही रकम करीब ${formatMoney(fair)} ${currencyName(to, lang)} है। काउंटर थोड़ा कम देते हैं; फ़ाइनल अमाउंट पूछिए।`,
+    amountNeed: 'रकम और जो करेंसी चाहिए वो बताइए, जैसे: 500 डॉलर के कितने दिरहम मिलेंगे?',
+    atmHere: (where) => `${where} स्क्रीन पर लोकल करेंसी चुनिए और OK दबाने से पहले फ़ीस देख लीजिए।`,
+    atmUnknown: (name) => `${name || 'इस एयरपोर्ट'} के एटीएम की सही जगह मेरे पास नहीं है। एटीएम आमतौर पर कस्टम्स के बाद अराइवल्स हॉल में होते हैं: एटीएम के बोर्ड देखिए या इन्फ़ॉर्मेशन डेस्क पर पूछिए। स्टाफ़ को दिखाने के लिए कार्ड खोल दिया है।`,
+    info: {
+      nostaff: "आस-पास कोई नहीं है तो Information या 'i' के बोर्ड देखते हुए इन्फ़ॉर्मेशन डेस्क तक जाइए। यह कार्ड किसी भी एयरपोर्ट स्टाफ़ या सिक्योरिटी वाले को दिखा सकते हैं।",
+      apphelp: "यात्रा से पहले वाई-फ़ाई पर यह ऐप खोलिए और 'ट्रिप के लिए सेव करें' दबाइए। फिर रास्ते, स्टाफ़ कार्ड और ताज़ा रेट आपके फ़ोन में रहेंगे और फ़्लाइट मोड में बटन से चलेंगे। होम स्क्रीन पर लगाने के लिए क्रोम का मेन्यू खोलिए और 'Add to home screen' दबाइए। आवाज़ के लिए इंटरनेट फिर भी चाहिए।",
+    },
+  },
+  te: {
+    amountFair: (amount, from, fair, to, lang) => `${formatMoney(amount)} ${currencyName(from, lang)} మారిస్తే, మిడ్-మార్కెట్ రేటు ప్రకారం సరైన మొత్తం సుమారు ${formatMoney(fair)} ${currencyName(to, lang)}. కౌంటర్లు కొంచెం తక్కువ ఇస్తాయి; ఫైనల్ మొత్తం అడగండి.`,
+    amountNeed: 'మొత్తం, మీకు కావాల్సిన కరెన్సీ చెప్పండి, ఉదాహరణకు: 500 డాలర్లకు ఎన్ని దిర్హామ్‌లు వస్తాయి?',
+    atmHere: (where) => `${where} స్క్రీన్‌పై లోకల్ కరెన్సీ ఎంచుకోండి, OK నొక్కే ముందు ఫీజు చూసుకోండి.`,
+    atmUnknown: (name) => `${name || 'ఈ ఎయిర్‌పోర్ట్'}లో ఏటీఎంలు సరిగ్గా ఎక్కడో నా దగ్గర సమాచారం లేదు. ఏటీఎంలు సాధారణంగా కస్టమ్స్ తర్వాత అరైవల్స్ హాల్‌లో ఉంటాయి: ఏటీఎం బోర్డులు చూడండి లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి. సిబ్బందికి చూపించడానికి కార్డ్ తెరిచాను.`,
+    info: {
+      nostaff: "దగ్గర్లో ఎవరూ లేకపోతే, Information లేదా 'i' బోర్డులు చూస్తూ ఇన్ఫర్మేషన్ డెస్క్‌కి వెళ్ళండి. ఈ కార్డ్‌ను ఏ ఎయిర్‌పోర్ట్ సిబ్బందికైనా లేదా సెక్యూరిటీ వాళ్ళకైనా చూపించవచ్చు.",
+      apphelp: "ప్రయాణానికి ముందు వై-ఫైలో ఈ యాప్ తెరిచి 'ట్రిప్ కోసం సేవ్ చేయి' నొక్కండి. అప్పుడు దారులు, స్టాఫ్ కార్డులు, తాజా రేట్లు మీ ఫోన్‌లోనే ఉంటాయి, ఫ్లైట్ మోడ్‌లో బటన్లతో పని చేస్తాయి. హోమ్ స్క్రీన్‌పై పెట్టడానికి క్రోమ్ మెనూ తెరిచి 'Add to home screen' నొక్కండి. వాయిస్‌కి మాత్రం ఇంటర్నెట్ కావాలి.",
+    },
+  },
+};
+for (const l of Object.keys(EXTRA4)) {
+  const { info, ...rest } = EXTRA4[l];
+  Object.assign(T[l], rest);
+  Object.assign(T[l].info, info);
+}
 export const tipList = (key, lang) => (TIP_LISTS[key] && (TIP_LISTS[key][short(lang)] || TIP_LISTS[key].en)) || [];
 
 // ---------- Ask-staff card ----------
@@ -398,30 +437,35 @@ export const STAFF = {
 // Metro and the off-topic questions the guide hands over to staff
 const STAFF_MORE = {
   en: {
+    atm: 'Excuse me, where is the nearest ATM?',
     metro: 'Excuse me, where is the metro or train?', toilet: 'Excuse me, where is the toilet?',
     prayer: 'Excuse me, where is the prayer room?', food: 'Excuse me, where can I get food or coffee?',
     shop: 'Excuse me, where are the shops and duty free?', lounge: 'Excuse me, where is the lounge?',
     lostbag: "Excuse me, my bag hasn't arrived. Where is the baggage services desk?",
   },
   ar: {
+    atm: 'من فضلك، أين أقرب صراف آلي؟',
     metro: 'من فضلك، أين المترو أو القطار؟', toilet: 'من فضلك، أين دورة المياه؟',
     prayer: 'من فضلك، أين المصلى؟', food: 'من فضلك، أين يمكنني شراء طعام أو قهوة؟',
     shop: 'من فضلك، أين المحلات والسوق الحرة؟', lounge: 'من فضلك، أين صالة الانتظار؟',
     lostbag: 'من فضلك، حقيبتي لم تصل. أين مكتب خدمات الأمتعة؟',
   },
   th: {
+    atm: 'ขอโทษครับ/ค่ะ ตู้เอทีเอ็มที่ใกล้ที่สุดอยู่ที่ไหน',
     metro: 'ขอโทษครับ/ค่ะ รถไฟฟ้าอยู่ที่ไหน', toilet: 'ขอโทษครับ/ค่ะ ห้องน้ำอยู่ที่ไหน',
     prayer: 'ขอโทษครับ/ค่ะ ห้องละหมาดอยู่ที่ไหน', food: 'ขอโทษครับ/ค่ะ ร้านอาหารหรือร้านกาแฟอยู่ที่ไหน',
     shop: 'ขอโทษครับ/ค่ะ ร้านค้าและดิวตี้ฟรีอยู่ที่ไหน', lounge: 'ขอโทษครับ/ค่ะ เลานจ์อยู่ที่ไหน',
     lostbag: 'ขอโทษครับ/ค่ะ กระเป๋าของฉันไม่มา ติดต่อแผนกสัมภาระได้ที่ไหน',
   },
   hi: {
+    atm: 'कृपया बताइए, सबसे पास का एटीएम कहाँ है?',
     metro: 'कृपया बताइए, मेट्रो या ट्रेन कहाँ है?', toilet: 'कृपया बताइए, शौचालय कहाँ है?',
     prayer: 'कृपया बताइए, प्रार्थना कक्ष कहाँ है?', food: 'कृपया बताइए, खाना या कॉफ़ी कहाँ मिलेगी?',
     shop: 'कृपया बताइए, दुकानें और ड्यूटी फ़्री कहाँ हैं?', lounge: 'कृपया बताइए, लाउंज कहाँ है?',
     lostbag: 'मेरा सामान नहीं आया। बैगेज सर्विस डेस्क कहाँ है?',
   },
   te: {
+    atm: 'దయచేసి చెప్పండి, దగ్గర్లో ఏటీఎం ఎక్కడ ఉంది?',
     metro: 'దయచేసి చెప్పండి, మెట్రో లేదా రైలు ఎక్కడ ఉంది?', toilet: 'దయచేసి చెప్పండి, టాయిలెట్ ఎక్కడ ఉంది?',
     prayer: 'దయచేసి చెప్పండి, ప్రార్థన గది ఎక్కడ ఉంది?', food: 'దయచేసి చెప్పండి, భోజనం లేదా కాఫీ ఎక్కడ దొరుకుతుంది?',
     shop: 'దయచేసి చెప్పండి, షాపులు, డ్యూటీ ఫ్రీ ఎక్కడ ఉన్నాయి?', lounge: 'దయచేసి చెప్పండి, లాంజ్ ఎక్కడ ఉంది?',
@@ -461,38 +505,38 @@ export function say(lang, key) {
 // ---------- On-screen labels ----------
 export const UI = {
   en: {
-    tap: 'Tap to speak', listening: 'Listening…', speaking: 'Speaking… tap to interrupt', thinking: 'One moment…',
+    tap: 'Tap to speak', listening: "Listening… tap when you're done", speaking: 'Speaking… tap to interrupt', thinking: 'One moment…',
     next: 'Next', repeat: 'Repeat', cantFind: 'Can\'t find it', restart: 'Start over',
     typeHere: 'Or type here…', send: 'Send', youSaid: 'You said', steps: 'Your route', tryTitle: 'Try saying',
     priceTitle: 'Price check', offered: 'They offer', fairAmt: 'Fair amount', midRate: 'Mid-market rate',
     noAirport: 'Airport not set', noVoiceIn: 'Voice input needs Chrome. You can type below instead.',
     noVoiceOut: 'This device has no voice for this language. Read the text on screen.',
     ratesLive: 'Live rates', ratesSample: 'Saved sample rates',
-    natural: 'Natural voice', askAny: 'Ask anything', keyNotSet: 'key not set', on: 'on',
+    natural: 'Natural voice', askAny: 'AI understanding', keyNotSet: 'key not set', on: 'on',
     handsFree: 'Hands-free', avoid: 'Usually pricier', best: 'Best option',
     tries: ['Dubai terminal 3, I need currency', 'next', 'can\'t find it', 'They give 1700 dirhams for 500 dollars'],
   },
   hi: {
-    tap: 'बोलने के लिए दबाइए', listening: 'सुन रही हूँ…', speaking: 'बोल रही हूँ… रोकने के लिए दबाइए', thinking: 'एक पल…',
+    tap: 'बोलने के लिए दबाइए', listening: 'सुन रही हूँ… बोल लें तो दबाइए', speaking: 'बोल रही हूँ… रोकने के लिए दबाइए', thinking: 'एक पल…',
     next: 'आगे', repeat: 'दोबारा', cantFind: 'नहीं मिल रहा', restart: 'फिर से शुरू',
     typeHere: 'या यहाँ लिखिए…', send: 'भेजें', youSaid: 'आपने कहा', steps: 'आपका रास्ता', tryTitle: 'ऐसे बोलिए',
     priceTitle: 'रेट जाँच', offered: 'वो दे रहे हैं', fairAmt: 'सही रकम', midRate: 'मिड-मार्केट रेट',
     noAirport: 'एयरपोर्ट नहीं चुना', noVoiceIn: 'आवाज़ से बोलने के लिए क्रोम चाहिए। नीचे लिख भी सकते हैं।',
     noVoiceOut: 'इस डिवाइस में इस भाषा की आवाज़ नहीं है। स्क्रीन पर पढ़िए।',
     ratesLive: 'लाइव रेट', ratesSample: 'सेव किए हुए सैंपल रेट',
-    natural: 'नैचुरल आवाज़', askAny: 'कुछ भी पूछिए', keyNotSet: 'key not set', on: 'चालू',
+    natural: 'नैचुरल आवाज़', askAny: 'AI से समझना', keyNotSet: 'key not set', on: 'चालू',
     handsFree: 'हैंड्स-फ़्री', avoid: 'अक्सर महँगा', best: 'सबसे अच्छा',
     tries: ['dubai terminal teen, paise badalne hain', 'दुबई टर्मिनल ३ पैसे बदलने हैं', 'aage', 'नहीं मिल रहा', '500 dollar ke satrah sau dirham de rahe hain'],
   },
   te: {
-    tap: 'మాట్లాడటానికి నొక్కండి', listening: 'వింటున్నాను…', speaking: 'చెప్తున్నాను… ఆపడానికి నొక్కండి', thinking: 'ఒక్క క్షణం…',
+    tap: 'మాట్లాడటానికి నొక్కండి', listening: 'వింటున్నాను… అయిపోతే నొక్కండి', speaking: 'చెప్తున్నాను… ఆపడానికి నొక్కండి', thinking: 'ఒక్క క్షణం…',
     next: 'నెక్స్ట్', repeat: 'మళ్ళీ', cantFind: 'దొరకలేదు', restart: 'మళ్ళీ మొదలు',
     typeHere: 'లేదా ఇక్కడ టైప్ చేయండి…', send: 'పంపు', youSaid: 'మీరు అన్నది', steps: 'మీ దారి', tryTitle: 'ఇలా చెప్పండి',
     priceTitle: 'రేటు చెక్', offered: 'వాళ్ళు ఇచ్చేది', fairAmt: 'సరైన మొత్తం', midRate: 'మిడ్-మార్కెట్ రేటు',
     noAirport: 'ఎయిర్‌పోర్ట్ ఎంచుకోలేదు', noVoiceIn: 'వాయిస్‌కి క్రోమ్ కావాలి. కింద టైప్ కూడా చేయవచ్చు.',
     noVoiceOut: 'ఈ డివైస్‌లో ఈ భాషకు వాయిస్ లేదు. స్క్రీన్ మీద చదవండి.',
     ratesLive: 'లైవ్ రేట్లు', ratesSample: 'సేవ్ చేసిన శాంపిల్ రేట్లు',
-    natural: 'నేచురల్ వాయిస్', askAny: 'ఏదైనా అడగండి', keyNotSet: 'key not set', on: 'ఆన్',
+    natural: 'నేచురల్ వాయిస్', askAny: 'AI అర్థం చేసుకోవడం', keyNotSet: 'key not set', on: 'ఆన్',
     handsFree: 'హ్యాండ్స్-ఫ్రీ', avoid: 'సాధారణంగా ఖరీదు', best: 'మంచి ఎంపిక',
     tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'నెక్స్ట్', 'దొరకలేదు', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
   },
@@ -527,7 +571,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `Saved on this phone (${d}): routes, counters, staff cards and rates from ${r}. The buttons work offline; voice needs internet.`,
     saveFailed: 'Could not save. Try again with internet.', install: 'Add to home screen',
     slower: 'Speak slower', yes: 'Yes', no: 'No', ratesSaved: 'Rates saved on this phone', langTipTitle: 'Language help:',
-    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag' },
+    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag', atm: 'ATM' },
     tries: ['Dubai terminal 3, I need currency', 'I want a SIM', 'taxi stand', "I'm lost", 'I have a connecting flight', 'I have a forex card', 'They give 1700 dirhams for 500 dollars'],
   },
   hi: {
@@ -535,7 +579,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `इस फ़ोन पर सेव हो गया (${d}): रास्ते, काउंटर, स्टाफ कार्ड और ${r} के रेट। बटन बिना इंटरनेट के चलेंगे; आवाज़ के लिए इंटरनेट चाहिए।`,
     saveFailed: 'सेव नहीं हुआ। इंटरनेट के साथ फिर कोशिश कीजिए।', install: 'होम स्क्रीन पर जोड़ें',
     slower: 'धीरे बोलिए', yes: 'हाँ', no: 'नहीं', ratesSaved: 'इस फ़ोन पर सेव किए रेट', langTipTitle: 'भाषा में मदद:',
-    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया' },
+    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया', atm: 'एटीएम' },
     tries: ['dubai terminal teen, paise badalne hain', 'मुझे सिम चाहिए', 'होटल जाने के लिए टैक्सी', 'पता नहीं कहाँ हूँ', 'मेरी कनेक्टिंग फ़्लाइट है', 'मेरे पास फॉरेक्स कार्ड है', '500 dollar ke satrah sau dirham de rahe hain'],
   },
   te: {
@@ -543,7 +587,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `ఈ ఫోన్‌లో సేవ్ అయింది (${d}): దారులు, కౌంటర్లు, స్టాఫ్ కార్డ్‌లు, ${r} రేట్లు. బటన్లు ఇంటర్నెట్ లేకుండా పనిచేస్తాయి; వాయిస్‌కి ఇంటర్నెట్ కావాలి.`,
     saveFailed: 'సేవ్ కాలేదు. ఇంటర్నెట్‌తో మళ్ళీ ప్రయత్నించండి.', install: 'హోమ్ స్క్రీన్‌కి జోడించు',
     slower: 'నెమ్మదిగా మాట్లాడు', yes: 'అవును', no: 'కాదు', ratesSaved: 'ఈ ఫోన్‌లో సేవ్ చేసిన రేట్లు', langTipTitle: 'భాషా సహాయం:',
-    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు' },
+    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు', atm: 'ఏటీఎం' },
     tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'సిమ్ కావాలి', 'హోటల్‌కి టాక్సీ', 'నేను ఎక్కడున్నానో తెలియదు', 'నాకు కనెక్టింగ్ ఫ్లైట్ ఉంది', 'నా దగ్గర ఫారెక్స్ కార్డ్ ఉంది', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
   },
 };

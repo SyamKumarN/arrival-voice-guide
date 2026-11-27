@@ -12,7 +12,7 @@
 
 import { parse } from './parser.js';
 import { buildRoute, terminalsOf, hasRoute, stepForStage } from './decide.js';
-import { comparePrice } from './price.js';
+import { comparePrice, midRate, roundMoney } from './price.js';
 import { say, terminalLabel, tipList } from './phrases.js';
 import { pick } from './text.js';
 
@@ -119,7 +119,30 @@ export function handle(prev, sentence, data, rates) {
     Object.assign(state, { tips: null, mode: back.mode, expecting: back.expecting });
   }
 
-  // 3. Ask-staff card: works at any point
+  // A side question that names an airport or terminal ("Bengaluru T1, where is the ATM?")
+  // switches to that place first, so the answer is about where they really are.
+  const switchContext = () => {
+    let changed = false;
+    if (p.airport && p.airport !== state.airport) { state.airport = p.airport; state.terminal = p.terminal || null; changed = true; }
+    if (p.terminal && p.terminal !== state.terminal) { state.terminal = p.terminal; changed = true; }
+    if (!changed) return;
+    const terms = state.airport ? terminalsOf(data, state.airport) : [];
+    if (terms.length === 1) state.terminal = terms[0];
+    if (state.airport && state.terminal && !terms.includes(state.terminal)) state.terminal = null;
+    Object.assign(state, { confirmed: false, step: 0, expecting: null, tips: null, lost: false,
+      mode: ['route', 'done', 'tips'].includes(state.mode) ? 'info' : state.mode });
+  };
+  const sideTopic = p.topic === 'nostaff' || p.topic === 'apphelp' || p.topic === 'atmwhere' || !!p.amountQuery ||
+    !!p.offtopic || (p.topic && (INFO_TOPICS.includes(p.topic) || LIST_TOPICS[p.topic]));
+  if (sideTopic && (p.airport || p.terminal) && !p.intent) switchContext();
+
+  // 3. Nobody to ask: info desk signs plus the card to show anyone in uniform
+  if (p.topic === 'nostaff') {
+    const staff = { intent: p.offtopic || state.dest || 'exchange', airport: state.airport };
+    return out(state, reply('info', say(lang, 'info').nostaff, { topic: 'nostaff', staff }));
+  }
+
+  // Ask-staff card: works at any point
   if (p.command === 'staff') {
     const staff = { intent: p.offtopic || p.intent || state.dest || 'exchange', airport: p.airport || state.airport };
     return out(state, reply('staff', say(lang, 'staffIntro'), { staff }));
@@ -129,6 +152,18 @@ export function handle(prev, sentence, data, rates) {
   if (p.price) {
     const c = comparePrice(p.price, rates);
     if (c) return out(state, reply('price', say(lang, 'price')(c, lang), { price: c }));
+  } else if (p.amountQuery) {
+    // "How many dirhams for 500 dollars?" → the fair amount at the mid-market rate
+    const q = p.amountQuery;
+    const local = state.airport ? data.airports[state.airport].currency : null;
+    const to = q.to || (local && local !== q.from ? local : null);
+    const from = q.from || (to && to !== 'INR' ? 'INR' : null);
+    const rate = from && to && from !== to ? midRate(rates, from, to) : null;
+    if (!rate) return out(state, reply('ask', say(lang, 'amountNeed')));
+    const fair = roundMoney(q.amount * rate);
+    return out(state, reply('amount', say(lang, 'amountFair')(q.amount, from, fair, to, lang), { amount: { amount: q.amount, from, to, fair } }));
+  } else if (p.priceCheck && !p.airport && !p.command) {
+    return out(state, reply('ask', say(lang, 'priceNeedTwo')));
   } else if (p.amounts.length === 1 && !p.airport && !p.terminal && !p.command && !p.topic) {
     return out(state, reply('ask', say(lang, 'priceNeedTwo')));
   }
@@ -139,7 +174,17 @@ export function handle(prev, sentence, data, rates) {
     return out(state, reply('offtopic', say(lang, 'offtopic'), { staff }));
   }
 
-  // 6. Advice topics: one-off answers keep the current flow; lists are read one tip at a time
+  // 6. "Where is the ATM?": the place, from our data only; otherwise the safe answer and a card
+  if (p.topic === 'atmwhere') {
+    const a = state.airport ? data.airports[state.airport] : null;
+    const here = a && state.terminal && a.atms && a.atms[state.terminal];
+    if (here) return out(state, reply('info', say(lang, 'atmHere')(pick(here, lang)), { topic: 'atmwhere' }));
+    const name = a ? pick(a.name, lang) + (state.terminal && state.terminal !== 'MAIN' ? ' ' + terminalLabel(state.terminal, lang) : '') : null;
+    return out(state, reply('info', say(lang, 'atmUnknown')(name), { topic: 'atmwhere', staff: { intent: 'atm', airport: state.airport } }));
+  }
+  if (p.topic === 'apphelp') return out(state, reply('info', say(lang, 'info').apphelp, { topic: 'apphelp' }));
+
+  // Advice topics: one-off answers keep the current flow; lists are read one tip at a time
   if (p.topic && INFO_TOPICS.includes(p.topic)) {
     return out(state, reply('info', say(lang, 'info')[p.topic], { topic: p.topic }));
   }

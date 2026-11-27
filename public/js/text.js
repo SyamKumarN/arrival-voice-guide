@@ -58,6 +58,9 @@ export function matches({ norm, tokens }, phrase) {
     if (!phrase.includes(' ')) return tokens.includes(phrase);
     return (' ' + norm + ' ').includes(' ' + phrase + ' ');
   }
+  // Hindi / Telugu: a single word matches at the start of a word, so endings still
+  // match ("మోసాలు" → "మోస") but "हाँ" (yes) doesn't match inside "कहाँ" (where).
+  if (!phrase.includes(' ')) return tokens.some((t) => t.startsWith(phrase));
   return norm.includes(phrase);
 }
 

@@ -24,13 +24,27 @@ const TERMINAL_NUMBERS = {
   ek: 1, do: 2, teen: 3, tin: 3, char: 4, chaar: 4,
   'एक': 1, 'दो': 2, 'तीन': 3, 'चार': 4,
   'ఒకటి': 1, 'ఒకటో': 1, 'రెండు': 2, 'రెండో': 2, 'మూడు': 3, 'మూడో': 3, 'నాలుగు': 4, 'నాలుగో': 4,
+  // Spoken variants the recogniser returns on phones
+  'ఒకట్': 1, 'ఒన్': 1, 'రెండ్': 2, 'మూడ్': 3, 'మూడొ': 3, 'మూడవ': 3, 'నాల్గు': 4, 'నాల్గో': 4,
+  'फ़ोर': 4, 'थ्रि': 3, 'तिन': 3, won: 1, to: 2, too: 2, tree: 3,
 };
+/** "మూడులో", "మూడుకి" → the number. Latin tokens must match exactly. */
+function terminalNumber(tok) {
+  if (!tok) return null;
+  if (TERMINAL_NUMBERS[tok] !== undefined) return TERMINAL_NUMBERS[tok];
+  if (/^[a-z0-9]+$/.test(tok)) return null;
+  let best = null, len = 0;
+  for (const [k, v] of Object.entries(TERMINAL_NUMBERS)) {
+    if (!/^[a-z0-9]+$/.test(k) && k.length > len && k.length >= 2 && tok.startsWith(k)) { best = v; len = k.length; }
+  }
+  return best;
+}
 // Ordinals said before "terminal": "teesra terminal", "third terminal"
 const ORDINALS = {
   first: 1, second: 2, third: 3, fourth: 4,
   pehla: 1, pahla: 1, pehle: 1, dusra: 2, doosra: 2, dusre: 2, teesra: 3, tisra: 3, teesre: 3, chautha: 4,
   'पहला': 1, 'पहले': 1, 'दूसरा': 2, 'दूसरे': 2, 'तीसरा': 3, 'तीसरे': 3, 'चौथा': 4, 'चौथे': 4,
-  'మొదటి': 1, 'రెండో': 2, 'రెండవ': 2, 'మూడో': 3, 'మూడవ': 3, 'నాలుగో': 4, 'నాలుగవ': 4,
+  'మొదటి': 1, 'రెండో': 2, 'రెండవ': 2, 'మూడో': 3, 'మూడవ': 3, 'నాలుగో': 4, 'నాలుగవ': 4, 'మూడ్': 3, 'ఒకటో': 1, 'ఒకటవ': 1,
 };
 
 // ---------- Intent: change money ----------
@@ -59,6 +73,15 @@ const METRO_WORDS = [
 
 // ---------- Advice topics (order matters: first match wins) ----------
 const TOPICS = [
+  ['nostaff', ['nobody is here', 'nobody here', 'no one is here', 'no one here', 'no staff', 'no one to ask', 'nobody to ask',
+    'there is nobody', 'theres nobody', 'koi nahi hai', 'koi nahin hai', 'koi staff nahi', 'yahan koi nahi',
+    'कोई नहीं है', 'यहाँ कोई नहीं', 'कोई स्टाफ नहीं', 'स्टाफ नहीं है', 'पूछने के लिए कोई नहीं',
+    'ఎవరూ లేరు', 'ఎవ్వరూ లేరు', 'స్టాఫ్ లేరు', 'సిబ్బంది లేరు', 'అడగడానికి ఎవరూ']],
+  ['apphelp', ['save for my trip', 'save trip', 'save the app', 'save app', 'save this', 'flight mode', 'airplane mode', 'aeroplane mode',
+    'offline', 'without internet', 'no internet', 'home screen', 'install the app', 'install app', 'add to home',
+    'internet nahi', 'bina internet', 'ऑफ़लाइन', 'ऑफलाइन', 'फ़्लाइट मोड', 'फ्लाइट मोड', 'बिना इंटरनेट',
+    'इंटरनेट नहीं', 'होम स्क्रीन', 'सेव', 'ఆఫ్‌లైన్', 'ఆఫ్లైన్', 'ఫ్లైట్ మోడ్', 'ఇంటర్నెట్ లేకుండా', 'ఇంటర్నెట్ లేదు',
+    'హోమ్ స్క్రీన్', 'సేవ్']],
   ['leftover', ['leftover', 'left over', 'leftover currency', 'leftover cash', 'leftover money', 'remaining currency', 'remaining cash',
     'bacha hua paisa', 'bache hue paise', 'bacha paisa', 'bache paise', 'bachi hui currency',
     'बचे हुए पैसे', 'बचा हुआ पैसा', 'बचे पैसे', 'बची हुई करेंसी', 'बचा हुआ कैश',
@@ -82,7 +105,9 @@ const TOPICS = [
   ['atm', ['atm', 'atms', 'cash machine', 'withdraw', 'withdrawal', 'एटीएम', 'ए टी एम', 'ఏటీఎం', 'ఏటిఎం', 'ఏ టి ఎం']],
   ['pickup', ['pickup', 'pick up', 'pick me up', 'picking me up', 'my driver', 'driver', 'chauffeur',
     'पिकअप', 'पिक अप', 'ड्राइवर', 'పికప్', 'పిక్ అప్', 'డ్రైవర్']],
-  ['traps', ['traps', 'trap', 'scam', 'scams', 'traps to avoid', 'dhokhe', 'dhokha', 'thagi', 'धोखे', 'धोखा', 'ठगी', 'మోసాలు', 'మోసం']],
+  ['traps', ['traps', 'trap', 'scam', 'scams', 'traps to avoid', 'fraud', 'cheat', 'cheating', 'rip off', 'ripoff',
+    'dhokhe', 'dhokha', 'thagi', 'jaal', 'धोख', 'ठग', 'जाल', 'फ्रॉड', 'फ़्रॉड', 'स्कैम', 'ट्रैप',
+    'మోస', 'ట్రాప్', 'స్కామ్', 'స్కాం', 'ఫ్రాడ్']],
   ['tips', ['tips', 'tip', 'advice', 'money tips', 'suggestion', 'salah', 'sujhav', 'सलाह', 'टिप्स', 'टिप', 'सुझाव',
     'చిట్కాలు', 'చిట్కా', 'సలహా', 'సలహాలు', 'టిప్స్']],
 ];
@@ -107,8 +132,23 @@ const OFFTOPIC = [
   ['food', ['food', 'eat', 'hungry', 'restaurant', 'coffee', 'tea', 'snack', 'snacks', 'breakfast', 'lunch', 'dinner', 'water',
     'khana', 'khaana', 'bhook', 'bhookh', 'chai', 'nashta',
     'खाना', 'भूख', 'चाय', 'कॉफी', 'कॉफ़ी', 'रेस्टोरेंट', 'रेस्टोरेंट', 'नाश्ता', 'पानी',
-    'భోజనం', 'ఆహారం', 'ఆకలి', 'కాఫీ', 'చాయ్', 'రెస్టారెంట్', 'టిఫిన్', 'తినడానికి', 'నీళ్ళు']],
+    'tiffin', 'pani', 'paani', 'drinking water', 'cafe',
+    'स्नैक', 'टिफ़िन', 'टिफिन', 'पीने का पानी', 'कैफ़े',
+    'భోజనం', 'ఆహారం', 'ఆకలి', 'కాఫీ', 'చాయ్', 'రెస్టారెంట్', 'టిఫిన్', 'తినడానికి', 'నీళ్ళు', 'నీళ్లు', 'నీరు',
+    'మంచినీళ్ళు', 'మంచినీళ్లు', 'స్నాక్', 'తాగడానికి', 'టీ కావాలి', 'టీ ఎక్కడ', 'టీ తాగ']],
 ];
+
+// "Where is the ATM?" (a place) vs "ATM tips" (advice)
+const ATM_ADVICE = ['tips', 'tip', 'advice', 'safe', 'safely', 'fee', 'fees', 'charges', 'charge', 'withdraw', 'withdrawal',
+  'salah', 'सलाह', 'टिप्स', 'फ़ीस', 'फीस', 'चार्ज', 'చిట్కా', 'సలహా', 'ఫీజు', 'ఛార్జ్'];
+// "How many dirhams for 500 dollars?"
+const HOW_MANY = ['how many', 'how much will i get', 'how much do i get', 'how much would i get', 'how much is',
+  'kitne', 'kitna milega', 'kitne milenge', 'कितने', 'कितना मिलेगा', 'कितने मिलेंगे',
+  'ఎన్ని', 'ఎంత వస్తుంది', 'ఎంత వస్తాయి', 'ఎంత ఇస్తారు', 'ఎంత వస్తది'];
+// "Price check" without numbers
+const PRICE_CHECK = ['price check', 'rate check', 'check the rate', 'check rate', 'check price', 'check the price', 'good rate',
+  'fair rate', 'rate sahi', 'rate theek', 'रेट चेक', 'रेट जाँच', 'रेट जांच', 'रेट सही', 'रेट ठीक',
+  'రేటు చెక్', 'రేట్ చెక్', 'ధర చెక్', 'రేటు సరైనదా', 'రేటు బాగుందా', 'రేటు కరెక్టా'];
 
 // ---------- Yes / no (answers to "Is that right?") ----------
 const YES_WORDS = ['yes', 'yeah', 'yep', 'yup', 'correct', 'right', 'thats right', 'ok', 'okay', 'sure', 'haan', 'han', 'haa', 'ji',
@@ -271,12 +311,17 @@ export function parse(raw, ctx = {}) {
     const t = tokens[i];
     const isTermWord = TERMINAL_WORDS.includes(t) || /^(टर्मिनल|టెర్మినల్|టర్మినల్)/.test(t);
     if (!isTermWord) continue;
-    const after = TERMINAL_NUMBERS[tokens[i + 1]];
+    const after = terminalNumber(tokens[i + 1]);
     const before = ORDINALS[tokens[i - 1]];
     // A lone "t" only counts with a digit right after it ("t3"), not "t two".
     if (t === 't') { if (/^[1-4]$/.test(tokens[i + 1] || '')) terminal = 'T' + tokens[i + 1]; continue; }
     if (after) terminal = 'T' + after;
     else if (before) terminal = 'T' + before;
+  }
+  if (!terminal) {
+    // Joined: "terminal3", "టెర్మినల్3"
+    const j = p.norm.match(/(?:terminal|टर्मिनल|టెర్మినల్|టర్మినల్)([1-4])(?!\d)/);
+    if (j) terminal = 'T' + j[1];
   }
   if (!terminal) {
     // "terminal number teen", "terminal no 3"
@@ -286,7 +331,7 @@ export function parse(raw, ctx = {}) {
   if (!terminal && ctx.expecting === 'terminal') {
     // Answering "Which terminal?" with just "teen" / "3" / "మూడు" / "third"
     for (const t of tokens) {
-      const v = TERMINAL_NUMBERS[t] ?? ORDINALS[t];
+      const v = (['to', 'too'].includes(t) ? null : terminalNumber(t)) ?? ORDINALS[t];
       if (v && t !== 'do') { terminal = 'T' + v; break; }
       if (t === 'do' && tokens.length <= 3) { terminal = 'T2'; break; }
     }
@@ -314,6 +359,8 @@ export function parse(raw, ctx = {}) {
   for (const [name, words] of TOPICS) {
     if (hasAny(p, words)) { topic = name; break; }
   }
+  // "Where is the ATM?" is a place; "ATM tips / fees / withdraw" is advice
+  if (topic === 'atm' && !hasAny(p, ATM_ADVICE)) topic = 'atmwhere';
   // A plain "card" means card advice, unless it's a SIM card or the staff card.
   if (!topic && command !== 'staff' && !hasAny(p, SIM_WORDS) && hasAny(p, CARD_WORDS)) topic = 'cards';
 
@@ -342,6 +389,25 @@ export function parse(raw, ctx = {}) {
     else if (hasAny(p, YES_WORDS)) yesno = 'yes';
   }
 
+  // "How many dirhams for 500 dollars?": one amount and the currency they want
+  const numbers = findNumbers(tokens, (t) => !!currencyOf(t)).map((n) => n.value);
+  let amountQuery = null;
+  const pairs = price ? price.pairs : [];
+  if (hasAny(p, HOW_MANY) && !(price && price.given) && (pairs.length === 1 || (pairs.length === 0 && numbers.length === 1))) {
+    const from = pairs.length ? pairs[0].currency : null;
+    const amount = pairs.length ? pairs[0].amount : numbers[0];
+    let to = null;
+    tokens.forEach((t, k) => {
+      let c = currencyOf(t);
+      if (c === 'USD' && SGD_PREFIX.includes(tokens[k - 1])) c = 'SGD';
+      if (c && c !== from && !to) to = c;
+    });
+    amountQuery = { amount, from, to };
+  }
+  const priceCheck = hasAny(p, PRICE_CHECK);
+  // Telugu "టీ" on its own is tea, unless it's "T 3"
+  if (!offtopic && !intent && !topic && tokens.some((t, k) => t === 'టీ' && !/^[1-4]$/.test(tokens[k + 1] || ''))) offtopic = 'food';
+
   return {
     raw: String(raw || ''),
     norm: p.norm,
@@ -355,14 +421,16 @@ export function parse(raw, ctx = {}) {
     yesno,
     price: price && price.given ? { given: price.given, received: price.received } : null,
     amounts: price ? price.pairs : [],
-    numbers: findNumbers(tokens, (t) => !!currencyOf(t)).map((n) => n.value),
+    numbers,
+    amountQuery,
+    priceCheck,
   };
 }
 
 /** How much a parse "understood" — used to choose between speech alternatives. */
 export function score(parsed) {
   return (parsed.command ? 3 : 0) + (parsed.stage ? 1 : 0) + (parsed.price ? 4 : 0) + (parsed.airport ? 2 : 0) +
-    (parsed.terminal ? 2 : 0) + (parsed.intent ? 1 : 0) + (parsed.topic ? 1 : 0) + (parsed.offtopic ? 1 : 0) +
+    (parsed.terminal ? 2 : 0) + (parsed.intent ? 1 : 0) + (parsed.topic ? 1 : 0) + (parsed.offtopic ? 1 : 0) + (parsed.amountQuery ? 3 : 0) +
     (parsed.yesno ? 2 : 0);
 }
 

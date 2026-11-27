@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-27c",
+  "version": "2026-11-28a",
   "airports": {
     "DXB": {
       "name": {
@@ -459,6 +459,18 @@
         "en": "International flights use Terminal 2. Terminal 1 is domestic.",
         "hi": "इंटरनेशनल फ़्लाइट्स टर्मिनल 2 पर आती हैं। टर्मिनल 1 डोमेस्टिक है।",
         "te": "ఇంటర్నేషనల్ ఫ్లైట్లు టెర్మినల్ 2కి వస్తాయి. టెర్మినల్ 1 డొమెస్టిక్."
+      },
+      "atms": {
+        "T1": {
+          "en": "In Terminal 1, ATMs are at the kerbside and in the check-in hall.",
+          "hi": "टर्मिनल 1 में एटीएम बाहर कर्बसाइड पर और चेक-इन हॉल में हैं।",
+          "te": "టెర్మినల్ 1లో ఏటీఎంలు బయట కర్బ్‌సైడ్‌లో, చెక్-ఇన్ హాల్‌లో ఉన్నాయి."
+        },
+        "T2": {
+          "en": "In Terminal 2, there is an ATM in the Level 0 Arrival Forecourt, just outside the exit, and more on Level 3. There is none on Level 1.",
+          "hi": "टर्मिनल 2 में लेवल 0 के अराइवल फ़ोरकोर्ट में, एग्ज़िट के ठीक बाहर, एटीएम है, और लेवल 3 पर भी हैं। लेवल 1 पर नहीं है।",
+          "te": "టెర్మినల్ 2లో లెవల్ 0 అరైవల్ ఫోర్‌కోర్ట్‌లో, ఎగ్జిట్ బయటే ఏటీఎం ఉంది, లెవల్ 3లో కూడా ఉన్నాయి. లెవల్ 1లో లేదు."
+        }
       }
     },
     "DEL": {
@@ -622,6 +634,13 @@
         "en": "International flights arrive at Terminal 3. Terminal 1 is domestic.",
         "hi": "इंटरनेशनल फ़्लाइट्स टर्मिनल 3 पर आती हैं। टर्मिनल 1 डोमेस्टिक है।",
         "te": "ఇంటర్నేషనల్ ఫ్లైట్లు టెర్మినల్ 3కి వస్తాయి. టెర్మినల్ 1 డొమెస్టిక్."
+      },
+      "atms": {
+        "T3": {
+          "en": "In Terminal 3 International Arrivals, there is an ATM next to the EbixCash counter, near the Coca-Cola vending machine.",
+          "hi": "टर्मिनल 3 इंटरनेशनल अराइवल्स में एबिक्सकैश काउंटर के पास, कोका-कोला वेंडिंग मशीन के पास एटीएम है।",
+          "te": "టెర్మినల్ 3 ఇంటర్నేషనల్ అరైవల్స్‌లో ఎబిక్స్‌క్యాష్ కౌంటర్ పక్కన, కోకా-కోలా వెండింగ్ మెషీన్ దగ్గర ఏటీఎం ఉంది."
+        }
       }
     },
     "SIN": {

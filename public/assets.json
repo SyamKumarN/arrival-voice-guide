@@ -14,5 +14,7 @@
   "/js/phrases.js",
   "/js/dialog.js",
   "/data/airports.json",
-  "/data/rates-sample.json"
+  "/data/rates-sample.json",
+  "/js/listen.js",
+  "/js/understand.js"
 ]

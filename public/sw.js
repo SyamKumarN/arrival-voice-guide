@@ -3,7 +3,7 @@
 // is stored on the phone. Online, the network is tried first so updates show up;
 // offline, the stored copy is used. Voice recognition still needs the internet.
 
-const CACHE = 'arrival-guide-v5';
+const CACHE = 'arrival-guide-v6';
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
@@ -27,7 +27,7 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;                          // voice and Q&A upgrades: network only
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname === '/api/tts' || url.pathname === '/api/ask') return;
+  if (url.pathname === '/api/tts' || url.pathname === '/api/understand') return;
 
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
@@ -45,7 +45,7 @@ self.addEventListener('fetch', (event) => {
       }
       if (hit) return hit;
       if (url.pathname === '/api/config') {
-        return new Response('{"naturalVoice":false,"askAnything":false}', { headers: { 'Content-Type': 'application/json' } });
+        return new Response('{"naturalVoice":false,"aiUnderstanding":false}', { headers: { 'Content-Type': 'application/json' } });
       }
       return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
     }

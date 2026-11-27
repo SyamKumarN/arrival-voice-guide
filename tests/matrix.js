@@ -3,7 +3,7 @@
 
 import { handle, initialState } from '../public/js/dialog.js';
 import { staffLines, tipList, TIP_LISTS } from '../public/js/phrases.js';
-import { midRate } from '../public/js/price.js';
+import { midRate, roundMoney, formatMoney } from '../public/js/price.js';
 
 const STYLES = {
   en: { lang: 'en-IN' },
@@ -55,7 +55,12 @@ const SAY = {
   transit: { en: 'I have a connecting flight', hi: 'मेरी कनेक्टिंग फ़्लाइट है', hinglish: 'meri connecting flight hai', te: 'నాకు కనెక్టింగ్ ఫ్లైట్ ఉంది' },
   closed: { en: 'the counter is closed', hi: 'काउंटर बंद है', hinglish: 'counter band hai', te: 'కౌంటర్ మూసి ఉంది' },
   howmuch: { en: 'how much money should I change', hi: 'कितने पैसे बदलूँ', hinglish: 'kitne paise badlu', te: 'ఎంత డబ్బు మార్చాలి' },
-  atm: { en: 'where is the ATM', hi: 'एटीएम कहाँ है', hinglish: 'atm kahan hai', te: 'ఏటీఎం ఎక్కడ' },
+  atm: { en: 'ATM tips', hi: 'एटीएम की सलाह दीजिए', hinglish: 'atm tips do', te: 'ఏటీఎం చిట్కాలు' },
+  atmwhere: { en: 'where is the ATM', hi: 'एटीएम कहाँ है', hinglish: 'atm kahan hai', te: 'ఏటీఎం ఎక్కడ' },
+  nostaff: { en: 'nobody is here', hi: 'यहाँ कोई नहीं है', hinglish: 'yahan koi nahi hai', te: 'ఇక్కడ ఎవరూ లేరు' },
+  apphelp: { en: 'does it work in flight mode', hi: 'फ़्लाइट मोड में चलेगा क्या', hinglish: 'offline chalega kya', te: 'ఫ్లైట్ మోడ్‌లో పని చేస్తుందా' },
+  pricecheck: { en: 'price check', hi: 'रेट चेक करना है', hinglish: 'rate check karna hai', te: 'రేటు చెక్' },
+  tea: { en: 'where can I get tea', hi: 'चाय कहाँ मिलेगी', hinglish: 'chai kahan milegi', te: 'టీ ఎక్కడ దొరుకుతుంది' },
   forex: { en: 'I have a forex card', hi: 'मेरे पास फॉरेक्स कार्ड है', hinglish: 'mere paas forex card hai', te: 'నా దగ్గర ఫారెక్స్ కార్డ్ ఉంది' },
   credit: { en: 'can I use my credit card', hi: 'क्रेडिट कार्ड चलेगा क्या', hinglish: 'credit card chalega kya', te: 'క్రెడిట్ కార్డ్ వాడొచ్చా' },
   debit: { en: 'I have a debit card', hi: 'मेरे पास डेबिट कार्ड है', hinglish: 'mere paas debit card hai', te: 'నా దగ్గర డెబిట్ కార్డ్ ఉంది' },
@@ -162,6 +167,28 @@ function scenarios(code, style, data, rates) {
   }
   add('advice: counter closed (keeps the route)', [...start(), [say('next'), { step: 1 }], [say('closed'), { ...info('closed'), mode: 'route', step: 1 }]]);
 
+  // Round 5: phone-test scenarios
+  add('where is the ATM (place, not tips; keeps the route)', [...start(), [say('atmwhere'), { kind: 'info', topic: 'atmwhere', mode: 'route', step: 0 }]]);
+  add('nobody here → info desk + staff card (keeps the route)', [...start(), [say('nostaff'), { kind: 'info', topic: 'nostaff', staffAirport: code, mode: 'route' }]]);
+  add('app help: save for my trip', [[say('apphelp'), { kind: 'info', topic: 'apphelp' }]]);
+  add('price check with no numbers → asks for both amounts', [...start(), [say('pricecheck'), { kind: 'ask', mode: 'route', step: 0 }]]);
+  add('tea / chai → staff card (keeps the route)', [...start(), [say('tea'), { kind: 'offtopic', staffIntent: 'food', mode: 'route' }]]);
+  {
+    const fair = formatMoney(roundMoney(100 * midRate(rates, 'USD', local)));
+    const q = {
+      en: `how many ${CURRENCY_WORD[local].en} for 100 dollars`,
+      hi: `100 डॉलर के कितने ${CURRENCY_WORD[local].hi} मिलेंगे`,
+      hinglish: `100 dollar ke kitne ${CURRENCY_WORD[local].hinglish} milenge`,
+      te: `100 డాలర్లకు ఎన్ని ${CURRENCY_WORD[local].te} వస్తాయి`,
+    }[style];
+    add(`how many ${local} for 100 dollars → fair amount`, [[q, { kind: 'amount', has: fair }]]);
+  }
+  {
+    const codes = Object.keys(data.airports);
+    const other = codes[(codes.indexOf(code) + 1) % codes.length];
+    add(`context switch: tips → "${other} … where is the ATM"`, [...start(), [say('tips'), { kind: 'tips' }],
+      [`${AIRPORT_WORDS[other][style]} ${say('atmwhere')}`, { kind: 'info', topic: 'atmwhere', airport: other, mode: 'info' }]]);
+  }
   for (const [t, key] of [['atm', 'atm'], ['pickup', 'taxi'], ['tips', 'money'], ['traps', 'traps']]) {
     const n = TIP_LISTS[key].en.length;
     add(`${t} → ${key} tips one at a time, then back to the route`, [

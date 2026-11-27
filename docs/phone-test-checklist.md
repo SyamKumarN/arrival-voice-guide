@@ -51,4 +51,18 @@ Open https://arrival-voice.vercel.app in **Chrome on Android** and allow the mic
 - [ ] On the Dubai T3 route, the warning cards have **no number badges over the text**.
 - [ ] Nothing runs off the side of the screen. The bottom buttons don't cover the highlighted step. It still fits when you rotate the phone.
 
+## 6. Phone-test fixes (Telugu first, then Hindi or English)
+| Say or do | Expect |
+|---|---|
+| Tap the mic once, wait 5 seconds, then say "దుబాయ్ … (pause 1 s) … టెర్మినల్ మూడ్ డబ్బు మార్చాలి" | The mic stays on and shows **"వింటున్నాను… అయిపోతే నొక్కండి"** the whole time. It stops about 2 seconds after you finish, and asks "దుబాయ్, టెర్మినల్ 3?" |
+| Tap the mic, say a few words, tap again | It stops straight away and uses what you said. |
+| Say "టెర్మినల్ త్రీ" / "వన్" / "టూ" when asked for the terminal | Terminal 3 / 1 / 2. |
+| In Dubai, "చిట్కాలు చెప్పండి", then "బెంగళూరు టెర్మినల్ 1 ఏటీఎం ఎక్కడ" | Switches to Bengaluru T1 and says where the ATMs are (kerbside, check-in hall). |
+| "500 డాలర్లకు ఎన్ని దిర్హామ్‌లు వస్తాయి" | About 1,836 dirhams at the mid-market rate. "Counters give a bit less; ask for the final amount." |
+| "రేటు చెక్" | Asks for both amounts, with an example. |
+| "ఇక్కడ ఎవరూ లేరు" | Info desk signs, and the staff card opens. |
+| "ఆఫ్‌లైన్‌లో ఎలా వాడాలి" | Explains Save for my trip and Add to home screen. |
+| "ట్రాప్స్ చెప్పండి" / "जाल बताइए" | The 5 traps, never the money tips. |
+| "టీ ఎక్కడ దొరుకుతుంది" / "चाय कहाँ मिलेगी" | The scope line, then a staff card asking where to get food or coffee. |
+
 **Write down:** your phone model, Android and Chrome versions, and anything misheard (exactly what the app showed under "You said").

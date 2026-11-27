@@ -4,7 +4,7 @@
 //      GET  /api/config  -> which optional upgrades have keys (true/false only)
 //      GET  /api/rates   -> live rates from a free no-key source, else the bundled sample
 //      POST /api/tts     -> natural voice (only if SARVAM_API_KEY is set)
-//      POST /api/ask     -> free-form questions (only if ANTHROPIC_API_KEY is set)
+//      POST /api/understand -> AI fills in the fixed form when the rules don't understand (only if AI_API_KEY is set)
 // Starts and works fully with no keys at all.
 
 import http from 'node:http';
@@ -62,7 +62,7 @@ async function serveStatic(req, res) {
 const server = http.createServer(async (req, res) => {
   const { pathname } = new URL(req.url, 'http://x');
   if (pathname.startsWith('/api/')) {
-    const { status, body } = await handleApi(pathname, req.method, () => readBody(req));
+    const { status, body } = await handleApi(pathname, req.method, () => readBody(req), { ip: req.socket.remoteAddress });
     res.writeHead(status, API_HEADERS);
     return res.end(JSON.stringify(body));
   }
@@ -73,7 +73,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
   const c = config();
   console.log(`Arrival Guide (Voice) running on http://localhost:${PORT}`);
-  console.log(`Natural voice: ${c.naturalVoice ? 'on' : 'key not set'} | Ask anything: ${c.askAnything ? 'on' : 'key not set'}`);
+  console.log(`Natural voice: ${c.naturalVoice ? 'on' : 'key not set'} | AI understanding: ${c.aiUnderstanding ? 'on' : 'key not set'}`);
 });
 
 // Minimal .env reader: KEY=value lines, # comments. Real env vars win.

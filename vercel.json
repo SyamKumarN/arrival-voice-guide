@@ -4,7 +4,7 @@
     {
       "src": "api/index.js",
       "use": "@vercel/node",
-      "config": { "includeFiles": ["public/data/rates-sample.json", "lib/**"] }
+      "config": { "includeFiles": ["public/data/rates-sample.json", "public/js/understand.js", "lib/**"] }
     },
     { "src": "public/**", "use": "@vercel/static" }
   ],

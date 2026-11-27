@@ -6,6 +6,8 @@ import { parse, score } from './js/parser.js';
 import { ui, say, terminalLabel, currencyName, staffLines, STAFF_VOICE, STAFF_DIR, speakable, LANG_TIP } from './js/phrases.js';
 import { formatMoney } from './js/price.js';
 import { pick, short } from './js/text.js';
+import { createListener } from './js/listen.js';
+import { toSentence } from './js/understand.js';
 
 const $ = (id) => document.getElementById(id);
 const store = {
@@ -17,7 +19,7 @@ const app = {
   state: initialState(store.get('lang') || 'hi-IN'),
   data: null,
   rates: null,
-  config: { naturalVoice: false, askAnything: false },
+  config: { naturalVoice: false, aiUnderstanding: false },
   lastReply: null,
   lastPrice: null,
   heard: '',
@@ -136,34 +138,27 @@ function startListening() {
   if (navigator.onLine === false) { voiceOffline(); return; }
   stopSpeaking();                 // a tap on the mic interrupts the guide
   muteMic();
-  rec = new Recognition();
-  rec.lang = app.state.lang;
-  rec.interimResults = true;
-  rec.maxAlternatives = 4;
-  rec.continuous = false;
-  let finalAlts = null;
-
-  rec.onstart = () => setStatus('listening');
-  rec.onresult = (e) => {
-    if (app.status === 'speaking') return;      // never take in anything heard mid-speech
-    const res = e.results[e.results.length - 1];
-    showHeard(res[0].transcript, !res.isFinal);
-    if (res.isFinal) finalAlts = Array.from(res).map((a) => a.transcript);
-  };
-  rec.onerror = (e) => {
-    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') showNotice(ui(app.state.lang).noVoiceIn);
-    if (e.error === 'network') { finalAlts = null; setTimeout(voiceOffline, 0); }
-  };
-  rec.onend = () => {
-    rec = null;
-    if (app.status === 'listening') setStatus('idle');
-    if (finalAlts) submit(bestAlternative(finalAlts));
-  };
-  try { rec.start(); } catch { setStatus('idle'); }
+  showNotice('');
+  // One tap = one session: waits up to 8 s for the first word, stops 2 s after the
+  // last one, restarts the engine when Android cuts it short. Second tap = done.
+  const l = createListener({
+    Recognition,
+    lang: app.state.lang,
+    onState: (st) => { if (st === 'listening') setStatus('listening'); else if (app.status === 'listening') setStatus('idle'); },
+    onInterim: (text) => { if (app.status === 'listening') showHeard(text, true); },
+    onDone: (alts, info) => {
+      if (rec === l) rec = null;
+      if (info && info.error === 'denied') showNotice(ui(app.state.lang).noVoiceIn);
+      if (info && info.error === 'network') { setTimeout(voiceOffline, 0); return; }
+      if (alts) submit(bestAlternative(alts));
+    },
+  });
+  rec = l;
+  l.start();
 }
 
-/** Stop listening and keep what was heard (the user tapped the mic again). */
-function stopListening() { if (rec) { try { rec.stop(); } catch { /* ignore */ } } }
+/** Second tap: stop now and keep what was heard. */
+function stopListening() { if (rec) rec.finish(); }
 
 /** Switch the mic off and throw away anything half-heard (used before the guide speaks). */
 let relistenTimer = null;
@@ -172,8 +167,7 @@ function muteMic() {
   if (!rec) return;
   const r = rec;
   rec = null;
-  r.onresult = null; r.onend = null; r.onerror = null;
-  try { r.abort(); } catch { /* already stopped */ }
+  r.cancel();
   if (app.status === 'listening') setStatus('idle');
 }
 
@@ -204,23 +198,39 @@ async function submit(text) {
   if (!text) return;
   app.heard = text;
   showHeard(text, false);
-  const out = handle(app.state, text, app.data, app.rates);
+  const before = app.state;
+  let out = handle(before, text, app.data, app.rates);
+
+  // The rules didn't understand it and the server has an AI key: ask the AI to fill in our
+  // fixed form (never an answer), turn that into a sentence our rules know, and answer from
+  // our own data. 3 seconds at most; otherwise the rules' reply stands.
+  if (out.unknown && app.config.aiUnderstanding && navigator.onLine !== false) {
+    setStatus('thinking');
+    try {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 3500);
+      const s = before;
+      const r = await fetch('/api/understand', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
+        body: JSON.stringify({ text, lang: s.lang, context: { mode: s.mode, expecting: s.expecting, airport: s.airport, terminal: s.terminal, dest: s.dest } }),
+      });
+      clearTimeout(timer);
+      if (r.ok) {
+        const { form } = await r.json();
+        const sentence = toSentence(form);
+        if (sentence) {
+          const again = handle(before, sentence, app.data, app.rates);
+          if (!again.unknown) out = again;
+        }
+      }
+    } catch { /* timeout or offline: keep the rules' reply */ }
+    if (app.status === 'thinking') setStatus('idle');
+  }
   app.state = out.state;
   app.lastReply = out.reply;
   if (out.reply.kind === 'price') app.lastPrice = out.reply.price;
   if (out.parsed && out.parsed.command === 'restart') app.lastPrice = null;
 
-  // Free-form question and an AI key is set: let the server answer instead.
-  if (out.unknown && app.config.askAnything) {
-    setStatus('thinking');
-    try {
-      const r = await fetch('/api/ask', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text, lang: app.state.lang, airport: app.state.airport, terminal: app.state.terminal }),
-      });
-      if (r.ok) { const { answer } = await r.json(); if (answer) app.lastReply = { kind: 'answer', text: answer }; }
-    } catch { /* keep the rule-based reply */ }
-  }
   render();
   if (app.lastReply.staff) {
     // "ask staff": read the card out. A "not available here" answer: speak it, card opens quietly.
@@ -442,7 +452,7 @@ function render() {
   const when = r.date || (r.updated ? r.updated.slice(0, 10) : '');
   $('ratesInfo').textContent = `${r.source === 'live' ? L.ratesLive : r.source === 'saved' ? L.ratesSaved : L.ratesSample} · ${when}`;
   const st = (on) => (on ? L.on : L.keyNotSet);
-  $('upgrades').textContent = `${L.natural}: ${st(app.config.naturalVoice)} · ${L.askAny}: ${st(app.config.askAnything)}`;
+  $('upgrades').textContent = `${L.natural}: ${st(app.config.naturalVoice)} · ${L.askAny}: ${st(app.config.aiUnderstanding)}`;
 }
 
 /** Big tap targets for the question just asked, so the guide works without voice (or offline). */

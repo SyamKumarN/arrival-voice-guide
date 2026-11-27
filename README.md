@@ -43,7 +43,7 @@ The microphone works on `localhost` and over `https`. Chrome blocks it on a plai
 
 | Layer | Files | What it does |
 |---|---|---|
-| **Hear** | `public/main.js` | Speech recognition in the chosen language. It keeps whichever of the recogniser's guesses it understands best. The mic is switched off while the guide is speaking, so it never hears itself. |
+| **Hear** | `public/js/listen.js`, `public/main.js` | Speech recognition in the chosen language. One tap starts a listening session: it waits up to 8 seconds for the first word and stops 2 seconds after the last one. A second tap stops it straight away. If the phone's speech engine stops early, which Chrome on Android does after about a second of silence, the session starts it again and joins the pieces. It keeps whichever of the recogniser's guesses it understands best. The mic is switched off while the guide is speaking, so it never hears itself. |
 | **Understand** | `public/js/parser.js`, `numbers.js`, `text.js` | Rule-based, with no network. It reads airports, terminals ("टर्मिनल ३", "teen", "మూడో టెర్మినల్"), where you want to go (exchange, SIM, taxi), commands (next, repeat, back, can't find, I'm lost, ask staff, start over), what you can see, and amounts in digits or words ("satrah sau", "पाँच सौ", "ఐదువందలు"). |
 | **Decide** | `public/js/dialog.js`, `decide.js`, `price.js`, `public/data/airports.json` | Picks the fair counter (better rate first, then landside) and builds the route. If something is missing, it asks one short question at a time. It also runs the price check against the mid-market rate. |
 | **Speak back** | `public/main.js`, `public/js/phrases.js` | Speaks one step at a time in your language, highlighting the same step on screen. In hands-free mode it listens again after each step. |
@@ -78,18 +78,24 @@ Everything above works with no keys:
 Copy `.env.example` to `.env` (never commit it), or for the live site, set them as Vercel environment variables.
 
 - `SARVAM_API_KEY`: a more natural voice for spoken replies.
-- `ANTHROPIC_API_KEY`: answers free-form questions the rules can't handle.
+- `AI_API_KEY`: AI understanding (Anthropic API key), used only when the built-in rules don't understand a sentence. The model fills in a fixed form (intent, airport, terminal, amounts, currency) chosen from the app's own lists. The app then answers from its own data, so the AI never writes the answer or names a place. Each call has a 3-second limit; after that the normal "here's what I can do" reply is used. Calls are rate-limited (12 a minute per visitor), and nothing the person says is logged. Without the key, everything works as before.
 
 ## Tests
 
-`npm test` runs 760 checks, all without keys or network:
-- **Unit tests:** the parser (128 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (25, including the airport data cases: Delhi T2 not listed, Bengaluru T1 ending at an ATM, terminal hints).
-- **Scenario matrix:** 560 conversations, one for every airport (5) × language style (4) × scenario (28). The scenarios cover:
+`npm test` runs 1,057 checks, all without keys or network:
+- **Unit tests:**
+  - **Parser (196 sentences in English, Hindi, Hinglish and Telugu):** off-topic requests, advice topics, yes/no, and spoken number variants (మూడ్, త్రీ, वन, टू).
+  - **Numbers (18) and the price check (9).**
+  - **Conversation flows (50):** includes the phone-test cases, such as switching from Dubai tips to "Bengaluru T1, where is the ATM?", "how many dirhams for 500 dollars?", "nobody is here" and flight-mode help.
+- **Scenario matrix:** 700 conversations, one for every airport (5) × language style (4) × scenario (35). The scenarios cover:
   - **Routes:** exchange with confirm, missing airport, missing terminal, confirm "no", SIM, taxi, metro, the full route to the receipt step and the money tips.
   - **Commands:** next/repeat/back/can't find, the price check, I'm lost, ask staff.
   - **Off-topic:** toilet, missing bag.
   - **Advice:** transit, counter closed, how much to change, forex/credit/debit cards, leftover currency, excess baggage, "rupees or local currency?", ATM tips, pickup tips, money tips, traps.
+  - **Phone-test fixes:** where is the ATM, nobody here, app help, a price check with no numbers, tea and chai, "how many … for 100 dollars", and switching airport from a tip list.
   - **Unknown requests.**
+- **Microphone (13):** a simulated Chrome-on-Android recogniser that stops after short silences, throws "no-speech" and "aborted", and repeats earlier words. The tests check that one tap keeps listening and joins the pieces.
+- **AI fallback (51), with no key and no network:** every intent on the fixed list maps to an answer from the app's own data. Off-list values, such as an invented airport, are dropped. With no key, the route says "key not set", and the rate limit holds.
 - **Content checks:** money tips and traps stay under 15 words in every language, every tip list has the same length in every language, and there's a staff-card question for every topic in Arabic, Thai, Hindi, English and Telugu.
 
 Offline support was checked in headless Chrome: the server was stopped mid-test and the whole flow still worked from the phone's storage.
