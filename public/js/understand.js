@@ -9,6 +9,8 @@
 
 export const INTENTS = [
   'next_step', 'step_done', 'jump_to_step', 'list_counters', 'lost_answer', 'how_much',
+  'greeting', 'confused', 'wifi', 'battery', 'no_data', 'card_declined', 'lost_items', 'missed_flight', 'short_changed', 'taxi_problem',
+  'late_night', 'unsafe', 'wheelchair', 'trolley', 'before_after_immigration', 'visa',
   'exchange', 'sim', 'taxi', 'metro', 'atm_where', 'atm_tips', 'price_check', 'amount_query',
   'money_tips', 'traps', 'transit', 'counter_closed', 'how_much_to_change', 'card_currency_choice',
   'forex_card', 'credit_card', 'debit_card', 'leftover_currency', 'excess_baggage', 'pickup',
@@ -93,11 +95,15 @@ const TOPIC_OF = {
   atm_where: 'atmwhere', atm_tips: 'atm', money_tips: 'tips', traps: 'traps', transit: 'transit', counter_closed: 'closed',
   how_much_to_change: 'howmuch', card_currency_choice: 'dcc', forex_card: 'forex', credit_card: 'credit', debit_card: 'debit',
   leftover_currency: 'leftover', excess_baggage: 'excessbag', pickup: 'pickup', no_staff: 'nostaff', app_help: 'apphelp',
-  list_counters: 'counters',
+  list_counters: 'counters', greeting: 'greet', confused: 'confused', wifi: 'wifi', battery: 'battery', no_data: 'nodata',
+  card_declined: 'carddecline', lost_items: 'lostitem', missed_flight: 'missedflight', short_changed: 'shortchanged', taxi_problem: 'taxiissue',
+  late_night: 'latenight', unsafe: 'unsafe', wheelchair: 'wheelchair', trolley: 'trolley', before_after_immigration: 'beforeafter', visa: 'visa',
 };
 const OFFTOPIC_OF = { toilet: 'toilet', food: 'food', prayer_room: 'prayer', lounge: 'lounge', shops: 'shop', missing_bag: 'lostbag' };
 const COMMAND_OF = { next: 'next', next_step: 'next', lost: 'lost', repeat: 'repeat', back: 'back', cant_find: 'cantfind', start_over: 'restart', ask_staff: 'staff' };
 // When the rules heard progress or a place, these AI readings are overruled ("I see Thomas Cook near customs" is a place)
+const RULE_FIRST = ['confused', 'greet', 'wifi', 'battery', 'nodata', 'carddecline', 'lostitem', 'missedflight', 'shortchanged', 'taxiissue',
+  'latenight', 'unsafe', 'wheelchair', 'trolley', 'beforeafter', 'visa', 'nostaff'];
 const TIP_INTENTS = ['pickup', 'money_tips', 'atm_tips', 'traps', 'ask_staff', 'list_counters', 'leftover_currency', 'no_staff', 'none'];
 
 /**
@@ -113,6 +119,8 @@ export function formToParsed(form, rules, state = null) {
     if (f.airport && f.airport === state.airport) f.airport = null;
     if (f.terminal && f.terminal === state.terminal && !f.airport) f.terminal = null;
   }
+  // A question, confusion or greeting the rules recognised wins ("two ways here" must never move the step)
+  if (rules && rules.topic && RULE_FIRST.includes(rules.topic) && TOPIC_OF[f.intent] !== rules.topic) return null;
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
   // The rules read both amounts of a price ("100 dollars, they give 3200 baht"): keep that
   // "How much should they give for 500 dollars?" with one amount is a question about the fair amount

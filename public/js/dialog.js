@@ -23,6 +23,7 @@ export function initialState(lang = 'hi-IN') {
     lastAmount: null,           // { amount, currency } said earlier ("I have 1000 dollars")
     asks: null,                 // { key, n }: how often the same question was asked again
     prevAirport: null,          // the airport before a "no", so "terminal 3" alone still works
+    startStage: null,           // "…, I'm in the arrival hall": start the route there
   };
 }
 
@@ -37,7 +38,12 @@ function askTerminal(lang, a, bad = false) {
 // Spoken list topics → which tip list they read
 const LIST_TOPICS = { tips: 'money', traps: 'traps', atm: 'atm', pickup: 'taxi', cards: 'cards' };
 // One-off advice topics
-const INFO_TOPICS = ['leftover', 'excessbag', 'transit', 'closed', 'howmuch', 'dcc', 'forex', 'credit', 'debit'];
+const INFO_TOPICS = ['leftover', 'excessbag', 'transit', 'closed', 'howmuch', 'dcc', 'forex', 'credit', 'debit',
+  'wifi', 'battery', 'nodata', 'carddecline', 'lostitem', 'missedflight', 'shortchanged', 'taxiissue', 'unsafe', 'wheelchair', 'trolley', 'visa'];
+// These answers also open the staff card
+const INFO_STAFF = { nodata: null, unsafe: 'help' };
+// The sign to look for at each stage
+const SIGN = { immigration: 'Immigration', baggage: 'Baggage Claim', customs: 'Exit', arrivals: { exchange: 'Currency Exchange', sim: 'SIM', taxi: 'Taxi' } };
 
 // Words too common to tell steps apart
 const STEP_STOP = new Set(['follow', 'signs', 'sign', 'your', 'there', 'after', 'collect', 'from', 'with', 'into', 'look', 'then', 'before',
@@ -180,6 +186,28 @@ export function handle(prev, sentence, data, rates, opts = {}) {
     Object.assign(state, { tips: null, mode: back.mode, expecting: back.expecting });
   }
 
+  // Hello / నమస్తే / नमस्ते: greet, then ask for the airport, or carry on with the route
+  if (p.topic === 'greet') {
+    const r = state.mode === 'route' ? currentRoute(state, data) : null;
+    if (r) return out(state, reply('step', say(lang, 'greetBack') + ' ' + stepText(state, r)));
+    if (!state.airport) {
+      Object.assign(state, { mode: 'ask', expecting: 'airport' });
+      return out(state, reply('ask', say(lang, 'greet')));
+    }
+    return out(state, reply('help', say(lang, 'greetBack') + ' ' + capabilities(lang)));
+  }
+  // "I don't understand, there are two ways": same step, simpler, with the sign to follow. Never moves the step.
+  if (p.topic === 'confused' && state.expecting !== 'stage') {
+    const r = state.mode === 'route' ? currentRoute(state, data) : null;
+    if (r) {
+      const st = r.steps[state.step];
+      const first = String(pick(st.text, lang)).split(/(?<=[.।?!])\s/)[0];
+      const sign = st.stage === 'arrivals' ? SIGN.arrivals[state.dest] || SIGN.arrivals.exchange : SIGN[st.stage];
+      return out(state, reply('step', say(lang, 'confused')(first, sign), { confused: true }));
+    }
+    return out(state, reply('help', say(lang, 'confusedNoRoute')));
+  }
+
   // A side question that names an airport or terminal ("Bengaluru T1, where is the ATM?")
   // switches to that place first, so the answer is about where they really are.
   const switchContext = () => {
@@ -193,7 +221,8 @@ export function handle(prev, sentence, data, rates, opts = {}) {
     Object.assign(state, { confirmed: false, step: 0, expecting: null, tips: null, lost: false,
       mode: ['route', 'done', 'tips'].includes(state.mode) ? 'info' : state.mode });
   };
-  const sideTopic = p.topic === 'nostaff' || p.topic === 'apphelp' || p.topic === 'atmwhere' || p.topic === 'counters' || !!p.amountQuery ||
+  const sideTopic = p.topic === 'nostaff' || p.topic === 'apphelp' || p.topic === 'atmwhere' || p.topic === 'counters' ||
+    p.topic === 'latenight' || p.topic === 'beforeafter' || !!p.amountQuery ||
     !!p.offtopic || (p.topic && (INFO_TOPICS.includes(p.topic) || LIST_TOPICS[p.topic]));
   if (sideTopic && (p.airport || p.terminal) && !p.intent) switchContext();
 
@@ -293,8 +322,28 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   }
   if (p.topic === 'apphelp') return out(state, reply('info', say(lang, 'info').apphelp, { topic: 'apphelp' }));
 
+  // "It's 2 am, is a counter open?": the 24-hour counters we list for this terminal, else the safe answer
+  if (p.topic === 'latenight') {
+    const a = state.airport ? data.airports[state.airport] : null;
+    const open = a && state.terminal ? a.counters.filter((c) => c.terminal === state.terminal && c.open24) : [];
+    if (open.length) return out(state, reply('info', say(lang, 'latenight24')([...new Set(open.map((c) => pick(c.name, lang)))].join(', ')), { topic: 'latenight' }));
+    return out(state, reply('info', say(lang, 'info').latenight, { topic: 'latenight' }));
+  }
+  // "Is this counter before or after immigration?": landside / airside from our data, per counter
+  if (p.topic === 'beforeafter') {
+    const a = state.airport ? data.airports[state.airport] : null;
+    if (!a || !state.terminal) return out(state, reply('ask', say(lang, 'beforeAfterNoTerm'), { topic: 'beforeafter' }));
+    const items = rankCounters(a, state.terminal).slice(0, 3).map((c) => ({ name: pick(c.name, lang), side: c.side }));
+    if (!items.length) return out(state, reply('info', say(lang, 'countersNone')(nameHere()), { topic: 'beforeafter' }));
+    return out(state, reply('info', say(lang, 'beforeAfter')(items), { topic: 'beforeafter' }));
+  }
+
   // Advice topics: one-off answers keep the current flow; lists are read one tip at a time
   if (p.topic && INFO_TOPICS.includes(p.topic)) {
+    if (p.topic in INFO_STAFF) {
+      const staff = { intent: INFO_STAFF[p.topic] || state.dest || 'exchange', airport: state.airport };
+      return out(state, reply('info', say(lang, 'info')[p.topic], { topic: p.topic, staff }));
+    }
     return out(state, reply('info', say(lang, 'info')[p.topic], { topic: p.topic }));
   }
   if (p.topic && LIST_TOPICS[p.topic]) {
@@ -308,7 +357,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
       Object.assign(state, { confirmed: true, expecting: null });
       confirmedNow = true;
     } else if (p.yesno === 'no') {
-      Object.assign(state, { prevAirport: state.airport, airport: null, terminal: null, confirmed: false, mode: 'ask', expecting: 'airport' });
+      Object.assign(state, { prevAirport: state.airport, airport: null, terminal: null, confirmed: false, mode: 'ask', expecting: 'airport', startStage: null });
       return out(state, reply('ask', say(lang, 'confirmNo')));
     } else if (!p.intent && !p.command && !(p.stage && (p.atPlace || p.progress))) {
       if (askedAgain('confirm') >= 2) return out(state, reply('confirm', say(lang, 'tapButtons').confirm), { unknown: true });
@@ -455,6 +504,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   }
   if (p.terminal && p.terminal !== state.terminal) { state.terminal = p.terminal; state.confirmed = false; }
   if (p.intent) state.dest = p.intent;
+  if (p.intent && p.stage && p.atPlace) state.startStage = p.stage;   // "…exchange, I'm in the arrival hall"
   state.step = 0;
 
   if (!state.airport && p.terminal && state.prevAirport && terminalsOf(data, state.prevAirport).includes(p.terminal)) {
@@ -510,7 +560,40 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   Object.assign(state, { mode: 'route', expecting: null });
   // A terminal with no listed counter (Bengaluru T1) still gets its route: ATM or the other terminal
   const intro = say(lang, r.counter || state.dest !== 'exchange' ? 'intro' : 'introPlain')(r, lang);
-  return out(state, reply('step', intro + ' ' + stepText(state, r), { intro }));
+  // They said where they already are: start there, not at step 1
+  let found = '';
+  if (state.startStage) {
+    const i = stepForStage(r, state.startStage);
+    if (i > 0) { state.step = i; found = ' ' + say(lang, 'lostFound')(state.startStage); }
+    state.startStage = null;
+  }
+  return out(state, reply('step', intro + found + ' ' + stepText(state, r), { intro }));
 }
 
 export { terminalLabel };
+
+/** What to keep on the phone so a refresh carries on where they were. */
+export function snapshot(state) {
+  return {
+    v: 1, at: Date.now(), lang: state.lang, airport: state.airport, terminal: state.terminal, dest: state.dest,
+    mode: state.mode, step: state.step, confirmed: state.confirmed, lastAmount: state.lastAmount || null,
+  };
+}
+
+/**
+ * After a refresh: the saved trip (if recent and valid) and, mid-route, "Continuing from step X. …".
+ * Returns null when there's nothing to restore.
+ */
+export function restore(saved, data, now = Date.now()) {
+  if (!saved || saved.v !== 1 || !saved.airport || !data.airports[saved.airport]) return null;
+  if (!(now - saved.at < 12 * 60 * 60 * 1000)) return null;                 // older than 12 hours: start fresh
+  const state = { ...initialState(saved.lang || 'hi-IN'), airport: saved.airport, dest: saved.dest || 'exchange', lastAmount: saved.lastAmount || null };
+  if (saved.terminal && terminalsOf(data, saved.airport).includes(saved.terminal)) state.terminal = saved.terminal;
+  const r = state.terminal ? buildRoute(data, state.airport, state.terminal, state.dest) : null;
+  if (r && saved.mode === 'route' && saved.confirmed) {
+    Object.assign(state, { mode: 'route', confirmed: true, step: Math.max(0, Math.min(r.steps.length - 1, saved.step | 0)) });
+    return { state, reply: reply('step', say(state.lang, 'resumeLead')(state.step + 1) + ' ' + stepText(state, r)) };
+  }
+  if (state.terminal && saved.confirmed) state.confirmed = true;
+  return { state, reply: null };
+}

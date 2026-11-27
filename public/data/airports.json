@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-28a",
+  "version": "2026-11-29a",
   "airports": {
     "DXB": {
       "name": {
@@ -28,7 +28,8 @@
             "en": "Arrivals Hall, near the Le Clos shop",
             "hi": "अराइवल्स हॉल, ले क्लो दुकान के पास",
             "te": "అరైవల్స్ హాల్, లె క్లో షాప్ దగ్గర"
-          }
+          },
+          "open24": true
         },
         {
           "id": "dxb-t1-travelex",
@@ -354,7 +355,8 @@
             "en": "Level 0, Arrival Forecourt, just outside the exit",
             "hi": "लेवल 0, अराइवल फ़ोरकोर्ट, एग्ज़िट के ठीक बाहर",
             "te": "లెవల్ 0, అరైవల్ ఫోర్‌కోర్ట్, ఎగ్జిట్ బయటే"
-          }
+          },
+          "open24": true
         },
         {
           "id": "blr-t2-customs",
@@ -370,7 +372,8 @@
             "en": "Level 0, next to Indian Customs, before the exit",
             "hi": "लेवल 0, इंडियन कस्टम्स के पास, एग्ज़िट से पहले",
             "te": "లెవల్ 0, ఇండియన్ కస్టమ్స్ పక్కన, ఎగ్జిట్ ముందు"
-          }
+          },
+          "open24": true
         }
       ],
       "steps": {
@@ -671,7 +674,8 @@
             "en": "Arrival Meeting Hall, East and West",
             "hi": "अराइवल मीटिंग हॉल, ईस्ट और वेस्ट",
             "te": "అరైవల్ మీటింగ్ హాల్, ఈస్ట్, వెస్ట్"
-          }
+          },
+          "open24": true
         },
         {
           "id": "sin-t1-travelex",
@@ -703,7 +707,8 @@
             "en": "Arrival Hall",
             "hi": "अराइवल हॉल",
             "te": "అరైవల్ హాల్"
-          }
+          },
+          "open24": true
         },
         {
           "id": "sin-t2-travelex",
@@ -751,7 +756,8 @@
             "en": "Arrival Central",
             "hi": "अराइवल सेंट्रल",
             "te": "అరైవల్ సెంట్రల్"
-          }
+          },
+          "open24": true
         }
       ],
       "steps": {

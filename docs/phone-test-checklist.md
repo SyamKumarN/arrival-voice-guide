@@ -75,4 +75,15 @@ Open https://arrival-voice.vercel.app in **Chrome on Android** and allow the mic
 | "నా దగ్గర 1000 డాలర్లు ఉన్నాయి, ఎంత వస్తాయి" → "నాకు కేవలం 1500 ఇస్తున్నారు" | About 1,291 Singapore dollars, then 1,500 SGD compared with 1,000 USD. |
 | "ఆఫీసర్స్ కూర్చున్నారు" | No staff card unless you ask for it. |
 
+## 8. Dubai T3 fixes and common questions
+| Say or do | Expect |
+|---|---|
+| "హాయ్" | Greeting, then "which airport did you land at?" |
+| On a route step: "కానీ నాకు ఇక్కడ ఏమీ అర్థం కావట్లేదు రెండు మార్గాలు ఉన్నాయి" | The same step again, the sign to follow, and the staff card offer. The step doesn't change. |
+| "मैं कहाँ हूँ" | Asks what you can see (the lost flow). |
+| "terminal 3 exchange, I'm in the arrival hall" → "Dubai" → "yes" | Starts at the counter step, not step 1. |
+| Mid-route, pull down to refresh | "Continuing from step X" in your language. "Start over" clears it. |
+| "Wi-Fi పనిచేయట్లేదు", "charger?", "ATM not working", "passport పోయింది", "నాకు భయంగా ఉంది" | A short safe answer. For "unsafe", the staff card opens. |
+| At Dubai T1: "రాత్రి 2 అయింది, counter open ఉందా?" | Al Ansari Exchange is listed as open 24 hours. |
+
 **Write down:** your phone model, Android and Chrome versions, and anything misheard (exactly what the app showed under "You said").

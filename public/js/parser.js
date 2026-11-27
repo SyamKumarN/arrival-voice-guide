@@ -73,14 +73,50 @@ const METRO_WORDS = [
 
 // ---------- Advice topics (order matters: first match wins) ----------
 const TOPICS = [
+  // Round 7: confusion at a step and common traveller questions (checked before everything else)
+  ['confused', ['dont understand', 'do not understand', 'i am confused', 'im confused', 'confusing', 'two ways', 'many ways', 'left or right',
+    'which side', 'samajh nahi', 'samajh nahin', 'rasta samajh', 'do raste', 'समझ नहीं', 'रास्ता समझ', 'दो रास्ते', 'बाएँ या दाएँ', 'कन्फ्यूज़',
+    'అర్థం కావట్లేదు', 'అర్థం కావడం లేదు', 'అర్థం కాలేదు', 'అర్ధం కావట్లేదు', 'రెండు మార్గాలు', 'చాలా మార్గాలు', 'రెండు దారులు', 'ఎడమా కుడా', 'కన్ఫ్యూజ్']],
+  ['lostitem', ['lost passport', 'lost my passport', 'passport lost', 'passport is lost', 'passport missing', 'passport kho', 'lost wallet', 'lost my wallet',
+    'wallet lost', 'wallet kho', 'purse kho', 'lost my phone', 'phone lost', 'phone kho', 'mobile kho', 'पासपोर्ट खो', 'बटुआ खो', 'वॉलेट खो', 'पर्स खो', 'फ़ोन खो', 'फोन खो',
+    'పాస్‌పోర్ట్ పోయింది', 'పాస్పోర్ట్ పోయింది', 'passport పోయింది', 'wallet పోయింది', 'phone పోయింది', 'lost passport help', 'పర్స్ పోయింది', 'వాలెట్ పోయింది', 'ఫోన్ పోయింది', 'పాస్‌పోర్ట్ కనిపించట్లేదు']],
+  ['carddecline', ['card declined', 'card decline', 'declined', 'card not working', 'card is not working', 'card doesnt work', 'atm not working',
+    'card blocked', 'card nahi chal', 'card decline ho', 'कार्ड नहीं चल', 'कार्ड डिक्लाइन', 'कार्ड काम नहीं', 'एटीएम काम नहीं',
+    'కార్డు పని చేయట్లేదు', 'కార్డ్ పని చేయట్లేదు', 'కార్డు పనిచేయట్లేదు', 'కార్డ్ పనిచేయట్లేదు', 'డిక్లైన్', 'ఏటీఎం పని చేయట్లేదు']],
+  ['missedflight', ['missed my connection', 'missed connection', 'missed my connecting', 'missed the connecting', 'missed connecting', 'missed my flight', 'missed flight', 'flight delayed', 'flight is delayed', 'delayed',
+    'flight cancelled', 'flight canceled', 'cancelled', 'flight miss', 'miss ho gayi', 'miss ho gaya', 'flight chhut', 'फ्लाइट छूट', 'फ़्लाइट छूट', 'फ्लाइट लेट', 'फ्लाइट कैंसिल',
+    'మిస్ అయింది', 'ఫ్లైట్ మిస్', 'ఫ్లైట్ లేట్', 'ఫ్లైట్ క్యాన్సిల్', 'ఫ్లైట్ రద్దు']],
+  ['shortchanged', ['gave less', 'gave me less', 'less money', 'short changed', 'shortchanged', 'wrong amount', 'kam paise', 'paise kam',
+    'कम पैसे', 'पैसे कम', 'తక్కువ డబ్బు', 'తక్కువ ఇచ్చారు', 'డబ్బు తక్కువ']],
+  ['taxiissue', ['too much', 'overcharg', 'asking too much', 'unofficial', 'cant find my driver', 'cant find my pickup', 'driver not found',
+    'driver nahi mil', 'driver nahi aaya', 'pickup nahi', 'zyada maang', 'ड्राइवर नहीं मिल', 'ड्राइवर नहीं आया', 'ज़्यादा माँग', 'ज्यादा मांग',
+    'ఎక్కువ అడుగుతున్నాడు', 'ఎక్కువ అడుగుతున్నారు', 'డ్రైవర్ కనిపించట్లేదు', 'డ్రైవర్ రాలేదు', 'పికప్ రాలేదు']],
+  ['unsafe', ['unsafe', 'not safe', 'scared', 'afraid', 'danger', 'emergency', 'police', 'help me', 'urgent help', 'help chahiye', 'bachao',
+    'डर लग', 'मदद चाहिए', 'खतरा', 'ख़तरा', 'पुलिस', 'बचाओ', 'భయంగా', 'భయం', 'సహాయం కావాలి', 'ప్రమాదం', 'పోలీస్', 'కాపాడండి']],
+  ['wheelchair', ['wheelchair', 'wheel chair', 'special assistance', 'elderly', 'old parents', 'disabled', 'व्हीलचेयर', 'व्हील चेयर', 'बुजुर्ग',
+    'వీల్‌చైర్', 'వీల్ చైర్', 'వీల్చైర్', 'వృద్ధులు', 'పెద్దవాళ్ళు']],
+  ['beforeafter', ['before immigration', 'after immigration', 'before or after', 'immigration ke pehle', 'immigration se pehle', 'pehle ya baad',
+    'इमिग्रेशन से पहले', 'इमिग्रेशन के बाद', 'पहले या बाद', 'ఇమ్మిగ్రేషన్ ముందా', 'ముందా తర్వాతా', 'ఇమ్మిగ్రేషన్ ముందు', 'ఇమ్మిగ్రేషన్ తర్వాత']],
+  ['visa', ['visa', 'documents', 'what will immigration ask', 'immigration questions', 'kya puchenge', 'kya poochenge', 'वीज़ा', 'वीजा', 'दस्तावेज़',
+    'क्या पूछेंगे', 'వీసా', 'డాక్యుమెంట్లు', 'ఏం అడుగుతారు']],
+  ['wifi', ['wifi', 'wi fi', 'wi-fi', 'wireless', 'otp', 'वाईफाई', 'वाई फाई', 'वाई-फ़ाई', 'వైఫై', 'వై ఫై']],
+  ['nodata', ['no data', 'phone dead', 'phone is dead', 'phone off', 'no signal', 'no network', 'mobile data', 'data nahi', 'data khatam',
+    'no internet', 'internet nahi', 'डेटा नहीं', 'नेटवर्क नहीं', 'डेटा ख़त्म', 'डेटा खत्म', 'इंटरनेट नहीं',
+    'data లేదు', 'net లేదు', 'డేటా లేదు', 'నెట్‌వర్క్ లేదు', 'నెట్వర్క్ లేదు', 'సిగ్నల్ లేదు', 'ఇంటర్నెట్ లేదు', 'ఫోన్ ఆఫ్']],
+  ['battery', ['battery', 'charger', 'charging', 'phone charge', 'low charge', 'charging point', 'बैटरी', 'चार्जर', 'चार्जिंग',
+    'బ్యాటరీ', 'ఛార్జింగ్', 'చార్జింగ్', 'ఛార్జర్', 'చార్జర్']],
+  ['latenight', ['late night', 'at night', 'midnight', 'night time', 'open at night', 'open now', 'is it open', 'still open', 'raat',
+    'counter open', 'anything open', 'is anything open', 'any counter open', 'open 24',
+    'khula', 'khula hai', 'रात', 'खुला है', 'खुला होगा', 'ఓపెన్ ఉందా', 'ఓపెనా', 'రాత్రి', 'అర్ధరాత్రి']],
+  ['trolley', ['trolley', 'trolleys', 'luggage cart', 'baggage cart', 'ट्रॉली', 'ట్రాలీ']],
   ['nostaff', ['nobody is here', 'nobody here', 'no one is here', 'no one here', 'no staff', 'no one to ask', 'nobody to ask',
     'there is nobody', 'theres nobody', 'koi nahi hai', 'koi nahin hai', 'koi staff nahi', 'yahan koi nahi',
     'कोई नहीं है', 'यहाँ कोई नहीं', 'कोई स्टाफ नहीं', 'स्टाफ नहीं है', 'पूछने के लिए कोई नहीं',
     'ఎవరూ లేరు', 'ఎవ్వరూ లేరు', 'స్టాఫ్ లేరు', 'సిబ్బంది లేరు', 'అడగడానికి ఎవరూ']],
   ['apphelp', ['save for my trip', 'save trip', 'save the app', 'save app', 'save this', 'flight mode', 'airplane mode', 'aeroplane mode',
-    'offline', 'without internet', 'no internet', 'home screen', 'install the app', 'install app', 'add to home',
-    'internet nahi', 'bina internet', 'ऑफ़लाइन', 'ऑफलाइन', 'फ़्लाइट मोड', 'फ्लाइट मोड', 'बिना इंटरनेट',
-    'इंटरनेट नहीं', 'होम स्क्रीन', 'सेव', 'ఆఫ్‌లైన్', 'ఆఫ్లైన్', 'ఫ్లైట్ మోడ్', 'ఇంటర్నెట్ లేకుండా', 'ఇంటర్నెట్ లేదు',
+    'offline', 'without internet', 'home screen', 'install the app', 'install app', 'add to home',
+    'bina internet', 'ऑफ़लाइन', 'ऑफलाइन', 'फ़्लाइट मोड', 'फ्लाइट मोड', 'बिना इंटरनेट',
+    'होम स्क्रीन', 'सेव', 'ఆఫ్‌లైన్', 'ఆఫ్లైన్', 'ఫ్లైట్ మోడ్', 'ఇంటర్నెట్ లేకుండా',
     'హోమ్ స్క్రీన్', 'సేవ్']],
   ['leftover', ['leftover', 'left over', 'leftover currency', 'leftover cash', 'leftover money', 'remaining currency', 'remaining cash',
     'bacha hua paisa', 'bache hue paise', 'bacha paisa', 'bache paise', 'bachi hui currency',
@@ -203,7 +239,8 @@ const COMMANDS = [
     'స్టాఫ్ని అడగ', 'స్టాఫ్ ని అడగ', 'సిబ్బందిని అడగ', 'స్టాఫ్ కార్డ్', 'స్టాఫ్కి చూపించ']],
   ['lost', ['lost', 'i am lost', 'im lost', 'where am i', 'dont know where i am', 'do not know where i am',
     'kho gaya', 'kho gayi', 'pata nahi kahan', 'pata nahin kahan', 'खो गया', 'खो गई', 'खो गयी', 'पता नहीं कहाँ', 'पता नहीं कहां',
-    'मैं कहाँ हूँ', 'कहाँ हूँ', 'कहां हूं', 'समझ नहीं आ रहा कहाँ', 'ఎక్కడున్నానో', 'ఎక్కడ ఉన్నానో అర్థం', 'ఎక్కడున్నానో తెలియదు', 'ఎక్కడ ఉన్నానో తెలియదు', 'తప్పిపోయాను', 'నేను ఎక్కడ ఉన్నాను']],
+    'मैं कहाँ हूँ', 'कहाँ हूँ', 'कहां हूं', 'मैं कहां हूं', 'मै कहाँ हूँ', 'मैं किधर हूँ', 'main kahan hoon', 'main kahan hu', 'mai kahan hu',
+    'main kahaan hoon', 'main kidhar hoon', 'kahan hoon main', 'kaha hu', 'समझ नहीं आ रहा कहाँ', 'ఎక్కడున్నానో', 'ఎక్కడ ఉన్నానో అర్థం', 'ఎక్కడున్నానో తెలియదు', 'ఎక్కడ ఉన్నానో తెలియదు', 'తప్పిపోయాను', 'నేను ఎక్కడ ఉన్నాను']],
   ['cantfind', ['cant find', 'cannot find', 'can not find', 'couldnt find', 'not finding', 'dont see',
     'cant see', 'where is it', 'nahi mil raha', 'nahin mil raha', 'nahi mila',
     'nahin mila', 'nahi mil rahi', 'nahi dikh', 'nahin dikh', 'mil nahi raha', 'nhi mil raha',
@@ -429,6 +466,24 @@ export function parse(raw, ctx = {}) {
   if (topic === 'leftover' && hasAny(p, ['want to change', 'want to exchange', 'need to change', 'convert', 'change to', 'change into',
     'badalna hai', 'badalne hain', 'बदलना है', 'बदलने हैं', 'बदलवाने', 'మార్చాలి', 'మార్చుకోవాలి', 'మార్చేయాలి'])) {
     topic = null; intent = intent || 'exchange';
+  }
+  // Traveller questions: the question wins over commands and destinations in the same sentence
+  const Q_TOPICS = ['confused', 'lostitem', 'carddecline', 'missedflight', 'shortchanged', 'taxiissue', 'unsafe', 'wheelchair', 'beforeafter',
+    'visa', 'wifi', 'nodata', 'battery', 'latenight', 'trolley'];
+  const qNumbers = findNumbers(tokens, (t) => !!currencyOf(t)).filter((n) => !TERMINAL_WORDS.includes(tokens[n.start - 1]));
+  if (topic === 'confused' && command === 'lost') topic = null;                // "don't know where I am" is the lost flow
+  if (topic === 'shortchanged' && qNumbers.length) topic = null;              // "giving only 1500" is a price check
+  if (topic === 'unsafe' && intent && !hasAny(p, ['unsafe', 'not safe', 'scared', 'afraid', 'danger', 'emergency', 'police',
+    'डर लग', 'खतरा', 'ख़तरा', 'पुलिस', 'భయంగా', 'భయం', 'ప్రమాదం', 'పోలీస్'])) topic = null;  // "help with exchange" isn't an emergency
+  if (topic === 'trolley' && !hasAny(p, QUESTION_WORDS) && tokens.length > 2) topic = null;   // "I can see trolleys" is a place
+  if (topic && Q_TOPICS.includes(topic)) {
+    if (command !== 'staff' && command !== 'restart') command = null;
+    intent = null;
+  }
+  // Greeting on its own
+  if (!topic && !intent && !command && !airport && tokens.length <= 4 &&
+      hasAny(p, ['hi', 'hello', 'hey', 'namaste', 'namaskar', 'good morning', 'नमस्ते', 'नमस्कार', 'हाय', 'हेलो', 'హాయ్', 'హలో', 'నమస్తే', 'నమస్కారం'])) {
+    topic = 'greet';
   }
   // Outside what the guide does (toilets, food, shops …). "My bag hasn't arrived" isn't "I'm lost".
   let offtopic = null;

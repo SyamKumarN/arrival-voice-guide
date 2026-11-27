@@ -1,7 +1,7 @@
 // main.js — the screen, the microphone ("Hear") and the voice ("Speak back").
 // The thinking lives in js/dialog.js; this file only wires it to the page.
 
-import { handle, initialState, currentRoute, stepText } from './js/dialog.js';
+import { handle, initialState, currentRoute, stepText, snapshot, restore } from './js/dialog.js';
 import { parse, score } from './js/parser.js';
 import { ui, say, terminalLabel, currencyName, staffLines, STAFF_VOICE, STAFF_DIR, speakable, LANG_TIP } from './js/phrases.js';
 import { formatMoney } from './js/price.js';
@@ -197,6 +197,14 @@ function afterSpeaking() {
   relistenTimer = setTimeout(() => { if (app.status === 'idle' && !rec) startListening(); }, 400);
 }
 
+// ---------- Keep the trip on the phone, so a refresh carries on (start over clears it) ----------
+function saveTrip() {
+  try {
+    if (!app.state.airport) store.set('trip', '');
+    else store.set('trip', JSON.stringify(snapshot(app.state)));
+  } catch { /* private mode: nothing saved */ }
+}
+
 // ---------- One turn: text in → reply out ----------
 async function submit(text) {
   text = String(text || '').trim();
@@ -231,6 +239,7 @@ async function submit(text) {
     if (app.status === 'thinking') setStatus('idle');
   }
   app.state = out.state;
+  saveTrip();
   app.lastReply = out.reply;
   if (out.reply.kind === 'price') app.lastPrice = out.reply.price;
   if (out.parsed && out.parsed.command === 'restart') app.lastPrice = null;
@@ -587,6 +596,14 @@ function bind() {
     return;
   }
   if (!Recognition) showNotice(ui(app.state.lang).noVoiceIn);
+  // After a refresh: carry on from the saved airport, terminal and step ("Continuing from step 3")
+  let resumed = null;
+  try { resumed = restore(JSON.parse(store.get('trip') || 'null'), app.data); } catch { resumed = null; }
+  if (resumed) {
+    app.state = resumed.state;
+    store.set('lang', app.state.lang);
+    if (resumed.reply) app.lastReply = resumed.reply;
+  }
   render();
   // Handy for testing and demos: window.arrival.submit("next")
   window.arrival = { submit, get state() { return app.state; }, get rates() { return app.rates; }, get reply() { return app.lastReply; },

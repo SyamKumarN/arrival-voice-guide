@@ -466,6 +466,96 @@ const EXTRA5 = {
   },
 };
 for (const l of Object.keys(EXTRA5)) Object.assign(T[l], EXTRA5[l]);
+
+// Round 7: greetings, confusion, traveller questions, resuming after a refresh (spoken replies under ~25 words)
+const SIDE_TEXT = {
+  en: { airside: 'after immigration, before customs (baggage hall)', landside: 'after customs, in the public area', unknown: 'not confirmed; ask the info desk' },
+  hi: { airside: 'इमिग्रेशन के बाद, कस्टम्स से पहले (बैगेज हॉल)', landside: 'कस्टम्स के बाद, बाहर पब्लिक एरिया में', unknown: 'पक्का नहीं; इन्फ़ॉर्मेशन डेस्क पर पूछिए' },
+  te: { airside: 'ఇమ్మిగ్రేషన్ తర్వాత, కస్టమ్స్ ముందు (బ్యాగేజ్ హాల్)', landside: 'కస్టమ్స్ తర్వాత, బయటి పబ్లిక్ ఏరియాలో', unknown: 'ఖచ్చితంగా తెలియదు; ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి' },
+};
+const sideLines = (items, l) => items.map((c) => `${c.name}: ${SIDE_TEXT[l][c.side] || SIDE_TEXT[l].unknown}`).join('; ');
+const EXTRA6 = {
+  en: {
+    greet: "Hello! I'm your airport arrival guide. Which airport did you land at?",
+    greetBack: 'Hello again!',
+    confused: (step, sign) => `No problem, we'll stay on this step. ${step} Look for the "${sign}" signs; if there are two ways, take the one with that sign. Say "ask staff" for a card.`,
+    confusedNoRoute: 'No problem. Tell me your airport, and whether you need money exchange, a SIM or a taxi.',
+    latenight24: (names) => `${names}: listed as open 24 hours. Others may close at night; use a bank ATM if needed.`,
+    beforeAfter: (items) => `${sideLines(items, 'en')}.`,
+    beforeAfterNoTerm: "Tell me your airport and terminal, and I'll check where the counters are.",
+    resumeLead: (n) => `Continuing from step ${n}.`,
+    info: {
+      wifi: 'Use the official airport Wi-Fi. If it asks for an OTP, ask the info desk for a code. Your saved trip works offline.',
+      battery: 'Look for charging points near seats, or ask the info desk. Use your own charger in a wall socket. Screenshot your route now.',
+      nodata: 'Use your saved trip offline with the buttons. Show the staff card, and ask the info desk for directions.',
+      carddecline: "Try another bank's ATM. Check your PIN and that international use is on; choose local currency. Still failing? Call the number on your card.",
+      lostitem: 'Go to the information desk or airport police now. For a passport, contact the Indian embassy or consulate. Block lost cards with your bank.',
+      missedflight: "Go to your airline's transfer or service desk. Keep your boarding pass and receipts.",
+      shortchanged: 'Count again at the counter, ask for the receipt, and speak to the supervisor before you leave.',
+      taxiissue: 'Use only the official taxi stand or app; check the meter or agree the fare first. Meet your driver at the official pickup point.',
+      latenight: 'Some counters may be closed at night. Use a bank ATM and ask the info desk.',
+      unsafe: 'Go to the nearest staff member, information desk or airport police. In an emergency, call the local emergency number.',
+      wheelchair: "Ask your airline or the information desk for special assistance. It's best booked before you fly.",
+      trolley: 'Trolleys are usually near the baggage belts and the arrivals exits.',
+      visa: 'Rules depend on your passport and trip. Check the embassy or official government website before you fly. I guide you after immigration.',
+    },
+  },
+  hi: {
+    greet: 'नमस्ते! मैं आपकी एयरपोर्ट अराइवल गाइड हूँ। आप किस एयरपोर्ट पर उतरे हैं?',
+    greetBack: 'नमस्ते!',
+    confused: (step, sign) => `कोई बात नहीं, हम इसी कदम पर हैं। ${step} "${sign}" वाले बोर्ड देखिए; दो रास्ते हों तो उसी बोर्ड वाला लीजिए। कार्ड के लिए "स्टाफ से पूछना है" बोलिए।`,
+    confusedNoRoute: 'कोई बात नहीं। अपना एयरपोर्ट बताइए, और बताइए कि पैसे बदलने हैं, सिम चाहिए या टैक्सी।',
+    latenight24: (names) => `${names}: 24 घंटे खुला बताया गया है। बाकी रात में बंद हो सकते हैं; ज़रूरत हो तो बैंक का एटीएम इस्तेमाल कीजिए।`,
+    beforeAfter: (items) => `${sideLines(items, 'hi')}।`,
+    beforeAfterNoTerm: 'अपना एयरपोर्ट और टर्मिनल बताइए, मैं देखती हूँ काउंटर कहाँ हैं।',
+    resumeLead: (n) => `कदम ${n} से आगे बढ़ते हैं।`,
+    info: {
+      wifi: 'एयरपोर्ट का आधिकारिक वाई-फ़ाई इस्तेमाल कीजिए। OTP माँगे तो इन्फ़ॉर्मेशन डेस्क से कोड लीजिए। सेव की हुई ट्रिप बिना इंटरनेट चलती है।',
+      battery: 'बैठने की जगह के पास चार्जिंग पॉइंट देखिए, या इन्फ़ॉर्मेशन डेस्क पर पूछिए। दीवार के सॉकेट में अपना चार्जर लगाइए। अभी रास्ते का स्क्रीनशॉट ले लीजिए।',
+      nodata: 'सेव की हुई ट्रिप बटन से बिना इंटरनेट इस्तेमाल कीजिए। स्टाफ़ कार्ड दिखाइए, और इन्फ़ॉर्मेशन डेस्क से रास्ता पूछिए।',
+      carddecline: 'दूसरे बैंक का एटीएम आज़माइए। पिन और इंटरनेशनल इस्तेमाल चालू है, यह देखिए; लोकल करेंसी चुनिए। फिर भी न चले तो कार्ड के पीछे वाले नंबर पर कॉल कीजिए।',
+      lostitem: 'अभी इन्फ़ॉर्मेशन डेस्क या एयरपोर्ट पुलिस के पास जाइए। पासपोर्ट के लिए भारतीय दूतावास या कॉन्सुलेट से संपर्क कीजिए। खोए कार्ड बैंक से ब्लॉक कराइए।',
+      missedflight: 'अपनी एयरलाइन के ट्रांसफ़र या सर्विस डेस्क पर जाइए। बोर्डिंग पास और रसीदें संभाल कर रखिए।',
+      shortchanged: 'काउंटर पर ही दोबारा गिनिए, रसीद माँगिए, और जाने से पहले सुपरवाइज़र से बात कीजिए।',
+      taxiissue: 'सिर्फ़ आधिकारिक टैक्सी स्टैंड या ऐप इस्तेमाल कीजिए; मीटर देखिए या किराया पहले तय कीजिए। ड्राइवर से आधिकारिक पिकअप पॉइंट पर ही मिलिए।',
+      latenight: 'रात में कुछ काउंटर बंद हो सकते हैं। बैंक का एटीएम इस्तेमाल कीजिए और इन्फ़ॉर्मेशन डेस्क पर पूछिए।',
+      unsafe: 'सबसे पास के स्टाफ़, इन्फ़ॉर्मेशन डेस्क या एयरपोर्ट पुलिस के पास जाइए। इमरजेंसी में स्थानीय इमरजेंसी नंबर पर कॉल कीजिए।',
+      wheelchair: 'स्पेशल असिस्टेंस के लिए अपनी एयरलाइन या इन्फ़ॉर्मेशन डेस्क से कहिए। यह यात्रा से पहले बुक करना सबसे अच्छा है।',
+      trolley: 'ट्रॉली आमतौर पर बैगेज बेल्ट और अराइवल्स के एग्ज़िट के पास होती हैं।',
+      visa: 'नियम आपके पासपोर्ट और यात्रा पर निर्भर हैं। यात्रा से पहले दूतावास या सरकारी वेबसाइट देखिए। मैं इमिग्रेशन के बाद रास्ता बताती हूँ।',
+    },
+  },
+  te: {
+    greet: 'నమస్తే! నేను మీ ఎయిర్‌పోర్ట్ అరైవల్ గైడ్‌ని. మీరు ఏ ఎయిర్‌పోర్ట్‌లో దిగారు?',
+    greetBack: 'నమస్తే!',
+    confused: (step, sign) => `పర్వాలేదు, ఇదే అడుగులో ఉన్నాం. ${step} "${sign}" బోర్డులు చూడండి; రెండు దారులు ఉంటే ఆ బోర్డు ఉన్న దారిలో వెళ్ళండి. కార్డ్ కోసం "స్టాఫ్‌ని అడగాలి" అని చెప్పండి.`,
+    confusedNoRoute: 'పర్వాలేదు. మీ ఎయిర్‌పోర్ట్ చెప్పండి, డబ్బు మార్చాలా, సిమ్ కావాలా, టాక్సీ కావాలా చెప్పండి.',
+    latenight24: (names) => `${names}: 24 గంటలు తెరిచి ఉంటుందని ఉంది. మిగతావి రాత్రి మూసి ఉండొచ్చు; అవసరమైతే బ్యాంక్ ఏటీఎం వాడండి.`,
+    beforeAfter: (items) => `${sideLines(items, 'te')}.`,
+    beforeAfterNoTerm: 'మీ ఎయిర్‌పోర్ట్, టెర్మినల్ చెప్పండి, కౌంటర్లు ఎక్కడ ఉన్నాయో చూస్తాను.',
+    resumeLead: (n) => `${n}వ అడుగు నుంచి కొనసాగిస్తున్నాం.`,
+    info: {
+      wifi: 'ఎయిర్‌పోర్ట్ అధికారిక వై-ఫై వాడండి. OTP అడిగితే ఇన్ఫర్మేషన్ డెస్క్‌లో కోడ్ అడగండి. సేవ్ చేసిన ట్రిప్ ఇంటర్నెట్ లేకుండా పని చేస్తుంది.',
+      battery: 'కూర్చునే చోట దగ్గర ఛార్జింగ్ పాయింట్లు చూడండి, లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి. గోడ సాకెట్‌లో మీ సొంత ఛార్జర్ వాడండి. ఇప్పుడే దారి స్క్రీన్‌షాట్ తీసుకోండి.',
+      nodata: 'సేవ్ చేసిన ట్రిప్‌ను బటన్లతో ఇంటర్నెట్ లేకుండా వాడండి. స్టాఫ్ కార్డ్ చూపించండి, ఇన్ఫర్మేషన్ డెస్క్‌లో దారి అడగండి.',
+      carddecline: 'వేరే బ్యాంక్ ఏటీఎం ప్రయత్నించండి. పిన్, ఇంటర్నేషనల్ వాడకం ఆన్‌లో ఉందో చూడండి; లోకల్ కరెన్సీ ఎంచుకోండి. అయినా పని చేయకపోతే కార్డ్ వెనక ఉన్న నంబర్‌కి కాల్ చేయండి.',
+      lostitem: 'వెంటనే ఇన్ఫర్మేషన్ డెస్క్ లేదా ఎయిర్‌పోర్ట్ పోలీస్ దగ్గరికి వెళ్ళండి. పాస్‌పోర్ట్ కోసం భారత రాయబార కార్యాలయం లేదా కాన్సులేట్‌ను సంప్రదించండి. పోయిన కార్డులను బ్యాంక్‌తో బ్లాక్ చేయించండి.',
+      missedflight: 'మీ ఎయిర్‌లైన్ ట్రాన్స్‌ఫర్ లేదా సర్వీస్ డెస్క్‌కి వెళ్ళండి. బోర్డింగ్ పాస్, రసీదులు జాగ్రత్తగా ఉంచుకోండి.',
+      shortchanged: 'కౌంటర్ దగ్గరే మళ్ళీ లెక్కపెట్టండి, రసీదు అడగండి, వెళ్ళే ముందు సూపర్‌వైజర్‌తో మాట్లాడండి.',
+      taxiissue: 'అధికారిక టాక్సీ స్టాండ్ లేదా యాప్ మాత్రమే వాడండి; మీటర్ చూడండి లేదా ముందే ఛార్జీ మాట్లాడుకోండి. డ్రైవర్‌ని అధికారిక పికప్ పాయింట్‌లోనే కలవండి.',
+      latenight: 'రాత్రి కొన్ని కౌంటర్లు మూసి ఉండొచ్చు. బ్యాంక్ ఏటీఎం వాడండి, ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి.',
+      unsafe: 'దగ్గర్లోని సిబ్బంది, ఇన్ఫర్మేషన్ డెస్క్ లేదా ఎయిర్‌పోర్ట్ పోలీస్ దగ్గరికి వెళ్ళండి. అత్యవసరమైతే స్థానిక ఎమర్జెన్సీ నంబర్‌కి కాల్ చేయండి.',
+      wheelchair: 'ప్రత్యేక సహాయం కోసం మీ ఎయిర్‌లైన్‌ను లేదా ఇన్ఫర్మేషన్ డెస్క్‌ను అడగండి. ప్రయాణానికి ముందే బుక్ చేయడం మంచిది.',
+      trolley: 'ట్రాలీలు సాధారణంగా బ్యాగేజ్ బెల్ట్‌లు, అరైవల్స్ ఎగ్జిట్ దగ్గర ఉంటాయి.',
+      visa: 'నియమాలు మీ పాస్‌పోర్ట్, ప్రయాణం మీద ఆధారపడతాయి. ప్రయాణానికి ముందే ఎంబసీ లేదా అధికారిక ప్రభుత్వ వెబ్‌సైట్ చూడండి. నేను ఇమ్మిగ్రేషన్ తర్వాత దారి చూపిస్తాను.',
+    },
+  },
+};
+for (const l of Object.keys(EXTRA6)) {
+  const { info, ...rest } = EXTRA6[l];
+  Object.assign(T[l], rest);
+  Object.assign(T[l].info, info);
+}
 export const tipList = (key, lang) => (TIP_LISTS[key] && (TIP_LISTS[key][short(lang)] || TIP_LISTS[key].en)) || [];
 
 // ---------- Ask-staff card ----------
@@ -481,6 +571,7 @@ export const STAFF = {
 // Metro and the off-topic questions the guide hands over to staff
 const STAFF_MORE = {
   en: {
+    help: 'Excuse me, I need help. Where is the information desk or airport police?',
     lost: "Excuse me, I'm lost. How do I get to baggage claim and the arrivals hall?",
     atm: 'Excuse me, where is the nearest ATM?',
     metro: 'Excuse me, where is the metro or train?', toilet: 'Excuse me, where is the toilet?',
@@ -489,6 +580,7 @@ const STAFF_MORE = {
     lostbag: "Excuse me, my bag hasn't arrived. Where is the baggage services desk?",
   },
   ar: {
+    help: 'من فضلك، أحتاج إلى مساعدة. أين مكتب الاستعلامات أو شرطة المطار؟',
     lost: 'من فضلك، أنا تائه. كيف أصل إلى استلام الأمتعة وصالة الوصول؟',
     atm: 'من فضلك، أين أقرب صراف آلي؟',
     metro: 'من فضلك، أين المترو أو القطار؟', toilet: 'من فضلك، أين دورة المياه؟',
@@ -497,6 +589,7 @@ const STAFF_MORE = {
     lostbag: 'من فضلك، حقيبتي لم تصل. أين مكتب خدمات الأمتعة؟',
   },
   th: {
+    help: 'ขอโทษครับ/ค่ะ ฉันต้องการความช่วยเหลือ เคาน์เตอร์ประชาสัมพันธ์หรือตำรวจสนามบินอยู่ที่ไหน',
     lost: 'ขอโทษครับ/ค่ะ ฉันหลงทาง ไปที่รับกระเป๋าและโถงผู้โดยสารขาเข้าทางไหน',
     atm: 'ขอโทษครับ/ค่ะ ตู้เอทีเอ็มที่ใกล้ที่สุดอยู่ที่ไหน',
     metro: 'ขอโทษครับ/ค่ะ รถไฟฟ้าอยู่ที่ไหน', toilet: 'ขอโทษครับ/ค่ะ ห้องน้ำอยู่ที่ไหน',
@@ -505,6 +598,7 @@ const STAFF_MORE = {
     lostbag: 'ขอโทษครับ/ค่ะ กระเป๋าของฉันไม่มา ติดต่อแผนกสัมภาระได้ที่ไหน',
   },
   hi: {
+    help: 'माफ़ कीजिए, मुझे मदद चाहिए। इन्फ़ॉर्मेशन डेस्क या एयरपोर्ट पुलिस कहाँ है?',
     lost: 'माफ़ कीजिए, मैं रास्ता भूल गया हूँ। बैगेज क्लेम और अराइवल हॉल कैसे जाऊँ?',
     atm: 'कृपया बताइए, सबसे पास का एटीएम कहाँ है?',
     metro: 'कृपया बताइए, मेट्रो या ट्रेन कहाँ है?', toilet: 'कृपया बताइए, शौचालय कहाँ है?',
@@ -513,6 +607,7 @@ const STAFF_MORE = {
     lostbag: 'मेरा सामान नहीं आया। बैगेज सर्विस डेस्क कहाँ है?',
   },
   te: {
+    help: 'క్షమించండి, నాకు సహాయం కావాలి. ఇన్ఫర్మేషన్ డెస్క్ లేదా ఎయిర్‌పోర్ట్ పోలీస్ ఎక్కడ ఉంది?',
     lost: 'క్షమించండి, నేను దారి తప్పాను. బ్యాగేజ్ క్లెయిమ్, అరైవల్స్ హాల్‌కి ఎలా వెళ్ళాలి?',
     atm: 'దయచేసి చెప్పండి, దగ్గర్లో ఏటీఎం ఎక్కడ ఉంది?',
     metro: 'దయచేసి చెప్పండి, మెట్రో లేదా రైలు ఎక్కడ ఉంది?', toilet: 'దయచేసి చెప్పండి, టాయిలెట్ ఎక్కడ ఉంది?',
@@ -620,7 +715,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `Saved on this phone (${d}): routes, counters, staff cards and rates from ${r}. The buttons work offline; voice needs internet.`,
     saveFailed: 'Could not save. Try again with internet.', install: 'Add to home screen',
     slower: 'Speak slower', yes: 'Yes', no: 'No', ratesSaved: 'Rates saved on this phone', langTipTitle: 'Language help:',
-    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag', atm: 'ATM', lost: 'Lost' },
+    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag', atm: 'ATM', lost: 'Lost', help: 'Help' },
     tries: ['Dubai terminal 3, I need currency', 'I want a SIM', 'taxi stand', "I'm lost", 'I have a connecting flight', 'I have a forex card', 'They give 1700 dirhams for 500 dollars'],
   },
   hi: {
@@ -628,7 +723,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `इस फ़ोन पर सेव हो गया (${d}): रास्ते, काउंटर, स्टाफ कार्ड और ${r} के रेट। बटन बिना इंटरनेट के चलेंगे; आवाज़ के लिए इंटरनेट चाहिए।`,
     saveFailed: 'सेव नहीं हुआ। इंटरनेट के साथ फिर कोशिश कीजिए।', install: 'होम स्क्रीन पर जोड़ें',
     slower: 'धीरे बोलिए', yes: 'हाँ', no: 'नहीं', ratesSaved: 'इस फ़ोन पर सेव किए रेट', langTipTitle: 'भाषा में मदद:',
-    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया', atm: 'एटीएम', lost: 'रास्ता भूल गए' },
+    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया', atm: 'एटीएम', lost: 'रास्ता भूल गए', help: 'मदद' },
     tries: ['dubai terminal teen, paise badalne hain', 'मुझे सिम चाहिए', 'होटल जाने के लिए टैक्सी', 'पता नहीं कहाँ हूँ', 'मेरी कनेक्टिंग फ़्लाइट है', 'मेरे पास फॉरेक्स कार्ड है', '500 dollar ke satrah sau dirham de rahe hain'],
   },
   te: {
@@ -636,7 +731,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `ఈ ఫోన్‌లో సేవ్ అయింది (${d}): దారులు, కౌంటర్లు, స్టాఫ్ కార్డ్‌లు, ${r} రేట్లు. బటన్లు ఇంటర్నెట్ లేకుండా పనిచేస్తాయి; వాయిస్‌కి ఇంటర్నెట్ కావాలి.`,
     saveFailed: 'సేవ్ కాలేదు. ఇంటర్నెట్‌తో మళ్ళీ ప్రయత్నించండి.', install: 'హోమ్ స్క్రీన్‌కి జోడించు',
     slower: 'నెమ్మదిగా మాట్లాడు', yes: 'అవును', no: 'కాదు', ratesSaved: 'ఈ ఫోన్‌లో సేవ్ చేసిన రేట్లు', langTipTitle: 'భాషా సహాయం:',
-    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు', atm: 'ఏటీఎం', lost: 'దారి తప్పాను' },
+    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు', atm: 'ఏటీఎం', lost: 'దారి తప్పాను', help: 'సహాయం' },
     tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'సిమ్ కావాలి', 'హోటల్‌కి టాక్సీ', 'నేను ఎక్కడున్నానో తెలియదు', 'నాకు కనెక్టింగ్ ఫ్లైట్ ఉంది', 'నా దగ్గర ఫారెక్స్ కార్డ్ ఉంది', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
   },
 };

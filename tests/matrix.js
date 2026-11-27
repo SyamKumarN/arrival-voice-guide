@@ -68,6 +68,20 @@ const SAY = {
   pickup: { en: 'my driver is picking me up', hi: 'मेरा ड्राइवर लेने आ रहा है', hinglish: 'mera driver pickup karega', te: 'నా డ్రైవర్ పికప్ చేస్తాడు' },
   leftover: { en: 'what do I do with leftover currency', hi: 'बचे हुए पैसे का क्या करूँ', hinglish: 'bacha hua paisa kya karun', te: 'మిగిలిన డబ్బు ఏం చేయాలి' },
   excessbag: { en: 'I have excess baggage', hi: 'अतिरिक्त सामान है', hinglish: 'extra baggage ka paisa dena hai', te: 'అదనపు లగేజీ ఉంది' },
+  q_wifi: { en: 'wifi not working', hi: 'वाईफाई नहीं चल रहा', hinglish: 'wifi nahi chal raha', te: 'Wi-Fi పనిచేయట్లేదు' },
+  q_battery: { en: 'my battery is low', hi: 'बैटरी कम है', hinglish: 'battery 5% hai', te: 'charging తక్కువ ఉంది' },
+  q_nodata: { en: 'no internet on my phone', hi: 'डेटा नहीं है', hinglish: 'data nahi hai', te: 'డేటా లేదు' },
+  q_carddecline: { en: 'my card was declined at the ATM', hi: 'कार्ड नहीं चल रहा', hinglish: 'card decline ho gaya', te: 'ATM లో కార్డు పని చేయట్లేదు' },
+  q_lostitem: { en: 'I lost my passport', hi: 'मेरा पासपोर्ट खो गया', hinglish: 'wallet kho gaya', te: 'passport పోయింది' },
+  q_missedflight: { en: 'I missed my connecting flight', hi: 'मेरी फ्लाइट छूट गई', hinglish: 'meri flight miss ho gayi', te: 'connecting flight మిస్ అయింది' },
+  q_shortchanged: { en: 'they gave me less money', hi: 'उन्होंने कम पैसे दिए', hinglish: 'kam paise diye', te: 'తక్కువ డబ్బు ఇచ్చారు' },
+  q_taxiissue: { en: 'the taxi driver is asking too much', hi: 'ड्राइवर नहीं मिल रहा', hinglish: 'driver nahi mil raha', te: 'taxi వాడు ఎక్కువ అడుగుతున్నాడు' },
+  q_latenight: { en: 'it is 2 am, is any counter open', hi: 'रात के 2 बजे हैं, काउंटर खुला है क्या', hinglish: 'raat ke 2 baje counter khula hai', te: 'రాత్రి 2 అయింది, counter open ఉందా' },
+  q_unsafe: { en: 'I feel unsafe', hi: 'मुझे डर लग रहा है', hinglish: 'help chahiye', te: 'నాకు భయంగా ఉంది' },
+  q_wheelchair: { en: 'I need a wheelchair', hi: 'व्हीलचेयर चाहिए', hinglish: 'wheelchair chahiye', te: 'wheelchair కావాలి' },
+  q_trolley: { en: 'where is a trolley', hi: 'ट्रॉली कहाँ है', hinglish: 'trolley kahan hai', te: 'trolley ఎక్కడ' },
+  q_beforeafter: { en: 'is the counter before or after immigration', hi: 'काउंटर इमिग्रेशन से पहले है या बाद में', hinglish: 'counter immigration ke pehle hai ya baad', te: 'ఈ counter immigration ముందా తర్వాతా' },
+  q_visa: { en: 'do I need a visa', hi: 'इमिग्रेशन में क्या पूछेंगे', hinglish: 'immigration mein kya puchenge', te: 'visa కావాలా' },
   tips: { en: 'any tips', hi: 'कुछ सलाह दीजिए', hinglish: 'kuch tips do', te: 'చిట్కాలు చెప్పండి' },
   traps: { en: 'traps to avoid', hi: 'धोखे बताइए', hinglish: 'dhokhe batao', te: 'మోసాలు చెప్పండి' },
 };
@@ -188,6 +202,12 @@ function scenarios(code, style, data, rates) {
     const other = codes[(codes.indexOf(code) + 1) % codes.length];
     add(`context switch: tips → "${other} … where is the ATM"`, [...start(), [say('tips'), { kind: 'tips' }],
       [`${AIRPORT_WORDS[other][style]} ${say('atmwhere')}`, { kind: 'info', topic: 'atmwhere', airport: other, mode: 'info' }]]);
+  }
+  // Round 7: traveller questions mid-route (safe answer, the route stays where it was)
+  for (const q of ['wifi', 'battery', 'nodata', 'carddecline', 'lostitem', 'missedflight', 'shortchanged', 'taxiissue', 'latenight', 'unsafe',
+    'wheelchair', 'trolley', 'beforeafter', 'visa']) {
+    const extra = q === 'unsafe' ? { staffIntent: 'help' } : q === 'nodata' ? { staffIntent: 'exchange' } : {};
+    add(`question: ${q} (keeps the route)`, [...start(), [say('q_' + q), { kind: 'info', topic: q, mode: 'route', step: 0, ...extra }]]);
   }
   for (const [t, key] of [['atm', 'atm'], ['pickup', 'taxi'], ['tips', 'money'], ['traps', 'traps']]) {
     const n = TIP_LISTS[key].en.length;

@@ -18,6 +18,14 @@ This guide lets you just speak:
 - Before it starts guiding, it confirms where you are: "Dubai, Terminal 3. Is that right?" You can answer by voice or with a tap.
 
 Beyond the route, it handles the moments that cost travellers money:
+- **Talking naturally:**
+  - It greets you back.
+  - "I don't understand, there are two ways" repeats the current step with the sign to follow, and never moves you on.
+  - "I'm in the arrival hall" starts or continues the route from there.
+  - A refresh carries on from the same step ("Continuing from step 3").
+- **Common problems:** Wi-Fi, a low battery, no data, a declined card, a lost passport or wallet, a missed or delayed flight, a counter that gave less money, taxi and pickup trouble, late-night opening, feeling unsafe, wheelchair help, trolleys, whether a counter is before or after immigration, and visa questions.
+  - Each gets a short, safe answer of under 25 words.
+  - Opening hours and before/after immigration come from the airport data; anything not confirmed points to the information desk.
 - **Leftover currency and excess baggage:** short tips on changing leftover cash before you leave the city, and paying airline baggage fees by card.
 - **Advice:** connecting flights (don't exit, follow the Transfer signs), a closed counter, how much to change (only the first day's needs), and the "rupees or local currency?" question (always local).
 - **Cards and ATMs:** forex, credit and debit card advice, plus ATM tips.
@@ -88,7 +96,7 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
 
 ## Tests
 
-`npm test` runs 1,151 checks, all without keys or network:
+`npm test` runs 1,523 checks, all without keys or network:
 - **Unit tests:**
   - **Parser (196 sentences in English, Hindi, Hinglish and Telugu):** off-topic requests, advice topics, yes/no, and spoken number variants (మూడ్, త్రీ, वन, टू).
   - **Numbers (18) and the price check (9).**
