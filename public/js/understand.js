@@ -104,9 +104,14 @@ const TIP_INTENTS = ['pickup', 'money_tips', 'atm_tips', 'traps', 'ask_staff'];
  * Returns null (use the rules) when the AI found nothing, or when it would answer a
  * "taken / I'm in the hall" sentence with a tip list or the staff card.
  */
-export function formToParsed(form, rules) {
+export function formToParsed(form, rules, state = null) {
   const f = clean(form);
   if (!f || f.intent === 'none') return null;
+  // The model often repeats the airport/terminal from the context; only a *new* place counts as said
+  if (state) {
+    if (f.airport && f.airport === state.airport) f.airport = null;
+    if (f.terminal && f.terminal === state.terminal && !f.airport) f.terminal = null;
+  }
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
   const p = {
     raw: rules ? rules.raw : '', norm: rules ? rules.norm : '',

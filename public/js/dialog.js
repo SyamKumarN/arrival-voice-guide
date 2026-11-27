@@ -22,6 +22,7 @@ export function initialState(lang = 'hi-IN') {
     confirmed: false, lost: false, tips: null, tipsGiven: false,
     lastAmount: null,           // { amount, currency } said earlier ("I have 1000 dollars")
     asks: null,                 // { key, n }: how often the same question was asked again
+    prevAirport: null,          // the airport before a "no", so "terminal 3" alone still works
   };
 }
 
@@ -119,7 +120,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   const lang = state.lang;
   const out = (st, r, extra = {}) => ({ state: st, reply: r, parsed: p, ...extra });
   const localCurrency = state.airport ? data.airports[state.airport].currency : null;
-  const p = opts.parsed || parse(sentence, { expecting: state.expecting, localCurrency });
+  const p = opts.parsed || parse(sentence, { expecting: state.expecting, localCurrency, airport: state.airport });
   // Never ask the same question a third time: count re-asks, reset on any other turn
   const prevAsks = state.asks;
   state.asks = null;
@@ -227,7 +228,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   }
 
   // 5. Outside our scope: say what we do, and hand the question to staff (never guess a location)
-  if (p.offtopic && !(state.expecting === 'stage' && p.stage)) {
+  if (p.offtopic && !(p.stage && (state.expecting === 'stage' || p.progress || p.atPlace))) {
     const staff = { intent: p.offtopic, airport: p.airport || state.airport };
     return out(state, reply('offtopic', say(lang, 'offtopic'), { staff }));
   }
@@ -283,7 +284,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
       Object.assign(state, { confirmed: true, expecting: null });
       confirmedNow = true;
     } else if (p.yesno === 'no') {
-      Object.assign(state, { airport: null, terminal: null, confirmed: false, mode: 'ask', expecting: 'airport' });
+      Object.assign(state, { prevAirport: state.airport, airport: null, terminal: null, confirmed: false, mode: 'ask', expecting: 'airport' });
       return out(state, reply('ask', say(lang, 'confirmNo')));
     } else if (!p.intent && !p.command && !(p.stage && (p.atPlace || p.progress))) {
       if (askedAgain('confirm') >= 2) return out(state, reply('confirm', say(lang, 'tapButtons').confirm), { unknown: true });
@@ -326,7 +327,13 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   if (state.mode !== 'route' && state.airport && state.terminal && p.stage && (p.atPlace || p.progress) &&
       !p.intent && !p.airport && state.expecting !== 'airport' && state.expecting !== 'terminal') {
     const r = currentRoute(state, data);
-    const i = r ? stepForStage(r, p.stage) : -1;
+    let i = r ? stepForStage(r, p.stage) : -1;
+    if (r && i >= 0 && p.progress && !p.atPlace) {
+      const last = r.steps.map((st) => st.stage).lastIndexOf(p.stage);
+      i = Math.min(last + 1, r.steps.length - 1);
+      Object.assign(state, { mode: 'route', step: i, expecting: null, lost: false, confirmed: true });
+      return out(state, reply('step', say(lang, 'doneAck') + ' ' + stepText(state, r)));
+    }
     if (r && i >= 0) {
       Object.assign(state, { mode: 'route', step: i, expecting: null, lost: false, confirmed: true });
       return out(state, reply('step', say(lang, 'lostFound')(p.stage) + ' ' + stepText(state, r)));
@@ -412,6 +419,9 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   if (p.intent) state.dest = p.intent;
   state.step = 0;
 
+  if (!state.airport && p.terminal && state.prevAirport && terminalsOf(data, state.prevAirport).includes(p.terminal)) {
+    state.airport = state.prevAirport;           // "No" → "terminal 3": same airport, other terminal
+  }
   if (!state.airport) {
     Object.assign(state, { mode: 'ask', expecting: 'airport' });
     return out(state, reply('ask', state.lost ? say(lang, 'lostAskAirport') : say(lang, 'askAirport')));
@@ -432,13 +442,18 @@ export function handle(prev, sentence, data, rates, opts = {}) {
     return out(state, reply('ask', askTerminal(lang, airport, true)));
   }
   if (!state.terminal) {
+    const again = prev.expecting === 'terminal' && prev.airport === state.airport;
     Object.assign(state, { mode: 'ask', expecting: 'terminal' });
+    if (again && askedAgain('terminal') >= 2) return out(state, reply('ask', say(lang, 'tapButtons').terminal));
     return out(state, reply('ask', askTerminal(lang, airport)));
   }
 
   // Before guiding anyone anywhere: "Dubai, Terminal 3. Is that right?"
   if (!state.confirmed) {
+    // Same place asked about again and again: point to the buttons instead of a third time
+    const again = prev.expecting === 'confirm' && prev.airport === state.airport && prev.terminal === state.terminal;
     Object.assign(state, { mode: 'confirm', expecting: 'confirm' });
+    if (again && askedAgain('confirm') >= 2) return out(state, reply('confirm', say(lang, 'tapButtons').confirm));
     return out(state, reply('confirm', confirmQuestion(state, data)));
   }
 

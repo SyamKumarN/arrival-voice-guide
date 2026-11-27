@@ -161,12 +161,12 @@ const NO_WORDS = ['no', 'nope', 'wrong', 'not right', 'incorrect', 'nahi', 'nahi
 // ---------- "What do you see?" answers, for the I'm-lost flow ----------
 const STAGES = {
   immigration: ['passport', 'passports', 'passport counter', 'immigration', 'pasport', 'passport control', 'automated gates', 'e gates',
-    'corridor', 'long corridor', 'walkway', 'travelator', 'people walking', 'officer', 'officers', 'escalator', 'escalators',
-    'पासपोर्ट', 'इमिग्रेशन', 'पासपोर्ट काउंटर', 'गलियारा', 'कॉरिडोर', 'लोग चल रहे', 'अफ़सर', 'अफसर', 'ऑफिसर', 'एस्केलेटर',
-    'పాస్పోర్ట్', 'పాస్‌పోర్ట్', 'ఇమ్మిగ్రేషన్', 'కారిడార్', 'కారిడర్', 'నడుస్తున్నారు', 'ఆఫీసర్', 'అధికారులు', 'ఎస్కలేటర్'],
-  baggage: ['baggage', 'bags', 'bag', 'belt', 'belts', 'luggage', 'carousel', 'trolley', 'trolleys', 'samaan', 'saman', 'duty free', 'shops',
-    'बैगेज', 'सामान', 'बेल्ट', 'लगेज', 'बैग', 'ट्रॉली', 'ड्यूटी फ्री', 'ड्यूटी फ़्री', 'दुकानें',
-    'బ్యాగేజ్', 'బెల్ట్', 'లగేజ్', 'సామాను', 'బ్యాగ', 'ట్రాలీ', 'డ్యూటీ ఫ్రీ', 'షాపులు'],
+    'corridor', 'long corridor', 'walkway', 'travelator', 'people walking', 'officer', 'officers', 'escalator', 'escalators', 'duty free',
+    'पासपोर्ट', 'इमिग्रेशन', 'पासपोर्ट काउंटर', 'ड्यूटी फ्री', 'ड्यूटी फ़्री', 'गलियारा', 'कॉरिडोर', 'लोग चल रहे', 'अफ़सर', 'अफसर', 'ऑफिसर', 'एस्केलेटर',
+    'పాస్పోర్ట్', 'పాస్‌పోర్ట్', 'ఇమ్మిగ్రేషన్', 'డ్యూటీ ఫ్రీ', 'కారిడార్', 'కారిడర్', 'నడుస్తున్నారు', 'ఆఫీసర్', 'అధికారులు', 'ఎస్కలేటర్'],
+  baggage: ['baggage', 'bags', 'bag', 'belt', 'belts', 'luggage', 'carousel', 'trolley', 'trolleys', 'samaan', 'saman', 'shops',
+    'बैगेज', 'सामान', 'बेल्ट', 'लगेज', 'बैग', 'ट्रॉली', 'दुकानें',
+    'బ్యాగేజ్', 'బెల్ట్', 'లగేజ్', 'సామాను', 'బ్యాగ', 'ట్రాలీ', 'షాపులు'],
   customs: ['customs', 'custom', 'green channel', 'red channel', 'scanner', 'x ray', 'कस्टम', 'ग्रीन चैनल', 'रेड चैनल', 'కస్టమ్', 'గ్రీన్ చానెల్', 'స్కానర్'],
   arrivals: ['arrivals', 'arrival', 'arrivals hall', 'hall', 'meeting hall', 'exit', 'outside', 'bahar', 'people waiting', 'name boards',
     'अराइवल', 'बाहर', 'एग्ज़िट', 'हॉल', 'अराइवल्स हॉल', 'అరైవల్', 'బయట', 'హాల్', 'ఎగ్జిట్'],
@@ -373,6 +373,11 @@ export function parse(raw, ctx = {}) {
     // "terminal number teen", "terminal no 3"
     const m = p.norm.match(/(?:terminal|टर्मिनल|టెర్మినల్)\s+(?:number|no|nambar|नंबर|నంబర్)\s+(\S+)/);
     if (m && TERMINAL_NUMBERS[m[1]]) terminal = 'T' + TERMINAL_NUMBERS[m[1]];
+  }
+  // "Emirates terminal" is Dubai T3; "flydubai" is mostly T2
+  if (!terminal && (airport === 'DXB' || ctx.airport === 'DXB' || hasAny(p, ['emirates', 'एमिरेट्स', 'ఎమిరేట్స్']))) {
+    if (hasAny(p, ['emirates', 'एमिरेट्स', 'ఎమిరేట్స్'])) { terminal = 'T3'; airport = airport || (ctx.airport ? null : 'DXB'); }
+    else if (hasAny(p, ['flydubai', 'fly dubai', 'फ्लाईदुबई', 'फ्लाई दुबई', 'ఫ్లైదుబాయ్', 'ఫ్లై దుబాయ్'])) terminal = 'T2';
   }
   if (!terminal && ctx.expecting === 'terminal') {
     // Answering "Which terminal?" with just "teen" / "3" / "మూడు" / "third"

@@ -673,6 +673,19 @@ export const FLOW_CASES = [
     turns: [
       ['how many exchange counters at Bengaluru terminal 1', { kind: 'info', has: 'No exchange counter is listed' }],
     ] },
+  // ---- Found by the 20 simulated AI conversations ----
+  { name: 'Sim: "దుబాయ్ ఎమిరేట్స్ టెర్మినల్" → Dubai T3', lang: 'te-IN',
+    turns: [['దుబాయ్ ఎమిరేట్స్ టెర్మినల్ లో ఉన్నా', { kind: 'confirm', airport: 'DXB', terminal: 'T3' }]] },
+  { name: 'Sim: flydubai → Dubai T2', lang: 'en-IN', turns: [['dubai, flydubai flight, change money', { kind: 'confirm', terminal: 'T2' }]] },
+  { name: 'Sim: "డ్యూటీ ఫ్రీ దాటాను" mid-route at Delhi T3 → bags step, not the shops card', lang: 'te-IN',
+    turns: [['ఢిల్లీ టెర్మినల్ త్రీ కి వచ్చాను', { kind: 'confirm' }], ['అవును', { step: 0 }], ['డ్యూటీ ఫ్రీ దాటాను', { kind: 'step', step: 2 }]] },
+  { name: 'Sim: "no" then "మూడో టెర్మినల్" keeps the airport', lang: 'te-IN',
+    turns: [['చాంగి ఎయిర్‌పోర్ట్ రెండో టెర్మినల్', { kind: 'confirm', terminal: 'T2' }], ['కాదు', { kind: 'ask' }],
+      ['మూడో టెర్మినల్', { kind: 'confirm', airport: 'SIN', terminal: 'T3' }], ['ఔను', { kind: 'step', step: 0 }]] },
+  { name: 'Sim: terminal never asked a third time', lang: 'en-IN',
+    turns: [['Dubai', { kind: 'ask', expecting: 'terminal' }], ['hmm', { kind: 'ask' }], ['not sure', { kind: 'ask', has: 'tap your terminal' }]] },
+  { name: 'Sim: "బ్యాగ్ తీసుకున్నా" while being asked to confirm → straight to the step after bags', lang: 'te-IN',
+    turns: [['బెంగళూరు టెర్మినల్ టూ', { kind: 'confirm' }], ['బ్యాగ్ తీసుకున్నా', { kind: 'step', mode: 'route', step: 2 }]] },
 ];
 
 // ---------- Runner ----------

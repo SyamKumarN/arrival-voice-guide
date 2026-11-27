@@ -221,7 +221,7 @@ async function submit(text) {
       clearTimeout(timer);
       if (r.ok) {
         const { form } = await r.json();
-        const parsed = formToParsed(form, out.parsed);
+        const parsed = formToParsed(form, out.parsed, before);
         if (parsed) {
           const ai = handle(before, text, app.data, app.rates, { parsed });
           if (!ai.unknown) out = ai;

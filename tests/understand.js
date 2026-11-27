@@ -48,7 +48,7 @@ export async function runUnderstand(data, rates) {
     let st = initialState(lang); const log = [];
     for (const [text, form] of turns) {
       const rules = handle(st, text, data, rates);
-      const parsed = form ? formToParsed(form, rules.parsed) : null;
+      const parsed = form ? formToParsed(form, rules.parsed, st) : null;
       const r = parsed ? handle(st, text, data, rates, { parsed }) : rules;
       const use = parsed && !r.unknown ? r : rules;
       st = use.state; log.push(use);
@@ -87,6 +87,14 @@ export async function runUnderstand(data, rates) {
     check('context: place, step, all steps, last message, earlier amount (nothing personal)',
       ctx.airport === 'SIN' && ctx.step.number === 2 && ctx.steps.length === 5 && ctx.steps[3].stage === 'arrivals' &&
       ctx.lastAppMessage === 'Step 2 of 5.' && ctx.amountSaidEarlier.amount === 1000 && !('lang' in ctx), JSON.stringify(ctx).slice(0, 200));
+  }
+  {
+    // The model copies the airport/terminal from the context into "yes": still just a yes
+    const log = runAI('en-IN', [['Dubai terminal 3', G({ intent: 'exchange', airport: 'DXB', terminal: 'T3' })],
+      ['yes', G({ intent: 'yes', airport: 'DXB', terminal: 'T3' })],
+      ['done with immigration', G({ intent: 'step_done', airport: 'DXB', terminal: 'T3', stage: 'immigration' })]]);
+    check('AI repeats the context place in "yes": route starts, no confirm loop', log[1].reply.kind === 'step' && log[1].state.mode === 'route' && log[2].state.step === 1,
+      log.map((r) => r.reply.kind + ':' + r.state.step).join(' '));
   }
   check('AI form "none" → the rules decide', formToParsed(G({}), parse('next', {})) === null);
 
