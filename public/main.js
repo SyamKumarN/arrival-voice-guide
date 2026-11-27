@@ -198,7 +198,7 @@ function afterSpeaking() {
 }
 
 // ---------- Keep the trip on the phone, so a refresh carries on (start over clears it) ----------
-function saveTrip() {
+function rememberTrip() {
   try {
     if (!app.state.airport) store.set('trip', '');
     else store.set('trip', JSON.stringify(snapshot(app.state)));
@@ -239,7 +239,7 @@ async function submit(text) {
     if (app.status === 'thinking') setStatus('idle');
   }
   app.state = out.state;
-  saveTrip();
+  rememberTrip();
   app.lastReply = out.reply;
   if (out.reply.kind === 'price') app.lastPrice = out.reply.price;
   if (out.parsed && out.parsed.command === 'restart') app.lastPrice = null;

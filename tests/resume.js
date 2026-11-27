@@ -1,6 +1,9 @@
 // resume.js — refresh-safe trips and short spoken answers.
 import { handle, initialState, snapshot, restore } from '../public/js/dialog.js';
 import { say } from '../public/js/phrases.js';
+import { execFileSync } from 'node:child_process';
+import { readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 export function runResume(data, rates) {
   const out = [];
@@ -34,5 +37,15 @@ export function runResume(data, rates) {
     check('short answers', `${lang}: every traveller answer ≤ ${max} words`, long.length === 0, long.join(', '));
   }
   check('short answers', 'greeting ≤ 25 words in every language', ['en-IN', 'hi-IN', 'te-IN'].every((l) => say(l, 'greet').split(/\s+/).length <= 25));
+  // Every browser file must load: a syntax error (e.g. a name declared twice) would stop the whole page
+  const pub = fileURLToPath(new URL('../public/', import.meta.url));
+  const files = ['main.js', 'sw.js', ...readdirSync(pub + 'js').map((f) => 'js/' + f)];
+  for (const f of files) {
+    let ok = true, msg = '';
+    try { execFileSync(process.execPath, ['--check', pub + f], { stdio: 'pipe' }); }
+    catch (e) { ok = false; msg = String(e.stderr || e.message).split('
+').find((l) => /Error/.test(l)) || 'syntax error'; }
+    check('page loads', `public/${f} has no syntax errors`, ok, msg);
+  }
   return out;
 }
