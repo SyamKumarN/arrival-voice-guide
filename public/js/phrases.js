@@ -117,9 +117,9 @@ const T = {
 
 // ---------- SIM, taxi, lost, ask-staff (added in round 2; these override the keys above) ----------
 const DEST = {
-  en: { exchange: 'exchange counter', sim: 'SIM card counter', taxi: 'taxi stand' },
-  hi: { exchange: 'एक्सचेंज काउंटर', sim: 'सिम कार्ड काउंटर', taxi: 'टैक्सी स्टैंड' },
-  te: { exchange: 'ఎక్స్ఛేంజ్ కౌంటర్', sim: 'సిమ్ కార్డ్ కౌంటర్', taxi: 'టాక్సీ స్టాండ్' },
+  en: { exchange: 'exchange counter', sim: 'SIM card counter', taxi: 'taxi stand', exit: 'way out' },
+  hi: { exchange: 'एक्सचेंज काउंटर', sim: 'सिम कार्ड काउंटर', taxi: 'टैक्सी स्टैंड', exit: 'बाहर के रास्ते' },
+  te: { exchange: 'ఎక్స్ఛేంజ్ కౌంటర్', sim: 'సిమ్ కార్డ్ కౌంటర్', taxi: 'టాక్సీ స్టాండ్', exit: 'బయటకు దారి' },
 };
 const STAGE_NAMES = {
   en: { immigration: 'passport counters', baggage: 'baggage belts', customs: 'customs', arrivals: 'arrivals hall' },
@@ -145,6 +145,7 @@ const EXTRA = {
       atm: "You're there. Choose the local currency on screen and check the fee before you press OK. Safe travels!",
       sim: "You're at the SIM counters. Check the price and the data before you pay. Safe travels!",
       taxi: "You're at the taxi stand. Keep your hotel address handy. Safe travels!",
+      exit: "You're out. Money exchange, SIM and taxis are signposted from the arrivals hall. Tell me if you need one. Safe travels!",
     })[dest || 'exchange'],
     noRouteDest: (dest, name) => (dest === 'sim'
       ? `I don't have step-by-step directions to the SIM counters at ${name} yet. SIM counters are usually in the arrivals hall after customs. Follow the signs or ask at the info desk.`
@@ -168,6 +169,7 @@ const EXTRA = {
       atm: 'आप पहुँच गए। स्क्रीन पर लोकल करेंसी चुनिए और OK दबाने से पहले फ़ीस देख लीजिए। शुभ यात्रा!',
       sim: 'आप सिम काउंटर पर पहुँच गए। पैसे देने से पहले दाम और डेटा पूछ लीजिए। शुभ यात्रा!',
       taxi: 'आप टैक्सी स्टैंड पर पहुँच गए। होटल का पता पास रखिए। शुभ यात्रा!',
+      exit: 'आप बाहर आ गए। एक्सचेंज, सिम और टैक्सी के बोर्ड अराइवल्स हॉल में हैं। इनमें से कुछ चाहिए तो बताइए। शुभ यात्रा!',
     })[dest || 'exchange'],
     noRouteDest: (dest, name) => (dest === 'sim'
       ? `${name} में सिम काउंटर तक का पूरा रास्ता अभी मेरे पास नहीं है। सिम काउंटर आमतौर पर कस्टम्स के बाद अराइवल्स हॉल में होते हैं। बोर्ड देखिए या इन्फ़ॉर्मेशन डेस्क पर पूछिए।`
@@ -191,6 +193,7 @@ const EXTRA = {
       atm: 'మీరు చేరుకున్నారు. స్క్రీన్‌పై లోకల్ కరెన్సీ ఎంచుకోండి, OK నొక్కే ముందు ఫీజు చూసుకోండి. శుభ ప్రయాణం!',
       sim: 'మీరు సిమ్ కౌంటర్ దగ్గరికి చేరుకున్నారు. డబ్బు ఇచ్చే ముందు ధర, డేటా అడగండి. శుభ ప్రయాణం!',
       taxi: 'మీరు టాక్సీ స్టాండ్ దగ్గరికి చేరుకున్నారు. హోటల్ అడ్రస్ దగ్గర ఉంచుకోండి. శుభ ప్రయాణం!',
+      exit: 'మీరు బయటకు వచ్చేశారు. ఎక్స్ఛేంజ్, సిమ్, టాక్సీ బోర్డులు అరైవల్స్ హాల్‌లో ఉంటాయి. వీటిలో ఏదైనా కావాలంటే చెప్పండి. శుభ ప్రయాణం!',
     })[dest || 'exchange'],
     noRouteDest: (dest, name) => (dest === 'sim'
       ? `${name}లో సిమ్ కౌంటర్‌కి పూర్తి దారి ఇంకా నా దగ్గర లేదు. సిమ్ కౌంటర్లు సాధారణంగా కస్టమ్స్ తర్వాత అరైవల్స్ హాల్‌లో ఉంటాయి. బోర్డులు చూడండి లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి.`
@@ -438,7 +441,7 @@ const EXTRA5 = {
     countersGuide: (first) => `Shall I guide you to ${first} step by step? Say yes.`,
     priceExample: (given, from, offered, to, lang) => `Tell me both amounts, for example: they give ${formatMoney(offered)} ${currencyName(to, lang)} for ${formatMoney(given)} ${currencyName(from, lang)}.`,
     askOffer: (amt, local, lang) => `How many ${currencyName(local, lang)} are they giving for your ${formatMoney(amt.amount)} ${currencyName(amt.currency, lang)}? For example: they're giving 1,250.`,
-    tapButtons: { confirm: 'Please tap Yes or No below.', airport: 'Please tap your airport below.', terminal: 'Please tap your terminal below.' },
+    tapButtons: { confirm: 'Please tap Yes or No below.', airport: 'Please tap your airport below.', terminal: 'Please tap your terminal below.', need: 'Please tap what you need below.' },
     lostAskAgain: 'Tell me one thing you can see, for example: passport desks, baggage belts, customs, or a big hall with people waiting.',
     lostGiveUp: 'Follow the signs for Arrivals or Baggage Claim, or show this card to any staff member.',
   },
@@ -449,7 +452,7 @@ const EXTRA5 = {
     countersGuide: (first) => `क्या मैं आपको ${first} तक एक-एक कदम ले चलूँ? हाँ बोलिए।`,
     priceExample: (given, from, offered, to, lang) => `दोनों रकम बताइए, जैसे: ${formatMoney(given)} ${currencyName(from, lang)} के ${formatMoney(offered)} ${currencyName(to, lang)} दे रहे हैं।`,
     askOffer: (amt, local, lang) => `आपके ${formatMoney(amt.amount)} ${currencyName(amt.currency, lang)} के वो कितने ${currencyName(local, lang)} दे रहे हैं? जैसे: 1,250 दे रहे हैं।`,
-    tapButtons: { confirm: 'कृपया नीचे हाँ या नहीं दबाइए।', airport: 'कृपया नीचे अपना एयरपोर्ट दबाइए।', terminal: 'कृपया नीचे अपना टर्मिनल दबाइए।' },
+    tapButtons: { confirm: 'कृपया नीचे हाँ या नहीं दबाइए।', airport: 'कृपया नीचे अपना एयरपोर्ट दबाइए।', terminal: 'कृपया नीचे अपना टर्मिनल दबाइए।', need: 'कृपया नीचे दबाइए कि क्या चाहिए।' },
     lostAskAgain: 'कोई एक चीज़ बताइए जो दिख रही हो, जैसे: पासपोर्ट डेस्क, बैगेज बेल्ट, कस्टम्स, या लोगों से भरा बड़ा हॉल।',
     lostGiveUp: 'Arrivals या Baggage Claim के बोर्ड देखते हुए चलिए, या यह कार्ड किसी भी स्टाफ़ को दिखाइए।',
   },
@@ -460,7 +463,7 @@ const EXTRA5 = {
     countersGuide: (first) => `${first} దగ్గరికి ఒక్కో అడుగు తీసుకెళ్ళనా? అవును అని చెప్పండి.`,
     priceExample: (given, from, offered, to, lang) => `రెండు మొత్తాలూ చెప్పండి, ఉదాహరణకు: ${formatMoney(given)} ${currencyName(from, lang)}కి ${formatMoney(offered)} ${currencyName(to, lang)} ఇస్తున్నారు.`,
     askOffer: (amt, local, lang) => `మీ ${formatMoney(amt.amount)} ${currencyName(amt.currency, lang)}కి వాళ్ళు ఎన్ని ${currencyName(local, lang)} ఇస్తున్నారు? ఉదాహరణకు: 1,250 ఇస్తున్నారు.`,
-    tapButtons: { confirm: 'దయచేసి కింద అవును లేదా కాదు నొక్కండి.', airport: 'దయచేసి కింద మీ ఎయిర్‌పోర్ట్ నొక్కండి.', terminal: 'దయచేసి కింద మీ టెర్మినల్ నొక్కండి.' },
+    tapButtons: { confirm: 'దయచేసి కింద అవును లేదా కాదు నొక్కండి.', airport: 'దయచేసి కింద మీ ఎయిర్‌పోర్ట్ నొక్కండి.', terminal: 'దయచేసి కింద మీ టెర్మినల్ నొక్కండి.', need: 'దయచేసి కింద మీకు ఏం కావాలో నొక్కండి.' },
     lostAskAgain: 'మీకు కనిపిస్తున్న ఒక్క దాని గురించి చెప్పండి, ఉదాహరణకు: పాస్‌పోర్ట్ డెస్క్‌లు, బ్యాగేజ్ బెల్ట్‌లు, కస్టమ్స్, లేదా జనం వేచి ఉన్న పెద్ద హాల్.',
     lostGiveUp: 'Arrivals లేదా Baggage Claim బోర్డులు చూస్తూ వెళ్ళండి, లేదా ఈ కార్డ్‌ను ఏ సిబ్బందికైనా చూపించండి.',
   },
@@ -483,7 +486,7 @@ const EXTRA6 = {
     latenight24: (names) => `${names}: listed as open 24 hours. Others may close at night; use a bank ATM if needed.`,
     beforeAfter: (items) => `${sideLines(items, 'en')}.`,
     beforeAfterNoTerm: "Tell me your airport and terminal, and I'll check where the counters are.",
-    resumeLead: (n) => `Continuing from step ${n}.`,
+    resumeLead: (n) => `You were on step ${n}.`,
     info: {
       wifi: 'Use the official airport Wi-Fi. If it asks for an OTP, ask the info desk for a code. Your saved trip works offline.',
       battery: 'Look for charging points near seats, or ask the info desk. Use your own charger in a wall socket. Screenshot your route now.',
@@ -508,7 +511,7 @@ const EXTRA6 = {
     latenight24: (names) => `${names}: 24 घंटे खुला बताया गया है। बाकी रात में बंद हो सकते हैं; ज़रूरत हो तो बैंक का एटीएम इस्तेमाल कीजिए।`,
     beforeAfter: (items) => `${sideLines(items, 'hi')}।`,
     beforeAfterNoTerm: 'अपना एयरपोर्ट और टर्मिनल बताइए, मैं देखती हूँ काउंटर कहाँ हैं।',
-    resumeLead: (n) => `कदम ${n} से आगे बढ़ते हैं।`,
+    resumeLead: (n) => `आप कदम ${n} पर थे।`,
     info: {
       wifi: 'एयरपोर्ट का आधिकारिक वाई-फ़ाई इस्तेमाल कीजिए। OTP माँगे तो इन्फ़ॉर्मेशन डेस्क से कोड लीजिए। सेव की हुई ट्रिप बिना इंटरनेट चलती है।',
       battery: 'बैठने की जगह के पास चार्जिंग पॉइंट देखिए, या इन्फ़ॉर्मेशन डेस्क पर पूछिए। दीवार के सॉकेट में अपना चार्जर लगाइए। अभी रास्ते का स्क्रीनशॉट ले लीजिए।',
@@ -533,7 +536,7 @@ const EXTRA6 = {
     latenight24: (names) => `${names}: 24 గంటలు తెరిచి ఉంటుందని ఉంది. మిగతావి రాత్రి మూసి ఉండొచ్చు; అవసరమైతే బ్యాంక్ ఏటీఎం వాడండి.`,
     beforeAfter: (items) => `${sideLines(items, 'te')}.`,
     beforeAfterNoTerm: 'మీ ఎయిర్‌పోర్ట్, టెర్మినల్ చెప్పండి, కౌంటర్లు ఎక్కడ ఉన్నాయో చూస్తాను.',
-    resumeLead: (n) => `${n}వ అడుగు నుంచి కొనసాగిస్తున్నాం.`,
+    resumeLead: (n) => `మీరు ${n}వ అడుగులో ఉన్నారు.`,
     info: {
       wifi: 'ఎయిర్‌పోర్ట్ అధికారిక వై-ఫై వాడండి. OTP అడిగితే ఇన్ఫర్మేషన్ డెస్క్‌లో కోడ్ అడగండి. సేవ్ చేసిన ట్రిప్ ఇంటర్నెట్ లేకుండా పని చేస్తుంది.',
       battery: 'కూర్చునే చోట దగ్గర ఛార్జింగ్ పాయింట్లు చూడండి, లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి. గోడ సాకెట్‌లో మీ సొంత ఛార్జర్ వాడండి. ఇప్పుడే దారి స్క్రీన్‌షాట్ తీసుకోండి.',
@@ -556,6 +559,44 @@ for (const l of Object.keys(EXTRA6)) {
   Object.assign(T[l], rest);
   Object.assign(T[l].info, info);
 }
+
+// Round 8: what do you need first, overview, emergencies, taxi fares, translations, out-of-scope
+const EXTRA7 = {
+  en: {
+    askNeed: (place) => `${place}. What do you need first: change money, a SIM card, a taxi, or just the way out?`,
+    askNeedShort: 'What do you need first: change money, a SIM card, a taxi, or just the way out?',
+    overview: 'First: 1. Immigration. 2. Collect your bags. 3. Customs. 4. Change a small amount, get a SIM, then a taxi. What do you need first?',
+    emergency: 'Go to the nearest staff member, information desk or airport police now. In an emergency, call the local emergency number. Show them this card.',
+    taxicost: 'Fares vary by distance and time. Use the official taxi stand, check the meter is on, or ask the fare before you get in.',
+    translate: "Here's our checked card to show staff. The app has cards for money exchange, SIM, taxi and help.",
+    scopeLine: "I'm your arrival guide for money, SIM, taxi and directions; for this, ask staff or check the official source.",
+    outOfScope: "I can't help with that one. I'm your arrival guide for money, SIM, taxi and directions; for this, ask staff or check the official source.",
+    resumeAll: 'Continuing where you left off.',
+  },
+  hi: {
+    askNeed: (place) => `${place}। पहले क्या चाहिए: पैसे बदलना, सिम कार्ड, टैक्सी, या बस बाहर का रास्ता?`,
+    askNeedShort: 'पहले क्या चाहिए: पैसे बदलना, सिम कार्ड, टैक्सी, या बस बाहर का रास्ता?',
+    overview: 'पहले: 1. इमिग्रेशन। 2. सामान लीजिए। 3. कस्टम्स। 4. थोड़े पैसे बदलिए, सिम लीजिए, फिर टैक्सी। पहले क्या चाहिए?',
+    emergency: 'अभी सबसे पास के स्टाफ़, इन्फ़ॉर्मेशन डेस्क या एयरपोर्ट पुलिस के पास जाइए। इमरजेंसी में स्थानीय इमरजेंसी नंबर पर कॉल कीजिए। उन्हें यह कार्ड दिखाइए।',
+    taxicost: 'किराया दूरी और समय पर निर्भर है। आधिकारिक टैक्सी स्टैंड इस्तेमाल कीजिए, मीटर चालू है यह देखिए, या बैठने से पहले किराया पूछिए।',
+    translate: 'स्टाफ़ को दिखाने के लिए हमारा जाँचा हुआ कार्ड यह रहा। ऐप में पैसे बदलने, सिम, टैक्सी और मदद के कार्ड हैं।',
+    scopeLine: 'मैं पैसे, सिम, टैक्सी और रास्ते के लिए आपकी अराइवल गाइड हूँ; इसके लिए स्टाफ़ से पूछिए या आधिकारिक स्रोत देखिए।',
+    outOfScope: 'इसमें मैं मदद नहीं कर सकती। मैं पैसे, सिम, टैक्सी और रास्ते के लिए आपकी अराइवल गाइड हूँ; इसके लिए स्टाफ़ से पूछिए या आधिकारिक स्रोत देखिए।',
+    resumeAll: 'जहाँ छोड़ा था, वहीं से आगे बढ़ते हैं।',
+  },
+  te: {
+    askNeed: (place) => `${place}. ముందు ఏం కావాలి: డబ్బు మార్చాలా, సిమ్ కార్డా, టాక్సీనా, లేక బయటకు దారి మాత్రమేనా?`,
+    askNeedShort: 'ముందు ఏం కావాలి: డబ్బు మార్చాలా, సిమ్ కార్డా, టాక్సీనా, లేక బయటకు దారి మాత్రమేనా?',
+    overview: 'ముందు: 1. ఇమ్మిగ్రేషన్. 2. బ్యాగులు తీసుకోండి. 3. కస్టమ్స్. 4. కొంచెం డబ్బు మార్చండి, సిమ్ తీసుకోండి, తర్వాత టాక్సీ. ముందు ఏం కావాలి?',
+    emergency: 'వెంటనే దగ్గర్లోని సిబ్బంది, ఇన్ఫర్మేషన్ డెస్క్ లేదా ఎయిర్‌పోర్ట్ పోలీస్ దగ్గరికి వెళ్ళండి. అత్యవసరమైతే స్థానిక ఎమర్జెన్సీ నంబర్‌కి కాల్ చేయండి. ఈ కార్డ్ చూపించండి.',
+    taxicost: 'ఛార్జీ దూరం, సమయం మీద ఆధారపడుతుంది. అధికారిక టాక్సీ స్టాండ్ వాడండి, మీటర్ ఆన్‌లో ఉందో చూడండి, లేదా ఎక్కే ముందే ఛార్జీ అడగండి.',
+    translate: 'సిబ్బందికి చూపించడానికి మేము చెక్ చేసిన కార్డ్ ఇదిగో. యాప్‌లో డబ్బు మార్పిడి, సిమ్, టాక్సీ, సహాయం కార్డులు ఉన్నాయి.',
+    scopeLine: 'నేను డబ్బు, సిమ్, టాక్సీ, దారి కోసం మీ అరైవల్ గైడ్‌ని; దీని కోసం సిబ్బందిని అడగండి లేదా అధికారిక సమాచారం చూడండి.',
+    outOfScope: 'దీనిలో నేను సహాయం చేయలేను. నేను డబ్బు, సిమ్, టాక్సీ, దారి కోసం మీ అరైవల్ గైడ్‌ని; దీని కోసం సిబ్బందిని అడగండి లేదా అధికారిక సమాచారం చూడండి.',
+    resumeAll: 'మీరు ఆపిన చోటు నుంచి కొనసాగిస్తున్నాం.',
+  },
+};
+for (const l of Object.keys(EXTRA7)) Object.assign(T[l], EXTRA7[l]);
 export const tipList = (key, lang) => (TIP_LISTS[key] && (TIP_LISTS[key][short(lang)] || TIP_LISTS[key].en)) || [];
 
 // ---------- Ask-staff card ----------
@@ -689,19 +730,19 @@ export const UI = {
 const UI_EXTRA = {
   en: {
     askStaff: 'Ask staff', staffTitle: 'Please show this to airport staff', close: 'Close', readAloud: 'Read aloud',
-    dest: { exchange: 'Money exchange', sim: 'SIM card', taxi: 'Taxi' },
+    dest: { exchange: 'Money exchange', sim: 'SIM card', taxi: 'Taxi', exit: 'Just the way out' }, historyTitle: 'Earlier in this conversation',
     lastChecked: 'Last checked', counter: 'Exchange counter', notMeasured: "Rates here haven't been compared yet. Check the board and ask for the final amount.", pending: 'Details still being checked: ask at the info desk',
     tries: ['Dubai terminal 3, I need currency', 'I want a SIM', 'taxi stand', "I'm lost", 'ask staff', 'They give 1700 dirhams for 500 dollars'],
   },
   hi: {
     askStaff: 'स्टाफ से पूछें', staffTitle: 'यह एयरपोर्ट स्टाफ को दिखाइए', close: 'बंद करें', readAloud: 'सुनाइए',
-    dest: { exchange: 'पैसे बदलना', sim: 'सिम कार्ड', taxi: 'टैक्सी' },
+    dest: { exchange: 'पैसे बदलना', sim: 'सिम कार्ड', taxi: 'टैक्सी', exit: 'बस बाहर का रास्ता' }, historyTitle: 'इस बातचीत में पहले',
     lastChecked: 'आख़िरी जाँच', counter: 'एक्सचेंज काउंटर', notMeasured: 'यहाँ के रेट की तुलना अभी नहीं हुई है। बोर्ड देखिए और फ़ाइनल अमाउंट पूछिए।', pending: 'जानकारी अभी जाँची जा रही है: इन्फ़ॉर्मेशन डेस्क पर पूछिए',
     tries: ['dubai terminal teen, paise badalne hain', 'मुझे सिम चाहिए', 'होटल जाने के लिए टैक्सी', 'पता नहीं कहाँ हूँ', 'स्टाफ से पूछना है', '500 dollar ke satrah sau dirham de rahe hain'],
   },
   te: {
     askStaff: 'స్టాఫ్‌ని అడగండి', staffTitle: 'దయచేసి ఇది ఎయిర్‌పోర్ట్ సిబ్బందికి చూపించండి', close: 'మూసివేయి', readAloud: 'వినిపించు',
-    dest: { exchange: 'డబ్బు మార్పిడి', sim: 'సిమ్ కార్డ్', taxi: 'టాక్సీ' },
+    dest: { exchange: 'డబ్బు మార్పిడి', sim: 'సిమ్ కార్డ్', taxi: 'టాక్సీ' , exit: 'బయటకు దారి మాత్రమే' }, historyTitle: 'ఈ సంభాషణలో ఇంతకుముందు',
     lastChecked: 'చివరిగా చెక్ చేసింది', counter: 'ఎక్స్ఛేంజ్ కౌంటర్', notMeasured: 'ఇక్కడి రేట్లు ఇంకా పోల్చి చూడలేదు. బోర్డు చూసి, ఫైనల్ మొత్తం అడగండి.', pending: 'వివరాలు ఇంకా చెక్ చేస్తున్నాం: ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి',
     tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'సిమ్ కావాలి', 'హోటల్‌కి టాక్సీ', 'నేను ఎక్కడున్నానో తెలియదు', 'స్టాఫ్‌ని అడగాలి', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
   },

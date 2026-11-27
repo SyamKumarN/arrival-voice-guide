@@ -200,19 +200,20 @@ function afterSpeaking() {
 // ---------- Keep the trip on the phone, so a refresh carries on (start over clears it) ----------
 function rememberTrip() {
   try {
-    if (!app.state.airport) store.set('trip', '');
-    else store.set('trip', JSON.stringify(snapshot(app.state)));
+    if (!app.state.airport && !(app.history || []).length) store.set('trip', '');
+    else store.set('trip', JSON.stringify({ ...snapshot(app.state), history: app.history || [] }));
   } catch { /* private mode: nothing saved */ }
 }
 
 // ---------- One turn: text in → reply out ----------
-async function submit(text) {
+async function submit(text, opts = {}) {
   text = String(text || '').trim();
   if (!text) return;
   app.heard = text;
   showHeard(text, false);
   const before = app.state;
-  let out = handle(before, text, app.data, app.rates);       // the rules: always ready, also offline
+  const keepLang = !!opts.keepLang;                           // a button press keeps the language; speech or typing sets it
+  let out = handle(before, text, app.data, app.rates, { keepLang });   // the rules: always ready, also offline
 
   // With an AI key: every sentence goes to the AI first, with the conversation so far.
   // It only fills in our fixed form; the answer comes from our own data via the same dialog.
@@ -224,14 +225,14 @@ async function submit(text) {
       const timer = setTimeout(() => ctl.abort(), 4000);
       const r = await fetch('/api/understand', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
-        body: JSON.stringify({ text, lang: before.lang, context: buildContext(before, app.data, app.lastReply, buildRoute) }),
+        body: JSON.stringify({ text, lang: out.state.lang, context: buildContext(before, app.data, app.lastReply, buildRoute) }),
       });
       clearTimeout(timer);
       if (r.ok) {
         const { form } = await r.json();
         const parsed = formToParsed(form, out.parsed, before);
         if (parsed) {
-          const ai = handle(before, text, app.data, app.rates, { parsed });
+          const ai = handle(before, text, app.data, app.rates, { parsed, keepLang });
           if (!ai.unknown) out = ai;
         }
       }
@@ -239,8 +240,12 @@ async function submit(text) {
     if (app.status === 'thinking') setStatus('idle');
   }
   app.state = out.state;
-  rememberTrip();
   app.lastReply = out.reply;
+  if (out.state.lang !== before.lang) store.set('lang', out.state.lang);   // the reply follows the language they used
+  // The conversation, kept for a refresh (last 20 turns)
+  app.history = (app.history || []).concat({ you: text, guide: out.reply.text }).slice(-20);
+  if (out.parsed && out.parsed.command === 'restart') app.history = [];
+  rememberTrip();
   if (out.reply.kind === 'price') app.lastPrice = out.reply.price;
   if (out.parsed && out.parsed.command === 'restart') app.lastPrice = null;
 
@@ -347,6 +352,19 @@ function render() {
   const lang = state.lang;
   const L = ui(lang);
   document.documentElement.lang = short(lang);
+
+  // Earlier in this conversation (also restored after a refresh)
+  const hist = (app.history || []).slice(0, -1);
+  $('history').hidden = !hist.length;
+  $('historyTitle').textContent = L.historyTitle + ' (' + hist.length + ')';
+  const hl = $('historyList');
+  hl.innerHTML = '';
+  for (const h of hist) {
+    const li = document.createElement('li');
+    const you = document.createElement('p'); you.className = 'you'; you.textContent = h.you;
+    const guide = document.createElement('p'); guide.className = 'guide'; guide.textContent = h.guide;
+    li.append(you, guide); hl.append(li);
+  }
 
   // Language chips
   document.querySelectorAll('#langs .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
@@ -478,13 +496,19 @@ function renderChoices() {
     const b = document.createElement('button');
     b.type = 'button'; b.textContent = label;
     if (primary) b.className = 'primary';
-    b.onclick = () => submit(text);
+    b.onclick = () => submit(text, { keepLang: true });
     box.append(b);
   };
   if (state.expecting === 'airport') {
     for (const [code, a] of Object.entries(data.airports)) add(pick(a.name, state.lang), a.name.en);
   } else if (state.expecting === 'terminal' && state.airport) {
     for (const t of data.airports[state.airport].terminals) add(terminalLabel(t, state.lang), 'terminal ' + t.slice(1));
+  } else if (state.expecting === 'need') {
+    // "What do you need first?" — nothing is chosen for them
+    add(L.dest.exchange, 'change money', true);
+    add(L.dest.sim, 'sim card');
+    add(L.dest.taxi, 'taxi');
+    add(L.dest.exit, 'guide me out');
   } else if (state.expecting === 'confirm') {
     add(L.yes, 'yes', true);
     add(L.no, 'no');
@@ -560,16 +584,16 @@ function bind() {
     if (app.status === 'listening') stopListening();
     else startListening();                  // also interrupts speech
   };
-  $('nextBtn').onclick = () => submit('next');
-  $('repeatBtn').onclick = () => submit('repeat');
-  $('cantBtn').onclick = () => submit("can't find");
-  $('staffBtn').onclick = () => submit('ask staff');
+  $('nextBtn').onclick = () => submit('next', { keepLang: true });
+  $('repeatBtn').onclick = () => submit('repeat', { keepLang: true });
+  $('cantBtn').onclick = () => submit("can't find", { keepLang: true });
+  $('staffBtn').onclick = () => submit('ask staff', { keepLang: true });
   $('staffSpeak').onclick = () => speakStaff();
   $('staffClose').onclick = () => closeStaffCard();
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('staffCard').hidden) closeStaffCard(); });
-  $('restartBtn').onclick = () => { app.lastPrice = null; submit('start over'); };
-  $('tipsBtn').onclick = () => submit('tips');
-  $('trapsBtn').onclick = () => submit('traps');
+  $('restartBtn').onclick = () => { app.lastPrice = null; submit('start over', { keepLang: true }); };
+  $('tipsBtn').onclick = () => submit('tips', { keepLang: true });
+  $('trapsBtn').onclick = () => submit('traps', { keepLang: true });
   $('saveBtn').onclick = () => saveTrip();
   $('installBtn').onclick = async () => { if (installPrompt) { installPrompt.prompt(); installPrompt = null; renderSaved(); } };
   $('slower').checked = store.get('slower') === '1';
@@ -597,12 +621,14 @@ function bind() {
   }
   if (!Recognition) showNotice(ui(app.state.lang).noVoiceIn);
   // After a refresh: carry on from the saved airport, terminal and step ("Continuing from step 3")
-  let resumed = null;
-  try { resumed = restore(JSON.parse(store.get('trip') || 'null'), app.data); } catch { resumed = null; }
+  let resumed = null, savedTrip = null;
+  try { savedTrip = JSON.parse(store.get('trip') || 'null'); resumed = restore(savedTrip, app.data); } catch { resumed = null; }
   if (resumed) {
     app.state = resumed.state;
+    app.history = Array.isArray(savedTrip.history) ? savedTrip.history.slice(-20) : [];
     store.set('lang', app.state.lang);
-    if (resumed.reply) app.lastReply = resumed.reply;
+    const last = app.history.length ? app.history[app.history.length - 1].guide : '';
+    app.lastReply = resumed.reply || { kind: 'resume', text: say(app.state.lang, 'resumeAll') + (last ? ' ' + last : '') };
   }
   render();
   // Handy for testing and demos: window.arrival.submit("next")

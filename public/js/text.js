@@ -75,3 +75,29 @@ export function pick(obj, lang) {
   if (typeof obj === 'string') return obj;
   return obj[short(lang)] || obj.en || '';
 }
+
+// Words that show a Latin-letter sentence is Hinglish (keep Hindi) or Telugu in Latin letters (keep Telugu)
+const HINGLISH = new Set(['hai', 'hain', 'kya', 'kahan', 'kaha', 'nahi', 'nahin', 'mujhe', 'mera', 'meri', 'mere', 'chahiye', 'karna', 'karne', 'karo',
+  'batao', 'bolo', 'dikh', 'raha', 'rahe', 'rahi', 'kitne', 'kitna', 'paise', 'ke', 'ka', 'ki', 'ko', 'se', 'mein', 'aur', 'hoon', 'hu', 'haan',
+  'theek', 'sahi', 'aage', 'peeche', 'phir', 'dobara', 'kuch', 'chalega', 'milega', 'milenge', 'milegi', 'liye', 'wala', 'wale', 'band', 'koi',
+  'yahan', 'wahan', 'abhi', 'pehle', 'baad', 'gaya', 'gayi', 'ho', 'karun', 'badlu', 'poochna', 'diye', 'baje', 'khula', 'saath', 'bahar']);
+const TELUGU_LATIN = new Set(['undi', 'kavali', 'ekkada', 'ledu', 'cheppandi', 'enti', 'nenu', 'naaku', 'naku', 'emi', 'emiti', 'avunu', 'kaadu',
+  'ikkada', 'akkada', 'vachanu', 'vellali', 'cheyali', 'dabbu', 'unnanu', 'ela', 'entha']);
+const ENGLISH = new Set(['the', 'is', 'are', 'am', 'i', 'im', 'my', 'where', 'what', 'how', 'can', 'does', 'please', 'want', 'need', 'have', 'there',
+  'it', 'its', 'this', 'an', 'of', 'for', 'and', 'with', 'at', 'in', 'on', 'you', 'any', 'should', 'will', 'which', 'help', 'just']);
+
+/**
+ * The language a sentence is in, so the reply can follow it: Telugu or Devanagari script decide it;
+ * Latin letters stay in Hindi/Telugu when they look like Hinglish / Telugu-in-Latin, else become English.
+ */
+export function detectLang(text, current) {
+  const t = String(text || '');
+  if (/[ఀ-౿]/.test(t)) return 'te-IN';
+  if (/[ऀ-ॿ]/.test(t)) return 'hi-IN';
+  const words = t.toLowerCase().replace(/[^a-z' ]/g, ' ').split(/\s+/).filter(Boolean).map((w) => w.replace(/'/g, ''));
+  if (!words.length) return current;
+  if (words.some((w) => HINGLISH.has(w))) return current === 'te-IN' ? 'hi-IN' : (current === 'en-IN' ? 'hi-IN' : current);
+  if (words.some((w) => TELUGU_LATIN.has(w))) return 'te-IN';
+  if (words.some((w) => ENGLISH.has(w))) return 'en-IN';
+  return current;                          // a bare name ("Dubai", "T3"): keep the language
+}

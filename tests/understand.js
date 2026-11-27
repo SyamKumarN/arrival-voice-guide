@@ -11,7 +11,7 @@ export async function runUnderstand(data, rates) {
   const check = (name, ok, detail = '') => out.push({ group: 'ai fallback', name, ok: !!ok, detail });
   const answer = (form, lang = 'en-IN', state = initialState(lang)) => {
     const sentence = toSentence(form);
-    return { sentence, r: sentence ? handle(state, sentence, data, rates) : null };
+    return { sentence, r: sentence ? handle(state, sentence, data, rates, { keepLang: true }) : null };
   };
   const F = (o) => ({ intent: 'none', airport: 'none', terminal: 'none', amounts: [], currency: 'none', ...o });
 
@@ -97,10 +97,10 @@ export async function runUnderstand(data, rates) {
       log.map((r) => r.reply.kind + ':' + r.state.step).join(' '));
   }
   {
-    const st0 = { ...initialState('en-IN'), airport: 'BKK', terminal: 'MAIN', mode: 'route', step: 4, confirmed: true };
+    const st0 = { ...initialState('en-IN'), airport: 'BKK', terminal: 'MAIN', dest: 'exchange', mode: 'route', step: 4, confirmed: true };
     const r1 = handle(st0, 'reached', data, rates, { parsed: formToParsed(G({ intent: 'step_done', stage: 'arrivals' }), parse('reached', {}), st0) });
     check('AI "reached" with a guessed stage: just the next step, not the end', r1.reply.kind === 'step' && r1.state.step === 5, r1.reply.kind + ':' + r1.state.step);
-    const st1 = { ...initialState('te-IN'), airport: 'BLR', terminal: 'T2', mode: 'route', step: 2, confirmed: true };
+    const st1 = { ...initialState('te-IN'), airport: 'BLR', terminal: 'T2', dest: 'exchange', mode: 'route', step: 2, confirmed: true };
     const t1 = 'కస్టమ్స్ దగ్గర థామస్ కుక్ కనిపిస్తుంది';
     check('AI list_counters for "I see Thomas Cook near customs": the rules place wins', formToParsed(G({ intent: 'list_counters' }), parse(t1, {}), st1) === null);
     const t2 = 'వంద డాలర్లకి 3200 బాట్ ఇస్తున్నారు';
@@ -109,7 +109,7 @@ export async function runUnderstand(data, rates) {
     check('AI leftover tip for "I want to change leftover dirhams": exchange wins', formToParsed(G({ intent: 'leftover_currency' }), parse(t3, {}), null) === null);
   }
   {
-    const st2 = { ...initialState('en-IN'), airport: 'SIN', terminal: 'T1', mode: 'route', step: 1, confirmed: true };
+    const st2 = { ...initialState('en-IN'), airport: 'SIN', terminal: 'T1', dest: 'exchange', mode: 'route', step: 1, confirmed: true };
     const r2 = handle(st2, 'got both suitcases', data, rates, { parsed: formToParsed(G({ intent: 'step_done' }), parse('got both suitcases', {}), st2) });
     check('AI step_done "got both suitcases": exactly one step on', r2.state.step === 2, String(r2.state.step));
   }
@@ -120,7 +120,7 @@ export async function runUnderstand(data, rates) {
   check('off-list values are dropped (no invented airports, intents or amounts)',
     bad.intent === 'none' && bad.airport === null && bad.terminal === null && bad.amounts.length === 0 && bad.currency === null, JSON.stringify(bad));
   check('garbage gives no sentence', toSentence('not json') === '' && toSentence(null) === '' && toSentence(F({})) === '');
-  check('schema allows no extra fields', SCHEMA.additionalProperties === false && SCHEMA.required.length === 7);
+  check('schema allows no extra fields', SCHEMA.additionalProperties === false && SCHEMA.required.length === 8);
 
   // Server: no key → "key not set", nothing called; config never contains a key
   const saved = process.env.AI_API_KEY;

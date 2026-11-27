@@ -73,6 +73,24 @@ const METRO_WORDS = [
 
 // ---------- Advice topics (order matters: first match wins) ----------
 const TOPICS = [
+  // Emergencies first, always
+  ['emergency', ['child is lost', 'lost my child', 'my child is missing', 'child missing', 'lost my son', 'lost my daughter', 'my son is missing',
+    'my daughter is missing', 'kid is missing', 'medical', 'doctor', 'ambulance', 'chest pain', 'heart attack', 'fainted', 'injured', 'bleeding',
+    'robbed', 'stolen', 'pickpocket', 'theft', 'bachcha kho', 'baccha kho', 'beta kho', 'beti kho', 'chori ho', 'doctor chahiye',
+    'बच्चा खो', 'बेटा खो', 'बेटी खो', 'डॉक्टर', 'एम्बुलेंस', 'चोरी', 'लूट', 'बेहोश', 'सीने में दर्द',
+    'పిల్లవాడు తప్పిపోయాడు', 'పిల్లలు తప్పిపోయారు', 'బాబు కనిపించట్లేదు', 'పాప కనిపించట్లేదు', 'బాబు తప్పిపోయాడు', 'పాప తప్పిపోయింది',
+    'డాక్టర్', 'అంబులెన్స్', 'దొంగతనం', 'దోచుకున్నారు', 'దొంగిలించారు', 'స్పృహ తప్పి', 'ఛాతీ నొప్పి']],
+  // "What should I do first?": the order of things, not the next step
+  ['overview', ['what should i do first', 'what do i do first', 'what to do first', 'where do i start', 'what should i do after landing',
+    'what do i do after landing', 'pehle kya karun', 'pehle kya karna', 'पहले क्या करूँ', 'पहले क्या करना', 'सबसे पहले क्या',
+    'ముందు ఏం చేయాలి', 'మొదట ఏం చేయాలి', 'ముందుగా ఏం చేయాలి', 'మొదటగా ఏం చేయాలి']],
+  // "How much is a taxi?": we have no fares
+  ['taxicost', ['how much is a taxi', 'how much is the taxi', 'how much for a taxi', 'how much does a taxi', 'taxi fare', 'taxi cost',
+    'taxi price', 'taxi charges', 'cab fare', 'taxi kitne', 'taxi ka kiraya', 'taxi kitna', 'टैक्सी का किराया', 'टैक्सी कितने', 'टैक्सी कितना',
+    'టాక్సీ ఎంత', 'టాక్సీ ఛార్జీ', 'టాక్సీకి ఎంత', 'టాక్సీ ఖర్చు', 'taxi ఎంత']],
+  // "Translate 'I need help' into Arabic": our verified staff cards
+  ['translate', ['translate', 'in arabic', 'in thai', 'into arabic', 'into thai', 'say in arabic', 'arabic mein', 'thai mein', 'अनुवाद',
+    'ट्रांसलेट', 'अरबी में', 'थाई में', 'అనువాదం', 'అనువదించు', 'ట్రాన్స్లేట్', 'అరబిక్ లో', 'అరబిక్‌లో', 'థాయ్ లో']],
   // Round 7: confusion at a step and common traveller questions (checked before everything else)
   ['confused', ['dont understand', 'do not understand', 'i am confused', 'im confused', 'confusing', 'two ways', 'many ways', 'left or right',
     'which side', 'samajh nahi', 'samajh nahin', 'rasta samajh', 'do raste', 'समझ नहीं', 'रास्ता समझ', 'दो रास्ते', 'बाएँ या दाएँ', 'कन्फ्यूज़',
@@ -161,7 +179,7 @@ const OFFTOPIC = [
   ['prayer', ['prayer', 'prayer room', 'pray', 'namaz', 'namaaz', 'mosque', 'temple', 'chapel',
     'नमाज', 'नमाज़', 'प्रार्थना', 'पूजा', 'ప్రార్థన', 'నమాజ్', 'పూజ']],
   ['lounge', ['lounge', 'lounges', 'लाउंज', 'లాంజ్']],
-  ['shop', ['shop', 'shops', 'shopping', 'books', 'book', 'bookshop', 'book shop', 'alcohol', 'liquor', 'beer', 'wine', 'whisky',
+  ['shop', ['shop', 'shops', 'shopping', 'buy', 'purchase', 'kharidna', 'kharidne', 'खरीद', 'ख़रीद', 'కొనాలి', 'కొనడానికి', 'కొనుక్కోవాలి', 'books', 'book', 'bookshop', 'book shop', 'alcohol', 'liquor', 'beer', 'wine', 'whisky',
     'duty free', 'dutyfree', 'perfume', 'chocolate', 'chocolates', 'kitab', 'kitaab', 'sharab', 'daru',
     'शॉपिंग', 'दुकान', 'किताब', 'शराब', 'दारू', 'ड्यूटी फ्री', 'ड्यूटी फ़्री', 'बियर',
     'షాపింగ్', 'షాప్', 'దుకాణ', 'పుస్తక', 'మద్యం', 'డ్యూటీ ఫ్రీ', 'బీర్']],
@@ -215,7 +233,7 @@ const PLACE_WORDS = ['im in', 'i am in', 'im at', 'i am at', 'i can see', 'i see
 // "Taken / done / reached": the current step is finished
 // "Where is the belt?" asks for a place; it doesn't say where they are
 const QUESTION_WORDS = ['where', 'which way', 'how do i get', 'kahan', 'kidhar', 'कहाँ', 'कहां', 'किधर', 'ఎక్కడ', 'ఎటు', 'ఎలా వెళ్ళాలి'];
-const DONE_WORDS = ['done', 'taken', 'took', 'got my bags', 'got my bag', 'got the bags', 'got both', 'got all', 'got everything', 'got it', 'collected', 'reached', 'finished', 'completed',
+const DONE_WORDS = ['done', 'taken', 'took', 'claimed', 'picked up my', 'got my bags', 'got my bag', 'got the bags', 'got both', 'got all', 'got everything', 'got it', 'collected', 'reached', 'finished', 'completed',
   'cleared', 'passed', 'im through', 'i am through', 'ho gaya', 'ho gayi', 'le liya', 'le liye', 'mil gaya', 'mil gaye', 'pahunch gaya',
   'हो गया', 'हो गई', 'ले लिया', 'ले लिए', 'ले ली', 'मिल गया', 'मिल गए', 'पहुँच गया', 'पहुंच गया', 'पहुँच गई', 'कर लिया', 'पार कर लिया',
   'తీసుకున్నా', 'తీసేసుకున్నా', 'అయిపోయింది', 'అయింది', 'చేరుకున్నా', 'వచ్చేశా', 'దాటాను', 'దాటేశా', 'పూర్తయింది', 'కలెక్ట్ చేశా'];
@@ -457,7 +475,11 @@ export function parse(raw, ctx = {}) {
 
   // Intent: where they want to go. SIM and taxi words win over generic money words.
   let intent = null;
-  if (hasAny(p, SIM_WORDS)) intent = 'sim';
+  const EXIT_WORDS = ['guide me out', 'way out', 'get out', 'out of the airport', 'just guide me', 'just the way out', 'exit route', 'guide me to the exit',
+    'bahar kaise', 'bahar jana', 'bahar nikalna', 'बाहर कैसे', 'बाहर जाना', 'बाहर निकल', 'बाहर का रास्ता',
+    'బయటికి ఎలా', 'బయటకు ఎలా', 'బయటికి వెళ్ళాలి', 'బయటకు వెళ్ళాలి', 'బయటకు దారి', 'బయటికి దారి', 'బయటికి తీసుకెళ్ళు'];
+  if (hasAny(p, EXIT_WORDS)) intent = 'exit';
+  else if (hasAny(p, SIM_WORDS)) intent = 'sim';
   else if (hasAny(p, METRO_WORDS)) intent = 'metro';
   else if (hasAny(p, TAXI_WORDS) && topic !== 'pickup') intent = 'taxi';
   else if (hasAny(p, EXCHANGE_WORDS) || (price && price.given)) intent = 'exchange';
@@ -468,7 +490,8 @@ export function parse(raw, ctx = {}) {
     topic = null; intent = intent || 'exchange';
   }
   // Traveller questions: the question wins over commands and destinations in the same sentence
-  const Q_TOPICS = ['confused', 'lostitem', 'carddecline', 'missedflight', 'shortchanged', 'taxiissue', 'unsafe', 'wheelchair', 'beforeafter',
+  if (topic === 'battery' && hasAny(p, ['buy', 'purchase', 'kharid', 'खरीद', 'ख़रीद', 'కొనాలి', 'కొనడానికి', 'కొనుక్కోవాలి'])) topic = null;
+  const Q_TOPICS = ['emergency', 'overview', 'taxicost', 'translate', 'confused', 'lostitem', 'carddecline', 'missedflight', 'shortchanged', 'taxiissue', 'unsafe', 'wheelchair', 'beforeafter',
     'visa', 'wifi', 'nodata', 'battery', 'latenight', 'trolley'];
   const qNumbers = findNumbers(tokens, (t) => !!currencyOf(t)).filter((n) => !TERMINAL_WORDS.includes(tokens[n.start - 1]));
   if (topic === 'confused' && command === 'lost') topic = null;                // "don't know where I am" is the lost flow
@@ -479,6 +502,11 @@ export function parse(raw, ctx = {}) {
   if (topic && Q_TOPICS.includes(topic)) {
     if (command !== 'staff' && command !== 'restart') command = null;
     intent = null;
+  }
+  // "Can I bring mangoes into Singapore?": a rules question we don't answer (customs / what's allowed)
+  if (!topic && !command && hasAny(p, ['can i bring', 'can i carry', 'can i take', 'is it allowed', 'am i allowed', 'allowed to bring', 'import',
+    'la sakta', 'le ja sakta', 'ला सकता', 'ला सकती', 'ले जा सकता', 'ले जा सकती', 'తేవచ్చా', 'తీసుకెళ్ళవచ్చా', 'తీసుకురావచ్చా'])) {
+    topic = 'outofscope'; intent = null;
   }
   // Greeting on its own
   if (!topic && !intent && !command && !airport && tokens.length <= 4 &&

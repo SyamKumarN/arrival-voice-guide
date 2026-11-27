@@ -11,18 +11,18 @@ export function runResume(data, rates) {
 
   // A Telugu route at Dubai T3, step 3 → refresh → "Continuing from step 3"
   let st = initialState('te-IN');
-  for (const t of ['దుబాయ్ టెర్మినల్ 3', 'అవును', 'తర్వాత', 'తర్వాత']) st = handle(st, t, data, rates).state;
+  for (const t of ['దుబాయ్ టెర్మినల్ 3 డబ్బు మార్చాలి', 'అవును', 'తర్వాత', 'తర్వాత']) st = handle(st, t, data, rates).state;
   const saved = JSON.parse(JSON.stringify(snapshot(st)));
   const back = restore(saved, data);
   check('resume', 'refresh mid-route: same airport, terminal, step and language',
     back && back.state.airport === 'DXB' && back.state.terminal === 'T3' && back.state.step === 2 && back.state.mode === 'route' && back.state.lang === 'te-IN', JSON.stringify(back && back.state));
-  check('resume', 'refresh mid-route: says "continuing from step 3" in Telugu', back && back.reply && back.reply.text.startsWith('3వ అడుగు నుంచి కొనసాగిస్తున్నాం.'), back && back.reply && back.reply.text);
+  check('resume', 'refresh mid-route: says "continuing where you left off" and the step, in Telugu', back && back.reply && back.reply.text.startsWith('మీరు ఆపిన చోటు నుంచి కొనసాగిస్తున్నాం. మీరు 3వ అడుగులో ఉన్నారు.'), back && back.reply && back.reply.text);
   const next = handle(back.state, 'తర్వాత', data, rates);
   check('resume', 'after a refresh, "next" carries on', next.state.step === 3);
   const en = restore({ ...saved, lang: 'en-IN' }, data);
-  check('resume', 'English: "Continuing from step 3."', en.reply.text.startsWith('Continuing from step 3.'));
+  check('resume', 'English: "Continuing where you left off. You were on step 3."', en.reply.text.startsWith('Continuing where you left off. You were on step 3.'));
   const hi = restore({ ...saved, lang: 'hi-IN' }, data);
-  check('resume', 'Hindi: "कदम 3 से आगे बढ़ते हैं।"', hi.reply.text.startsWith('कदम 3 से आगे बढ़ते हैं।'));
+  check('resume', 'Hindi: "जहाँ छोड़ा था, वहीं से आगे बढ़ते हैं।"', hi.reply.text.startsWith('जहाँ छोड़ा था, वहीं से आगे बढ़ते हैं। आप कदम 3 पर थे।'));
   const over = handle(st, 'మళ్ళీ మొదలు', data, rates).state;
   check('resume', 'start over: nothing left to restore', restore(JSON.parse(JSON.stringify(snapshot(over))), data) === null);
   check('resume', 'older than 12 hours: start fresh', restore({ ...saved, at: Date.now() - 13 * 3600 * 1000 }, data) === null);

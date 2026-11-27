@@ -229,3 +229,13 @@ h1 { font-size: 19px; font-weight: 750; }
 .lang-tip strong { color: var(--ink); }
 .toggles { display: flex; flex-wrap: wrap; gap: 6px 16px; }
 .staff-tip { margin: 0; font-size: 13px; line-height: 1.45; color: #cfd8dc; }
+
+/* Earlier in this conversation */
+.history { margin-top: 10px; font-size: 14px; }
+.history summary { cursor: pointer; color: var(--muted, #5b6b6b); }
+.history ol { list-style: none; padding: 0; margin: 8px 0 0; max-height: 40vh; overflow-y: auto; }
+.history li { padding: 6px 0; border-top: 1px solid rgba(127, 127, 127, 0.2); }
+.history p { margin: 2px 0; overflow-wrap: anywhere; }
+.history .you { font-weight: 600; }
+.history .you::before { content: '“'; }
+.history .you::after { content: '”'; }

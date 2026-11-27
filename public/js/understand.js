@@ -9,6 +9,7 @@
 
 export const INTENTS = [
   'next_step', 'step_done', 'jump_to_step', 'list_counters', 'lost_answer', 'how_much',
+  'emergency', 'overview', 'taxi_cost', 'translate', 'guide_out', 'out_of_scope',
   'greeting', 'confused', 'wifi', 'battery', 'no_data', 'card_declined', 'lost_items', 'missed_flight', 'short_changed', 'taxi_problem',
   'late_night', 'unsafe', 'wheelchair', 'trolley', 'before_after_immigration', 'visa',
   'exchange', 'sim', 'taxi', 'metro', 'atm_where', 'atm_tips', 'price_check', 'amount_query',
@@ -41,8 +42,9 @@ export const SCHEMA = {
     currency: { type: 'string', enum: [...CURRENCY_CODES, 'none'] },
     step: { type: 'integer' },
     stage: { type: 'string', enum: [...STAGES, 'none'] },
+    answer: { type: 'string' },
   },
-  required: ['intent', 'airport', 'terminal', 'amounts', 'currency', 'step', 'stage'],
+  required: ['intent', 'airport', 'terminal', 'amounts', 'currency', 'step', 'stage', 'answer'],
   additionalProperties: false,
 };
 
@@ -61,6 +63,7 @@ export function clean(raw) {
     currency: one(raw.currency, CURRENCY_CODES),
     step: Number.isInteger(raw.step) && raw.step >= 1 && raw.step <= 12 ? raw.step : 0,
     stage: one(raw.stage, STAGES),
+    answer: typeof raw.answer === 'string' ? raw.answer.trim() : '',
   };
 }
 
@@ -95,14 +98,15 @@ const TOPIC_OF = {
   atm_where: 'atmwhere', atm_tips: 'atm', money_tips: 'tips', traps: 'traps', transit: 'transit', counter_closed: 'closed',
   how_much_to_change: 'howmuch', card_currency_choice: 'dcc', forex_card: 'forex', credit_card: 'credit', debit_card: 'debit',
   leftover_currency: 'leftover', excess_baggage: 'excessbag', pickup: 'pickup', no_staff: 'nostaff', app_help: 'apphelp',
-  list_counters: 'counters', greeting: 'greet', confused: 'confused', wifi: 'wifi', battery: 'battery', no_data: 'nodata',
+  list_counters: 'counters', emergency: 'emergency', overview: 'overview', taxi_cost: 'taxicost', translate: 'translate',
+  out_of_scope: 'outofscope', greeting: 'greet', confused: 'confused', wifi: 'wifi', battery: 'battery', no_data: 'nodata',
   card_declined: 'carddecline', lost_items: 'lostitem', missed_flight: 'missedflight', short_changed: 'shortchanged', taxi_problem: 'taxiissue',
   late_night: 'latenight', unsafe: 'unsafe', wheelchair: 'wheelchair', trolley: 'trolley', before_after_immigration: 'beforeafter', visa: 'visa',
 };
 const OFFTOPIC_OF = { toilet: 'toilet', food: 'food', prayer_room: 'prayer', lounge: 'lounge', shops: 'shop', missing_bag: 'lostbag' };
 const COMMAND_OF = { next: 'next', next_step: 'next', lost: 'lost', repeat: 'repeat', back: 'back', cant_find: 'cantfind', start_over: 'restart', ask_staff: 'staff' };
 // When the rules heard progress or a place, these AI readings are overruled ("I see Thomas Cook near customs" is a place)
-const RULE_FIRST = ['confused', 'greet', 'wifi', 'battery', 'nodata', 'carddecline', 'lostitem', 'missedflight', 'shortchanged', 'taxiissue',
+const RULE_FIRST = ['emergency', 'overview', 'taxicost', 'translate', 'confused', 'greet', 'wifi', 'battery', 'nodata', 'carddecline', 'lostitem', 'missedflight', 'shortchanged', 'taxiissue',
   'latenight', 'unsafe', 'wheelchair', 'trolley', 'beforeafter', 'visa', 'nostaff'];
 const TIP_INTENTS = ['pickup', 'money_tips', 'atm_tips', 'traps', 'ask_staff', 'list_counters', 'leftover_currency', 'no_staff', 'none'];
 
@@ -122,6 +126,9 @@ export function formToParsed(form, rules, state = null) {
   // A question, confusion or greeting the rules recognised wins ("two ways here" must never move the step)
   if (rules && rules.topic && RULE_FIRST.includes(rules.topic) && TOPIC_OF[f.intent] !== rules.topic) return null;
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
+  // "Out of scope" only when the rules found nothing they can answer from our data
+  if (f.intent === 'out_of_scope' && rules && (rules.intent || (rules.topic && rules.topic !== 'outofscope') || rules.command || rules.offtopic || rules.price ||
+    rules.amountQuery || rules.stage || rules.progress)) return null;
   // The rules read both amounts of a price ("100 dollars, they give 3200 baht"): keep that
   // "How much should they give for 500 dollars?" with one amount is a question about the fair amount
   if (rules && rules.amountQuery && f.intent === 'price_check' && f.amounts.length < 2) return null;
@@ -138,6 +145,8 @@ export function formToParsed(form, rules, state = null) {
   };
   const i = f.intent;
   if (['exchange', 'sim', 'taxi', 'metro'].includes(i)) p.intent = i;
+  else if (i === 'guide_out') p.intent = 'exit';
+  else if (i === 'out_of_scope') { p.topic = 'outofscope'; p.aiAnswer = f.answer || ''; }
   else if (COMMAND_OF[i]) p.command = COMMAND_OF[i];
   else if (TOPIC_OF[i]) p.topic = TOPIC_OF[i];
   else if (OFFTOPIC_OF[i]) p.offtopic = OFFTOPIC_OF[i];

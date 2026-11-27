@@ -6,13 +6,17 @@ import { runMatrix } from './matrix.js';
 import { runListen } from './listen.js';
 import { runUnderstand } from './understand.js';
 import { runResume } from './resume.js';
+import { runGolden } from './golden.js';
+import { handle, initialState } from '../public/js/dialog.js';
 
 const load = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'));
 const data = load('../public/data/airports.json');
 const rates = load('../public/data/rates-sample.json');
 const verbose = process.argv.includes('--verbose');
 
-const results = [...runSuite(data, rates), ...runMatrix(data, rates), ...runListen(), ...(await runUnderstand(data, rates)), ...runResume(data, rates)];
+const results = [...runSuite(data, rates), ...runMatrix(data, rates), ...runListen(), ...(await runUnderstand(data, rates)), ...runResume(data, rates),
+  ...(await runGolden(async (st, text) => handle(st, text, data, rates), initialState)).map((r) => ({
+    group: 'golden (rules)', name: `#${r.id} [${r.lang}] ${r.about}`, ok: r.pass, detail: `${r.kind}/${r.topic} step ${r.step} lang ${r.langOk ? 'ok' : 'WRONG'}: ${r.reply}` }))];
 const groups = {};
 for (const r of results) {
   const g = (groups[r.group] ||= { pass: 0, fail: 0 });
