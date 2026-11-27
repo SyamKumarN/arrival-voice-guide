@@ -78,7 +78,7 @@ Everything above works with no keys:
 Copy `.env.example` to `.env` (never commit it), or for the live site, set them as Vercel environment variables.
 
 - `SARVAM_API_KEY`: a more natural voice for spoken replies.
-- `AI_API_KEY`: AI understanding (Anthropic API key), used only when the built-in rules don't understand a sentence. The model fills in a fixed form (intent, airport, terminal, amounts, currency) chosen from the app's own lists. The app then answers from its own data, so the AI never writes the answer or names a place. Each call has a 3-second limit; after that the normal "here's what I can do" reply is used. Calls are rate-limited (12 a minute per visitor), and nothing the person says is logged. Without the key, everything works as before.
+- `AI_API_KEY`: AI understanding (Anthropic API key), used only when the built-in rules don't understand a sentence. The model fills in a fixed form (intent, airport, terminal, amounts, currency) chosen from the app's own lists. The app then answers from its own data, so the AI never writes the answer or names a place. Each call has a 3-second limit; after that the normal "here's what I can do" reply is used. Calls are rate-limited (12 a minute per visitor), and nothing the person says is logged. The default model is `claude-haiku-5-5`, chosen for speed; set `AI_MODEL` to use another. Without the key, everything works as before.
 
 ## Tests
 

@@ -225,6 +225,16 @@ export const PARSE_CASES = [
   ['en', 'how many baht for 100 dollars', { amountQuery: { amount: 100, from: 'USD', to: 'THB' } }],
   ['en', 'how many SGD for 10000 rupees', { amountQuery: { amount: 10000, from: 'INR', to: 'SGD' } }],
   ['en', 'how many dirhams for 500', { amountQuery: { amount: 500, from: null, to: 'AED' } }],
+  // ---- Syam's exact sentences from the Telugu phone test (word for word, mishearings included) ----
+  ['te', 'నేను టెర్మినల్ మూడ్ లో ఉన్నాను', { terminal: 'T3' }],
+  ['te', 'కానీ ఇక్కడ ఎవరూ లేరు', { topic: 'nostaff' }],
+  ['te', 'ఇక్కడ ఎవరూ లేరు నేను మాట్లాడతాను', { topic: 'nostaff' }],
+  ['te', 'ప్రైస్ చెక్ చేయాలనుకుంటున్నాను', { priceCheck: true, price: null }],
+  ['te', 'నాకు 500 డాలర్లకి ఎన్ని ది రాములు వస్తాయి', { amountQuery: { amount: 500, from: 'USD', to: 'AED' } }],
+  ['te', 'బెంగళూరు టర్నల్ వన్ లో ఏటీఎం ఎక్కడ ఉంది', { airport: 'BLR', terminal: 'T1', topic: 'atmwhere' }],
+  ['te', 'నాకు ఇవన్నీ కావాలి నేను ఫ్లైట్ మోడ్ లో వెళ్తున్న ఇవన్నీ నాకు చూపించాలి', { topic: 'apphelp' }],
+  // The mishearing fixes don't touch ordinary words: "రాములు" alone is a name, not dirhams
+  ['te', 'రాములు గారు ఎక్కడ', { amountQuery: null, numbers: [] }],
   // Things that must NOT be understood
   ['en', 'hello there', { airport: null, terminal: null, command: null, intent: null }],
   ['en', 'what do I do now', { numbers: [] }],
@@ -490,6 +500,35 @@ export const FLOW_CASES = [
   { name: 'Chai while reading traps (Hindi): staff card, not "next"', lang: 'hi-IN',
     turns: [['धोखे बताइए', { kind: 'tips' }], ['चाय कहाँ मिलेगी', { kind: 'offtopic' }]] },
   { name: 'Tea (Telugu): staff card', lang: 'te-IN', turns: [['టీ ఎక్కడ దొరుకుతుంది', { kind: 'offtopic' }]] },
+  // ---- Syam's exact Telugu phone-test sentences, as one conversation and one by one ----
+  { name: 'Syam phone test 1: "నేను టెర్మినల్ మూడ్ లో ఉన్నాను" answers the terminal question', lang: 'te-IN',
+    turns: [['దుబాయ్ డబ్బు మార్చాలి', { kind: 'ask', expecting: 'terminal' }],
+      ['నేను టెర్మినల్ మూడ్ లో ఉన్నాను', { kind: 'confirm', airport: 'DXB', terminal: 'T3' }]] },
+  { name: 'Syam phone test 2: "కానీ ఇక్కడ ఎవరూ లేరు" → info desk + card', lang: 'te-IN',
+    turns: [['కానీ ఇక్కడ ఎవరూ లేరు', { kind: 'info', has: 'ఇన్ఫర్మేషన్ డెస్క్' }]] },
+  { name: 'Syam phone test 3: "ఇక్కడ ఎవరూ లేరు నేను మాట్లాడతాను" → info desk + card', lang: 'te-IN',
+    turns: [['ఇక్కడ ఎవరూ లేరు నేను మాట్లాడతాను', { kind: 'info', has: 'ఇన్ఫర్మేషన్ డెస్క్' }]] },
+  { name: 'Syam phone test 4: "ప్రైస్ చెక్ చేయాలనుకుంటున్నాను" → asks for both amounts', lang: 'te-IN',
+    turns: [['ప్రైస్ చెక్ చేయాలనుకుంటున్నాను', { kind: 'ask', has: 'రెండు మొత్తాలూ చెప్పండి' }]] },
+  { name: 'Syam phone test 5: "…ఎన్ని ది రాములు వస్తాయి" → about 1,836 dirhams', lang: 'te-IN',
+    turns: [['నాకు 500 డాలర్లకి ఎన్ని ది రాములు వస్తాయి', { kind: 'amount', has: '1,836' }]] },
+  { name: 'Syam phone test 6: "బెంగళూరు టర్నల్ వన్ లో ఏటీఎం ఎక్కడ ఉంది" → Bengaluru T1 ATMs', lang: 'te-IN',
+    turns: [['బెంగళూరు టర్నల్ వన్ లో ఏటీఎం ఎక్కడ ఉంది', { kind: 'info', airport: 'BLR', terminal: 'T1', has: 'కర్బ్‌సైడ్' }]] },
+  { name: 'Syam phone test 7: "…ఫ్లైట్ మోడ్ లో వెళ్తున్న…" → Save for my trip + home screen', lang: 'te-IN',
+    turns: [['నాకు ఇవన్నీ కావాలి నేను ఫ్లైట్ మోడ్ లో వెళ్తున్న ఇవన్నీ నాకు చూపించాలి', { kind: 'info', has: 'Add to home screen' }]] },
+  { name: 'Syam phone test, whole session in order (Dubai T3 → tips → each sentence)', lang: 'te-IN',
+    turns: [
+      ['దుబాయ్ డబ్బు మార్చాలి', { kind: 'ask', expecting: 'terminal' }],
+      ['నేను టెర్మినల్ మూడ్ లో ఉన్నాను', { kind: 'confirm', terminal: 'T3' }],
+      ['అవును', { kind: 'step', mode: 'route' }],
+      ['కానీ ఇక్కడ ఎవరూ లేరు', { kind: 'info', mode: 'route' }],
+      ['ఇక్కడ ఎవరూ లేరు నేను మాట్లాడతాను', { kind: 'info', mode: 'route' }],
+      ['ప్రైస్ చెక్ చేయాలనుకుంటున్నాను', { kind: 'ask', mode: 'route' }],
+      ['నాకు 500 డాలర్లకి ఎన్ని ది రాములు వస్తాయి', { kind: 'amount', has: '1,836' }],
+      ['చిట్కాలు చెప్పండి', { kind: 'tips', mode: 'tips' }],
+      ['బెంగళూరు టర్నల్ వన్ లో ఏటీఎం ఎక్కడ ఉంది', { kind: 'info', airport: 'BLR', terminal: 'T1', mode: 'info', has: 'కర్బ్‌సైడ్' }],
+      ['నాకు ఇవన్నీ కావాలి నేను ఫ్లైట్ మోడ్ లో వెళ్తున్న ఇవన్నీ నాకు చూపించాలి', { kind: 'info', has: 'Add to home screen' }],
+    ] },
 ];
 
 // ---------- Runner ----------

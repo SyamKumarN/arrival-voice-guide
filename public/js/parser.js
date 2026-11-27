@@ -146,7 +146,8 @@ const HOW_MANY = ['how many', 'how much will i get', 'how much do i get', 'how m
   'kitne', 'kitna milega', 'kitne milenge', 'कितने', 'कितना मिलेगा', 'कितने मिलेंगे',
   'ఎన్ని', 'ఎంత వస్తుంది', 'ఎంత వస్తాయి', 'ఎంత ఇస్తారు', 'ఎంత వస్తది'];
 // "Price check" without numbers
-const PRICE_CHECK = ['price check', 'rate check', 'check the rate', 'check rate', 'check price', 'check the price', 'good rate',
+const PRICE_CHECK = ['price check', 'rate check', 'ప్రైస్ చెక్', 'ప్రైజ్ చెక్', 'ధర చూడాలి', 'రేటు చూడాలి',
+  'प्राइस चेक', 'दाम चेक', 'check the rate', 'check rate', 'check price', 'check the price', 'good rate',
   'fair rate', 'rate sahi', 'rate theek', 'रेट चेक', 'रेट जाँच', 'रेट जांच', 'रेट सही', 'रेट ठीक',
   'రేటు చెక్', 'రేట్ చెక్', 'ధర చెక్', 'రేటు సరైనదా', 'రేటు బాగుందా', 'రేటు కరెక్టా'];
 
@@ -196,7 +197,7 @@ const SOFT_NEXT = ['age', 'ok', 'okay', 'theek', 'thik', 'haan', 'yes', 'ठी�
 // so endings like "डॉलर्स" or "డాలర్లకు" still count.
 const CURRENCIES = {
   USD: ['dollar', 'dollars', 'usd', 'bucks', '$', 'डॉलर', 'डालर', 'डोलर', 'డాలర్', 'డాలర'],
-  AED: ['dirham', 'dirhams', 'dirhum', 'dirhem', 'durham', 'aed', 'दिरहम', 'दिरहाम', 'दिर्हम', 'दरहम', 'దిర్హామ్', 'దిర్హమ్', 'దిర్హాం', 'దిర్హం'],
+  AED: ['dirham', 'dirhams', 'dirhum', 'dirhem', 'durham', 'aed', 'दिरहम', 'दिरहाम', 'दिर्हम', 'दरहम', 'దిర్హామ్', 'దిర్హమ్', 'దిర్హాం', 'దిర్హం', 'దిర్హాము', 'దిర్హము', 'దిరామ్', 'దిరాము', 'దిరహమ్', 'దిరహాము'],
   INR: ['rupee', 'rupees', 'rupaye', 'rupay', 'rupiya', 'rs', 'inr', '₹', 'रुपये', 'रुपए', 'रुपया', 'रूपए', 'रूपये', 'रुपय', 'రూపాయ', 'రూపాయి', 'రూపాయల'],
   THB: ['baht', 'bhat', 'thb', 'बाट', 'भाट', 'బాట్', 'బాత్'],
   SGD: ['sgd'],
@@ -207,6 +208,21 @@ const SGD_PREFIX = ['singapore', 'sing', 'सिंगापुर', 'సిం�
 const CURRENCY_FILLERS = ['us', 'american', 'uae', 'emirati', 'thai', 'indian', 'अमेरिकी', 'यूएई', 'అమెరికన్'];
 
 /** Which currency a token names, or null. */
+// Phone recognisers split or mishear some words. Fix them before reading the sentence.
+// (Each is a whole phrase, so ordinary words such as the name "రాములు" alone are untouched.)
+const SPEECH_FIXES = [
+  [/(^| )ది రా(ము|మ్)/g, '$1దిరా$2'],          // "ది రాములు" → "దిరాములు" (dirhams)
+  [/(^| )ది ర్హా/g, '$1దిర్హా'],
+  [/(^| )(టర్నల్|టెర్నల్|టర్మినల్|టెర్మినల|టర్మనల్)(?= |$)/g, '$1టెర్మినల్'],
+  [/(^| )(टर्नल|टरनल|टर्मिनस)(?= |$)/g, '$1टर्मिनल'],
+  [/(^| )(turnal|ternal|terminus|termi nal)(?= |$)/g, '$1terminal'],
+];
+export function fixSpeech(text) {
+  let t = ' ' + text + ' ';
+  for (const [re, to] of SPEECH_FIXES) t = t.replace(re, to);
+  return t.trim().replace(/\s+/g, ' ');
+}
+
 export function currencyOf(token) {
   if (!token) return null;
   for (const [code, words] of Object.entries(CURRENCIES)) {
@@ -293,6 +309,7 @@ export function findPrice(tokens, localCurrency = null) {
  */
 export function parse(raw, ctx = {}) {
   const base = normalise(raw);
+  base.tokens = fixSpeech(base.tokens.join(' ')).split(' ').filter(Boolean);
   const tokens = splitJoined(base.tokens);
   const p = { norm: tokens.join(' '), tokens };
 
