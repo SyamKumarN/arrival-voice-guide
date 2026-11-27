@@ -43,8 +43,7 @@ export function runResume(data, rates) {
   for (const f of files) {
     let ok = true, msg = '';
     try { execFileSync(process.execPath, ['--check', pub + f], { stdio: 'pipe' }); }
-    catch (e) { ok = false; msg = String(e.stderr || e.message).split('
-').find((l) => /Error/.test(l)) || 'syntax error'; }
+    catch (e) { ok = false; msg = String(e.stderr || e.message).split(String.fromCharCode(10)).find((l) => /Error/.test(l)) || 'syntax error'; }
     check('page loads', `public/${f} has no syntax errors`, ok, msg);
   }
   return out;
