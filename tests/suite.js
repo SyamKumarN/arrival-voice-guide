@@ -697,6 +697,10 @@ export const FLOW_CASES = [
       ['वो 370 दे रहे हैं', { kind: 'price', has: '370' }]] },
   { name: 'Sim: "500 డాలర్లకి ఎంత ఇవ్వాలి వాళ్ళు" → fair amount', lang: 'te-IN',
     turns: [['సింగపూర్ టెర్మినల్ 3', { kind: 'confirm' }], ['500 డాలర్లకి ఎంత ఇవ్వాలి వాళ్ళు', { kind: 'amount', has: 'సింగపూర్' }]] },
+  { name: 'Sim: Bangkok (English, rules only): "Train to City signs" → "escalator to basement" → "reached"', lang: 'en-IN',
+    turns: [['bangkok suvarnabhumi, how do i get to superrich', { kind: 'confirm' }], ['correct', { kind: 'step', step: 0 }],
+      ['im at the train to city signs now', { kind: 'step', step: 3 }], ['going down the escalator to basement', { kind: 'step', step: 4 }],
+      ['reached', { kind: 'step', step: 5, has: 'SuperRich' }]] },
 ];
 
 // ---------- Runner ----------

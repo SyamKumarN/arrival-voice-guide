@@ -450,7 +450,8 @@ export function parse(raw, ctx = {}) {
 
   // Progress, place and counter questions
   const progress = hasAny(p, DONE_WORDS);
-  const atPlace = !!stage && hasAny(p, PLACE_WORDS) && !hasAny(p, QUESTION_WORDS);
+  const placeTalk = (hasAny(p, PLACE_WORDS) || hasAny(p, ['going', 'heading', 'walking', 'taking', 'im on', 'i am on', 'on the'])) && !hasAny(p, QUESTION_WORDS);
+  const atPlace = !!stage && placeTalk;
   if (hasAny(p, COUNTER_LIST)) { topic = 'counters'; if (intent === 'exchange') intent = null; }
   const offered = hasAny(p, OFFER_WORDS);
 
@@ -495,6 +496,7 @@ export function parse(raw, ctx = {}) {
     priceCheck,
     progress,
     atPlace,
+    placeTalk,
     offered,
   };
 }

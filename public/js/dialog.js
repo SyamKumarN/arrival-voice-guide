@@ -39,6 +39,24 @@ const LIST_TOPICS = { tips: 'money', traps: 'traps', atm: 'atm', pickup: 'taxi',
 // One-off advice topics
 const INFO_TOPICS = ['leftover', 'excessbag', 'transit', 'closed', 'howmuch', 'dcc', 'forex', 'credit', 'debit'];
 
+// Words too common to tell steps apart
+const STEP_STOP = new Set(['follow', 'signs', 'sign', 'your', 'there', 'after', 'collect', 'from', 'with', 'into', 'look', 'then', 'before',
+  'walk', 'take', 'clear', 'here', 'they', 'them', 'this', 'that', 'what', 'when', 'have', 'usually', 'counter', 'counters', 'money', 'change']);
+const stepWords = (text) => String(text || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/)
+  .filter((w) => w.length >= 4 && !STEP_STOP.has(w)).map((w) => w.replace(/s$/, ''));
+/** The route step (from the current one on) whose English words best match what they said; -1 if none. */
+function matchStep(route, norm, from) {
+  const said = new Set(stepWords(norm));
+  if (!said.size) return -1;
+  let best = -1, bestScore = 0;
+  route.steps.forEach((st, i) => {
+    if (i < from) return;
+    const score = stepWords(st.text.en).filter((w) => said.has(w)).length;
+    if (score > bestScore) { best = i; bestScore = score; }
+  });
+  return best;
+}
+
 /** The last step is done: closing line, then (once) the money tips. */
 function finishRoute(state, route, lang) {
   state.mode = 'done';
@@ -347,8 +365,10 @@ export function handle(prev, sentence, data, rates, opts = {}) {
 
   // 9. Step commands while guiding
   const route = currentRoute(state, data);
+  // "I'm at the Train to City signs" during a route is a place, not a request for the metro
+  const placeNotMetro = p.intent === 'metro' && p.placeTalk && state.mode === 'route';
   const changed = (p.airport && p.airport !== state.airport) || (p.terminal && p.terminal !== state.terminal) ||
-    (p.intent && p.intent !== state.dest);
+    (p.intent && p.intent !== state.dest && !placeNotMetro);
   if (state.mode === 'route' && route && !changed && !state.lost) {
     if (Number.isInteger(p.jumpStep) && p.jumpStep >= 0 && p.jumpStep < route.steps.length) {
       // The AI matched "I'm past the escalators" to one of our steps
@@ -356,11 +376,22 @@ export function handle(prev, sentence, data, rates, opts = {}) {
       return out(state, reply('step', say(lang, 'doneAck') + ' ' + stepText(state, route)));
     }
     if (p.stage && p.atPlace) {
-      // "I'm in the hall", "I can see the belts" → carry on from that step
-      const i = stepForStage(route, p.stage);
+      // "I'm in the hall", "I can see the belts" → carry on from that step.
+      // A described place that would send them back ("escalator") loses to a later step that names it.
+      let i = stepForStage(route, p.stage);
+      const later = i < state.step ? matchStep(route, p.norm, state.step) : -1;
+      if (later >= 0) i = later;
       if (i >= 0) {
         state.step = i;
         return out(state, reply('step', say(lang, 'lostFound')(p.stage) + ' ' + stepText(state, route)));
+      }
+    }
+    if (!p.command && (p.placeTalk || p.progress) && !p.stage && (!p.intent || p.intent === 'metro')) {
+      // "I'm at the Train to City signs", "going down the escalator to the basement": match the step's own words
+      const i = matchStep(route, p.norm, state.step);
+      if (i >= 0 && i !== state.step) {
+        state.step = i;
+        return out(state, reply('step', say(lang, 'doneAck') + ' ' + stepText(state, route)));
       }
     }
     if (p.progress && p.command !== 'back' && p.command !== 'repeat') {
