@@ -207,6 +207,11 @@ export function handle(prev, sentence, data, rates, opts = {}) {
       if (c) return out(state, reply('price', say(lang, 'price')(c, lang), { price: c }));
     }
     return out(state, reply('ask', say(lang, 'amountNeed')));
+  } else if (p.offered && offerAmount && offerAmount.currency && !state.lastAmount && local && offerAmount.currency !== local) {
+    // One foreign amount and nothing said before: tell them the fair amount for it
+    const fair = roundMoney(offerAmount.amount * midRate(rates, offerAmount.currency, local));
+    state.lastAmount = { amount: offerAmount.amount, currency: offerAmount.currency };
+    return out(state, reply('amount', say(lang, 'amountFair')(offerAmount.amount, offerAmount.currency, fair, local, lang), { amount: { amount: offerAmount.amount, from: offerAmount.currency, to: local, fair } }));
   } else if (p.amountQuery) {
     // "How many dirhams for 500 dollars?" → the fair amount at the mid-market rate
     const q = p.amountQuery;
@@ -220,7 +225,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   } else if ((p.priceCheck && !p.airport && !p.command) ||
     (p.amounts.length === 1 && !p.airport && !p.terminal && !p.command && !p.topic)) {
     // Ask for what's missing, with an example in this airport's currency
-    if (p.amounts.length === 1 && p.amounts[0].given !== false) state.lastAmount = { amount: p.amounts[0].amount, currency: p.amounts[0].currency };
+    if (p.amounts.length === 1) state.lastAmount = { amount: p.amounts[0].amount, currency: p.amounts[0].currency };
     if (state.lastAmount && local && local !== state.lastAmount.currency) {
       return out(state, reply('ask', say(lang, 'askOffer')(state.lastAmount, local, lang)));
     }

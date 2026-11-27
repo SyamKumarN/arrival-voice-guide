@@ -692,6 +692,11 @@ export const FLOW_CASES = [
   { name: 'Sim: "काउंटर वाला 340 बोल रहा है" after an amount → price check', lang: 'hi-IN',
     turns: [['दुबई टर्मिनल 1 पर हूँ', { kind: 'confirm' }], ['हाँ', { step: 0 }], ['100 डॉलर के कितने दिरहम मिलेंगे', { kind: 'amount' }],
       ['काउंटर वाला 340 बोल रहा है', { kind: 'price', has: '340' }]] },
+  { name: 'Sim: "मेरे पास 300 डॉलर हैं" → fair amount in SGD, then "वो 370 दे रहे हैं" → price', lang: 'hi-IN',
+    turns: [['सिंगापुर टर्मिनल 4', { kind: 'confirm' }], ['हाँ', { step: 0 }], ['मेरे पास 300 डॉलर हैं', { kind: 'amount', has: 'सिंगापुर डॉलर' }],
+      ['वो 370 दे रहे हैं', { kind: 'price', has: '370' }]] },
+  { name: 'Sim: "500 డాలర్లకి ఎంత ఇవ్వాలి వాళ్ళు" → fair amount', lang: 'te-IN',
+    turns: [['సింగపూర్ టెర్మినల్ 3', { kind: 'confirm' }], ['500 డాలర్లకి ఎంత ఇవ్వాలి వాళ్ళు', { kind: 'amount', has: 'సింగపూర్' }]] },
 ];
 
 // ---------- Runner ----------

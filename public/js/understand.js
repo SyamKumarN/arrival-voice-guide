@@ -115,6 +115,8 @@ export function formToParsed(form, rules, state = null) {
   }
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
   // The rules read both amounts of a price ("100 dollars, they give 3200 baht"): keep that
+  // "How much should they give for 500 dollars?" with one amount is a question about the fair amount
+  if (rules && rules.amountQuery && f.intent === 'price_check' && f.amounts.length < 2) return null;
   if (rules && rules.price && (f.intent === 'price_check' || f.intent === 'how_much' || f.intent === 'amount_query')) return null;
   // "I want to change leftover dirhams": they want to exchange now, not the leftover tip
   if (rules && rules.intent && f.intent === 'leftover_currency') return null;

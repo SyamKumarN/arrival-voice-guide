@@ -460,7 +460,9 @@ export function parse(raw, ctx = {}) {
   const numbers = findNumbers(tokens, (t) => !!currencyOf(t)).filter((n) => !isTermTok(tokens[n.start - 1])).map((n) => n.value);
   let amountQuery = null;
   const pairs = price ? price.pairs : [];
-  if (hasAny(p, HOW_MANY) && !(price && price.given) && (pairs.length === 1 || (pairs.length === 0 && numbers.length === 1))) {
+  // "I have 300 dollars" also asks what they'll get
+  const HAVE = ['i have', 'i got', 'mere paas', 'mere pas', 'मेरे पास', 'हमारे पास', 'నా దగ్గర', 'నా దగ్గర ఉన్నాయి', 'మా దగ్గర'];
+  if ((hasAny(p, HOW_MANY) || (hasAny(p, HAVE) && pairs.length === 1 && !hasAny(p, OFFER_WORDS))) && !(price && price.given) && (pairs.length === 1 || (pairs.length === 0 && numbers.length === 1))) {
     const from = pairs.length ? pairs[0].currency : null;
     const amount = pairs.length ? pairs[0].amount : numbers[0];
     let to = null;
