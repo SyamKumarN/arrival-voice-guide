@@ -126,6 +126,10 @@ export function formToParsed(form, rules, state = null) {
   // A question, confusion or greeting the rules recognised wins ("two ways here" must never move the step)
   if (rules && rules.topic && RULE_FIRST.includes(rules.topic) && TOPIC_OF[f.intent] !== rules.topic) return null;
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
+  // A destination the rules heard ("back to exchange", "hotel going") beats a step command or a chatty reading
+  if (rules && rules.intent && (COMMAND_OF[f.intent] || ['hotel_booking', 'money_tips', 'out_of_scope', 'overview', 'travel_onward'].includes(f.intent))) return null;
+  // A single word the rules understood ("money", "taxi", "exit") is taken as said
+  if (rules && String(rules.norm || '').split(' ').filter(Boolean).length === 1 && (rules.intent || rules.topic || rules.offtopic)) return null;
   // "Is that okay?" right after a price verdict: the rules repeat the verdict
   if (rules && rules.priceFollow && state && state.lastKind === 'price') return null;
   // A place they named ("I landed in Dubai") or a clear command ("where am I", "start over") beats a chatty AI reading

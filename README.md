@@ -102,7 +102,7 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
 
 ## Tests
 
-`npm test` runs 1,740 checks, all without keys or network:
+`npm test` runs 1,743 checks, all without keys or network:
 - **Unit tests:**
   - **Parser (196 sentences in English, Hindi, Hinglish and Telugu):** off-topic requests, advice topics, yes/no, and spoken number variants (మూడ్, త్రీ, वन, टू).
   - **Numbers (18) and the price check (9).**

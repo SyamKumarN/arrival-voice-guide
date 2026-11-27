@@ -124,6 +124,9 @@ export async function runUnderstand(data, rates) {
       r.reply.text.includes('arrival guide for money') && r.reply.staff && r.reply.staff.intent === 'shop', r.reply.text);
     check('Without an AI answer, the rules shops card stays', formToParsed(G({ intent: 'out_of_scope', answer: '' }), parse(t, {}), null) === null);
   }
+  check('AI "back" for "back to exchange": the exchange the rules heard wins', formToParsed(G({ intent: 'back' }), parse('back to exchange', {}), initialState('en-IN')) === null);
+  check('AI hotel booking for "hotel going": the taxi the rules heard wins', formToParsed(G({ intent: 'hotel_booking' }), parse('hotel going', {}), initialState('en-IN')) === null);
+  check('AI money tips for the single word "money": exchange wins', formToParsed(G({ intent: 'money_tips' }), parse('money', {}), initialState('en-IN')) === null);
   check('AI form "none" → the rules decide', formToParsed(G({}), parse('next', {})) === null);
 
   // Guards: anything off the list is dropped, never passed on
