@@ -50,21 +50,22 @@ const ORDINALS = {
 // ---------- Intent: change money ----------
 const EXCHANGE_WORDS = [
   'paise', 'paisa', 'paisay', 'pese', 'paise badalne', 'currency', 'exchange', 'money', 'cash',
-  'change money', 'forex', 'convert', 'badalna', 'badalne', 'badlna', 'badalni', 'money changer',
+  'change money', 'money change', 'change dollar', 'change dollars', 'change usd', 'dollar change', 'forex', 'convert', 'badalna', 'badalne', 'badlna', 'badalni', 'money changer',
   'पैसे', 'पैसा', 'करेंसी', 'करंसी', 'मुद्रा', 'एक्सचेंज', 'बदलन', 'बदलने', 'कैश', 'नकद',
   'డబ్బు', 'డబ్బులు', 'కరెన్సీ', 'మార్చ', 'ఎక్స్ఛేంజ్', 'ఎక్స్చేంజ్', 'నగదు', 'క్యాష్',
 ];
 
 // ---------- Intents: SIM card and taxi (checked before exchange) ----------
 const SIM_WORDS = [
-  'sim', 'sims', 'sim card', 'simcard', 'esim', 'e sim', 'mobile data', 'data card', 'phone card', 'local number',
+  'sim', 'sims', 'sim card', 'simcard', 'esim', 'e sim', 'mobile data', 'data card', 'phone card', 'local number', 'internet card', 'internet sim',
+  'इंटरनेट कार्ड', 'ఇంటర్నెట్ కార్డ్', 'ఇంటర్నెట్ కార్డు',
   'सिम', 'सिमकार्ड', 'सिम कार्ड', 'ई सिम', 'मोबाइल डेटा',
   'సిమ్', 'సిమ్కార్డ్', 'మొబైల్ డేటా',
 ];
 const TAXI_WORDS = [
-  'taxi', 'taxis', 'taxi stand', 'cab', 'cabs', 'taksi', 'texi', 'hotel', 'hotels', 'ride to', 'car to',
-  'टैक्सी', 'टेक्सी', 'टैकसी', 'कैब', 'होटल',
-  'టాక్సీ', 'ట్యాక్సీ', 'టాక్సి', 'క్యాబ్', 'హోటల్',
+  'taxi', 'taxis', 'taxi stand', 'cab', 'cabs', 'taksi', 'texi', 'ride', 'ride to', 'car to', 'uber', 'grab', 'careem',
+  'टैक्सी', 'टेक्सी', 'टैकसी', 'कैब',
+  'టాక్సీ', 'ట్యాక్సీ', 'టాక్సి', 'క్యాబ్',
 ];
 
 const METRO_WORDS = [
@@ -198,13 +199,31 @@ const ATM_ADVICE = ['tips', 'tip', 'advice', 'safe', 'safely', 'fee', 'fees', 'c
 // "How many dirhams for 500 dollars?"
 const HOW_MANY = ['how many', 'how much will i get', 'how much do i get', 'how much would i get', 'how much is', 'how much',
   'ఎంత', 'అంత వస్తాయి', 'ఎంతొస్తాయి',
-  'kitne', 'kitna milega', 'kitne milenge', 'कितने', 'कितना मिलेगा', 'कितने मिलेंगे',
+  'kitne', 'kitna', 'kitna milega', 'kitne milenge', 'कितने', 'कितना मिलेगा', 'कितने मिलेंगे',
   'ఎన్ని', 'ఎంత వస్తుంది', 'ఎంత వస్తాయి', 'ఎంత ఇస్తారు', 'ఎంత వస్తది'];
 // "Price check" without numbers
-const PRICE_CHECK = ['price check', 'rate check', 'ప్రైస్ చెక్', 'ప్రైజ్ చెక్', 'ధర చూడాలి', 'రేటు చూడాలి',
+const PRICE_CHECK = ['price check', 'rate check', 'rate good', 'this rate', 'is this rate', 'ye rate', 'yeh rate', 'ఈ రేటు', 'यह रेट', 'ये रेट', 'ప్రైస్ చెక్', 'ప్రైజ్ చెక్', 'ధర చూడాలి', 'రేటు చూడాలి',
   'प्राइस चेक', 'दाम चेक', 'check the rate', 'check rate', 'check price', 'check the price', 'good rate',
   'fair rate', 'rate sahi', 'rate theek', 'रेट चेक', 'रेट जाँच', 'रेट जांच', 'रेट सही', 'रेट ठीक',
   'రేటు చెక్', 'రేట్ చెక్', 'ధర చెక్', 'రేటు సరైనదా', 'రేటు బాగుందా', 'రేటు కరెక్టా'];
+
+// "Is that okay?" right after a price verdict
+const PRICE_FOLLOW = ['is that okay', 'is it okay', 'is that ok', 'is it ok', 'is that fine', 'is it fine', 'fine', 'okay', 'ok', 'good', 'good deal',
+  'should i take', 'should i accept', 'take it', 'theek hai', 'thik hai', 'sahi hai', 'chalega', 'ठीक है', 'सही है', 'चलेगा',
+  'సరిపోతుందా', 'సరైనదేనా', 'సరైందేనా', 'బాగుందా', 'తీసుకోవచ్చా', 'ఓకేనా', 'సరేనా', 'ఓకే'];
+// Going somewhere after the airport (we have no buses or fares)
+const ONWARD_PLACES = ['pattaya', 'city', 'downtown', 'city centre', 'city center', 'hua hin', 'sentosa', 'marina bay', 'shahar', 'sheher',
+  'शहर', 'पटाया', 'సిటీ', 'నగరం', 'పట్టాయా', 'పట్టయా'];
+const GO_WORDS = ['go', 'going', 'get to', 'reach', 'how to get', 'jaana', 'jana', 'jaun', 'jaaun', 'जाना', 'जाऊँ', 'जाऊं', 'पहुँच',
+  'వెళ్ళాలి', 'వెళ్లాలి', 'వెళ్ళడం', 'వెళ్ళేది', 'చేరుకోవాలి'];
+const HOTEL_WORDS = ['hotel', 'hotels', 'होटल', 'హోటల్'];
+const HOTEL_BOOK = ['book', 'booking', 'near the airport', 'near airport', 'room', 'stay', 'cheap hotel', 'बुक', 'कमरा', 'బుక్', 'రూమ్'];
+// Arrival phrasing: a named airport is where they are
+const HERE_WORDS = ['landed', 'i am at', 'im at', 'i am in', 'im in', 'arrived', 'reached', 'here at', 'pe hoon', 'par hoon', 'mein hoon', 'me hu',
+  'utra', 'utri', 'पर हूँ', 'पे हूँ', 'में हूँ', 'पहुँच', 'उतरा', 'उतरी', 'ఉన్నాను', 'ఉన్నా', 'దిగాను', 'చేరుకున్నా', 'వచ్చాను'];
+// Questions that only mention a city (weather, hotels, onward travel…): not where they are
+const MENTION_CUES = ['weather', 'temperature', 'forecast', 'rain', 'mausam', 'मौसम', 'వాతావరణం', 'వర్షం', 'restaurant', 'best',
+  'tourist', 'places to visit', 'visa'];
 
 // ---------- Yes / no (answers to "Is that right?") ----------
 const YES_WORDS = ['yes', 'yeah', 'yep', 'yup', 'correct', 'right', 'thats right', 'ok', 'okay', 'sure', 'haan', 'han', 'haa', 'ji',
@@ -258,7 +277,8 @@ const COMMANDS = [
   ['lost', ['lost', 'i am lost', 'im lost', 'where am i', 'dont know where i am', 'do not know where i am',
     'kho gaya', 'kho gayi', 'pata nahi kahan', 'pata nahin kahan', 'खो गया', 'खो गई', 'खो गयी', 'पता नहीं कहाँ', 'पता नहीं कहां',
     'मैं कहाँ हूँ', 'कहाँ हूँ', 'कहां हूं', 'मैं कहां हूं', 'मै कहाँ हूँ', 'मैं किधर हूँ', 'main kahan hoon', 'main kahan hu', 'mai kahan hu',
-    'main kahaan hoon', 'main kidhar hoon', 'kahan hoon main', 'kaha hu', 'समझ नहीं आ रहा कहाँ', 'ఎక్కడున్నానో', 'ఎక్కడ ఉన్నానో అర్థం', 'ఎక్కడున్నానో తెలియదు', 'ఎక్కడ ఉన్నానో తెలియదు', 'తప్పిపోయాను', 'నేను ఎక్కడ ఉన్నాను']],
+    'main kahaan hoon', 'main kidhar hoon', 'kahan hoon main', 'kaha hu', 'where me', 'no understand where', 'dont know where', 'rasta nahi pata',
+    'raasta nahi pata', 'रास्ता नहीं पता', 'దారి తెలియట్లేదు', 'దారి తెలియడం లేదు', 'ఎక్కడ ఉన్నానో తెలియట్లేదు', 'समझ नहीं आ रहा कहाँ', 'ఎక్కడున్నానో', 'ఎక్కడ ఉన్నానో అర్థం', 'ఎక్కడున్నానో తెలియదు', 'ఎక్కడ ఉన్నానో తెలియదు', 'తప్పిపోయాను', 'నేను ఎక్కడ ఉన్నాను']],
   ['cantfind', ['cant find', 'cannot find', 'can not find', 'couldnt find', 'not finding', 'dont see',
     'cant see', 'where is it', 'nahi mil raha', 'nahin mil raha', 'nahi mila',
     'nahin mila', 'nahi mil rahi', 'nahi dikh', 'nahin dikh', 'mil nahi raha', 'nhi mil raha',
@@ -491,7 +511,7 @@ export function parse(raw, ctx = {}) {
   }
   // Traveller questions: the question wins over commands and destinations in the same sentence
   if (topic === 'battery' && hasAny(p, ['buy', 'purchase', 'kharid', 'खरीद', 'ख़रीद', 'కొనాలి', 'కొనడానికి', 'కొనుక్కోవాలి'])) topic = null;
-  const Q_TOPICS = ['emergency', 'overview', 'taxicost', 'translate', 'confused', 'lostitem', 'carddecline', 'missedflight', 'shortchanged', 'taxiissue', 'unsafe', 'wheelchair', 'beforeafter',
+  const Q_TOPICS = ['emergency', 'overview', 'taxicost', 'translate', 'onward', 'hotelbook', 'hotelask', 'helpword', 'confused', 'lostitem', 'carddecline', 'missedflight', 'shortchanged', 'taxiissue', 'unsafe', 'wheelchair', 'beforeafter',
     'visa', 'wifi', 'nodata', 'battery', 'latenight', 'trolley'];
   const qNumbers = findNumbers(tokens, (t) => !!currencyOf(t)).filter((n) => !TERMINAL_WORDS.includes(tokens[n.start - 1]));
   if (topic === 'confused' && command === 'lost') topic = null;                // "don't know where I am" is the lost flow
@@ -513,6 +533,33 @@ export function parse(raw, ctx = {}) {
       hasAny(p, ['hi', 'hello', 'hey', 'namaste', 'namaskar', 'good morning', 'नमस्ते', 'नमस्कार', 'हाय', 'हेलो', 'హాయ్', 'హలో', 'నమస్తే', 'నమస్కారం'])) {
     topic = 'greet';
   }
+  // "Hotel" means taxi only with taxi or going words; "book a hotel" is out of scope; "hotel" alone: ask
+  const hasHotel = hasAny(p, HOTEL_WORDS);
+  if (hasHotel && !intent && !topic) {
+    if (hasAny(p, HOTEL_BOOK)) topic = 'hotelbook';
+    else if (hasAny(p, GO_WORDS)) intent = 'taxi';
+    else if (tokens.length <= 2) topic = 'hotelask';
+  }
+  // Going on to another city ("Pattaya jaana hai", "need go city"): taxi or bus, ask the info desk; never a route
+  if (!topic && intent !== 'exit' && !hasAny(p, TAXI_WORDS) && hasAny(p, ONWARD_PLACES) &&
+      (hasAny(p, GO_WORDS) || tokens.length <= 3 || hasAny(p, ['how', 'kaise', 'कैसे', 'ఎలా']))) {
+    topic = 'onward'; intent = null;
+  }
+  // "taxi to hotel how much": a fare question (we have no fares), not a route
+  if (intent === 'taxi' && !topic && hasAny(p, ['how much', 'fare', 'cost', 'price', 'kitne', 'kitna', 'कितना', 'कितने', 'किराया', 'ఎంత', 'ఛార్జీ']) &&
+      !findNumbers(tokens, (t) => !!currencyOf(t)).length) { topic = 'taxicost'; intent = null; }
+  // Single words
+  if (tokens.length === 1 && !intent && !topic && !command) {
+    if (hasAny(p, ['exit', 'bahar', 'बाहर', 'బయటకు', 'బయటికి'])) intent = 'exit';
+    else if (hasAny(p, ['help', 'madad', 'मदद', 'సహాయం'])) topic = 'helpword';
+  }
+  // Weather questions are out of scope (the AI may add a short checked answer)
+  if (!topic && !intent && hasAny(p, ['weather', 'temperature', 'forecast', 'mausam', 'मौसम', 'వాతావరణం'])) topic = 'outofscope';
+  // A city named inside such a question isn't where they are: keep the current place
+  if (airport && !terminal && !hasAny(p, HERE_WORDS) &&
+      (['onward', 'hotelbook', 'outofscope', 'visa'].includes(topic) || hasAny(p, MENTION_CUES))) airport = null;
+  const priceFollow = hasAny(p, PRICE_FOLLOW);
+
   // Outside what the guide does (toilets, food, shops …). "My bag hasn't arrived" isn't "I'm lost".
   let offtopic = null;
   for (const [name, words] of OFFTOPIC) {
@@ -580,6 +627,7 @@ export function parse(raw, ctx = {}) {
     progress,
     atPlace,
     placeTalk,
+    priceFollow,
     offered,
   };
 }

@@ -21,6 +21,8 @@ export function initialState(lang = 'hi-IN') {
     lang, airport: null, terminal: null, dest: null, mode: 'start', step: 0, expecting: null,     // no destination until they choose
     confirmed: false, lost: false, tips: null, tipsGiven: false,
     lastAmount: null,           // { amount, currency } said earlier ("I have 1000 dollars")
+    lastPrice: null,            // the last price checked, for "is that okay?"
+    lastKind: null,             // the kind of the last reply
     asks: null,                 // { key, n }: how often the same question was asked again
     prevAirport: null,          // the airport before a "no", so "terminal 3" alone still works
     startStage: null,           // "…, I'm in the arrival hall": start the route there
@@ -145,7 +147,8 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   // Reply in the language of this sentence (Telugu / Hindi script, Hinglish, or English); the place and step stay
   if (!opts.keepLang) state.lang = detectLang(sentence, state.lang);
   const lang = state.lang;
-  const out = (st, r, extra = {}) => ({ state: st, reply: r, parsed: p, ...extra });
+  // Every reply remembers its kind, so "is that okay?" right after a price verdict can be answered
+  const out = (st, r, extra = {}) => { st.lastKind = r.kind; return { state: st, reply: r, parsed: p, ...extra }; };
   const localCurrency = state.airport ? data.airports[state.airport].currency : null;
   const p = opts.parsed || parse(sentence, { expecting: state.expecting, localCurrency, airport: state.airport });
   // Never ask the same question a third time: count re-asks, reset on any other turn
@@ -170,6 +173,16 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   // 1. Start over
   if (p.command === 'restart') {
     return out({ ...initialState(lang), mode: 'ask', expecting: 'airport' }, reply('ask', say(lang, 'restart')));
+  }
+
+  // "Is that okay?" / "1700 ok?" right after a price: the verdict in one line, amounts kept
+  if (p.priceFollow && !p.price && !p.amountQuery && !p.topic && !p.intent) {
+    const n = p.amounts.length === 1 ? p.amounts[0].amount : (p.amounts.length === 0 && p.numbers.length === 1 ? p.numbers[0] : null);
+    if (n !== null && state.lastAmount) p.offered = true;                         // "1700 ok?" → check 1700 against the amount said earlier
+    else if (prev.lastKind === 'price' && state.lastPrice) {
+      const c = comparePrice(state.lastPrice, rates);
+      if (c) return out(state, reply('price', say(lang, 'verdictLine')(c), { price: c, followUp: true }));
+    }
   }
 
   // 2. Reading a tip list: next / repeat / back move through it; anything else leaves it
@@ -239,6 +252,21 @@ export function handle(prev, sentence, data, rates, opts = {}) {
     if (state.mode !== 'route') Object.assign(state, { mode: 'ask', expecting: state.airport && state.terminal ? 'need' : state.expecting });
     return out(state, reply('ask', say(lang, 'overview'), { topic: 'overview' }));
   }
+  // Hotels: we can't book; a bare "hotel" gets one short question instead of a guess
+  if (p.topic === 'hotelbook') return out(state, reply('info', say(lang, 'hotelbook'), { topic: 'hotelbook' }));
+  if (p.topic === 'hotelask') {
+    Object.assign(state, { mode: 'ask', expecting: 'need' });
+    return out(state, reply('ask', say(lang, 'hotelask'), { topic: 'hotelask' }));
+  }
+  // Going on to Pattaya / the city: taxi or bus, ask the info desk; never a route, never a new airport
+  if (p.topic === 'onward') {
+    const where = /pattaya|पटाया|పట్ట/i.test(sentence) ? 'pattaya' : 'city';
+    if (state.airport && state.terminal && state.mode !== 'route') Object.assign(state, { mode: 'ask', expecting: 'need' });
+    return out(state, reply('info', say(lang, 'onward')(say(lang, 'onwardPlace')[where]), { topic: 'onward', staff: { intent: 'bus', airport: state.airport } }));
+  }
+  // "Help" on its own: what the guide does, and the help card
+  if (p.topic === 'helpword') return out(state, reply('help', capabilities(lang), { topic: 'helpword', staff: { intent: 'help', airport: state.airport } }));
+
   // "How much is a taxi?" → we have no fares: how to pay a fair one. Never a route.
   if (p.topic === 'taxicost') return out(state, reply('info', say(lang, 'taxicost'), { topic: 'taxicost' }));
   // "Translate 'I need help' into Arabic" → our checked card, not a free translation
@@ -272,6 +300,7 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   if (p.price) {
     const c = comparePrice(p.price, rates);
     state.lastAmount = { ...p.price.given };
+    state.lastPrice = { given: { ...p.price.given }, received: { ...p.price.received } };
     if (c) return out(state, reply('price', say(lang, 'price')(c, lang), { price: c }));
   } else if (p.offered && offerAmount && state.lastAmount && !p.amountQuery) {
     // "They're giving only 1500" → 1500 in the airport's currency for the amount said earlier
@@ -279,7 +308,8 @@ export function handle(prev, sentence, data, rates, opts = {}) {
     const cur = offerAmount.currency && offerAmount.currency !== given.currency ? offerAmount.currency
       : (local && local !== given.currency ? local : null);
     if (cur) {
-      const c = comparePrice({ given, received: { amount: offerAmount.amount, currency: cur } }, rates);
+      state.lastPrice = { given: { ...given }, received: { amount: offerAmount.amount, currency: cur } };
+      const c = comparePrice(state.lastPrice, rates);
       if (c) return out(state, reply('price', say(lang, 'price')(c, lang), { price: c }));
     }
     return out(state, reply('ask', say(lang, 'amountNeed')));
@@ -606,7 +636,8 @@ export function handle(prev, sentence, data, rates, opts = {}) {
     if (i > 0) { state.step = i; found = ' ' + say(lang, 'lostFound')(state.startStage); }
     state.startStage = null;
   }
-  return out(state, reply('step', intro + found + ' ' + stepText(state, r), { intro }));
+  const safety = state.dest === 'taxi' ? ' ' + say(lang, 'taxiSafety') : '';
+  return out(state, reply('step', intro + safety + found + ' ' + stepText(state, r), { intro }));
 }
 
 export { terminalLabel };

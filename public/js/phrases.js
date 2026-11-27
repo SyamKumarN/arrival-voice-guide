@@ -597,6 +597,35 @@ const EXTRA7 = {
   },
 };
 for (const l of Object.keys(EXTRA7)) Object.assign(T[l], EXTRA7[l]);
+
+// Round 9: price follow-up, hotels, onward travel, single words
+const EXTRA8 = {
+  en: {
+    verdictLine: (c) => `${pctText(c, 'en')} ${verdictText(c.verdict, 'en')} Compare another counter if you can, and ask for the final amount.`,
+    hotelbook: "I can't book hotels; ask your booking app or the info desk.",
+    hotelask: 'Do you need a taxi to your hotel, or directions to the exit?',
+    onward: (place) => `From the airport you can take the official taxi or a bus; for buses to ${place}, ask the information desk. Say "taxi" for the taxi stand route.`,
+    onwardPlace: { pattaya: 'Pattaya', city: 'the city' },
+    taxiSafety: 'Use only the official taxi stand, and ignore ride offers in the hall.',
+  },
+  hi: {
+    verdictLine: (c) => `${pctText(c, 'hi')} ${verdictText(c.verdict, 'hi')} हो सके तो दूसरा काउंटर देखिए, और फ़ाइनल अमाउंट पूछिए।`,
+    hotelbook: 'मैं होटल बुक नहीं कर सकती; अपने बुकिंग ऐप या इन्फ़ॉर्मेशन डेस्क से पूछिए।',
+    hotelask: 'होटल के लिए टैक्सी चाहिए, या बाहर जाने का रास्ता?',
+    onward: (place) => `एयरपोर्ट से आधिकारिक टैक्सी या बस ले सकते हैं; ${place} की बस के लिए इन्फ़ॉर्मेशन डेस्क पर पूछिए। टैक्सी स्टैंड के रास्ते के लिए "टैक्सी" बोलिए।`,
+    onwardPlace: { pattaya: 'पटाया', city: 'शहर' },
+    taxiSafety: 'सिर्फ़ आधिकारिक टैक्सी स्टैंड इस्तेमाल कीजिए, और हॉल में राइड ऑफ़र करने वालों को नज़रअंदाज़ कीजिए।',
+  },
+  te: {
+    verdictLine: (c) => `${pctText(c, 'te')} ${verdictText(c.verdict, 'te')} వీలైతే వేరే కౌంటర్ చూడండి, ఫైనల్ మొత్తం అడగండి.`,
+    hotelbook: 'నేను హోటల్స్ బుక్ చేయలేను; మీ బుకింగ్ యాప్‌ని లేదా ఇన్ఫర్మేషన్ డెస్క్‌ని అడగండి.',
+    hotelask: 'హోటల్‌కి టాక్సీ కావాలా, లేక బయటకు దారి కావాలా?',
+    onward: (place) => `ఎయిర్‌పోర్ట్ నుంచి అధికారిక టాక్సీ లేదా బస్ తీసుకోవచ్చు; ${place}కి బస్సుల కోసం ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి. టాక్సీ స్టాండ్ దారి కోసం "టాక్సీ" అని చెప్పండి.`,
+    onwardPlace: { pattaya: 'పట్టాయా', city: 'సిటీ' },
+    taxiSafety: 'అధికారిక టాక్సీ స్టాండ్ మాత్రమే వాడండి, హాల్‌లో రైడ్ ఆఫర్ చేసేవాళ్ళను పట్టించుకోకండి.',
+  },
+};
+for (const l of Object.keys(EXTRA8)) Object.assign(T[l], EXTRA8[l]);
 export const tipList = (key, lang) => (TIP_LISTS[key] && (TIP_LISTS[key][short(lang)] || TIP_LISTS[key].en)) || [];
 
 // ---------- Ask-staff card ----------
@@ -612,6 +641,7 @@ export const STAFF = {
 // Metro and the off-topic questions the guide hands over to staff
 const STAFF_MORE = {
   en: {
+    bus: 'Excuse me, where can I get a bus or an official taxi to the city?',
     help: 'Excuse me, I need help. Where is the information desk or airport police?',
     lost: "Excuse me, I'm lost. How do I get to baggage claim and the arrivals hall?",
     atm: 'Excuse me, where is the nearest ATM?',
@@ -621,6 +651,7 @@ const STAFF_MORE = {
     lostbag: "Excuse me, my bag hasn't arrived. Where is the baggage services desk?",
   },
   ar: {
+    bus: 'من فضلك، أين يمكنني ركوب حافلة أو سيارة أجرة رسمية إلى المدينة؟',
     help: 'من فضلك، أحتاج إلى مساعدة. أين مكتب الاستعلامات أو شرطة المطار؟',
     lost: 'من فضلك، أنا تائه. كيف أصل إلى استلام الأمتعة وصالة الوصول؟',
     atm: 'من فضلك، أين أقرب صراف آلي؟',
@@ -630,6 +661,7 @@ const STAFF_MORE = {
     lostbag: 'من فضلك، حقيبتي لم تصل. أين مكتب خدمات الأمتعة؟',
   },
   th: {
+    bus: 'ขอโทษครับ/ค่ะ ขึ้นรถบัสหรือแท็กซี่ทางการเข้าเมืองได้ที่ไหน',
     help: 'ขอโทษครับ/ค่ะ ฉันต้องการความช่วยเหลือ เคาน์เตอร์ประชาสัมพันธ์หรือตำรวจสนามบินอยู่ที่ไหน',
     lost: 'ขอโทษครับ/ค่ะ ฉันหลงทาง ไปที่รับกระเป๋าและโถงผู้โดยสารขาเข้าทางไหน',
     atm: 'ขอโทษครับ/ค่ะ ตู้เอทีเอ็มที่ใกล้ที่สุดอยู่ที่ไหน',
@@ -639,6 +671,7 @@ const STAFF_MORE = {
     lostbag: 'ขอโทษครับ/ค่ะ กระเป๋าของฉันไม่มา ติดต่อแผนกสัมภาระได้ที่ไหน',
   },
   hi: {
+    bus: 'माफ़ कीजिए, शहर के लिए बस या आधिकारिक टैक्सी कहाँ मिलेगी?',
     help: 'माफ़ कीजिए, मुझे मदद चाहिए। इन्फ़ॉर्मेशन डेस्क या एयरपोर्ट पुलिस कहाँ है?',
     lost: 'माफ़ कीजिए, मैं रास्ता भूल गया हूँ। बैगेज क्लेम और अराइवल हॉल कैसे जाऊँ?',
     atm: 'कृपया बताइए, सबसे पास का एटीएम कहाँ है?',
@@ -648,6 +681,7 @@ const STAFF_MORE = {
     lostbag: 'मेरा सामान नहीं आया। बैगेज सर्विस डेस्क कहाँ है?',
   },
   te: {
+    bus: 'క్షమించండి, సిటీకి బస్ లేదా అధికారిక టాక్సీ ఎక్కడ దొరుకుతుంది?',
     help: 'క్షమించండి, నాకు సహాయం కావాలి. ఇన్ఫర్మేషన్ డెస్క్ లేదా ఎయిర్‌పోర్ట్ పోలీస్ ఎక్కడ ఉంది?',
     lost: 'క్షమించండి, నేను దారి తప్పాను. బ్యాగేజ్ క్లెయిమ్, అరైవల్స్ హాల్‌కి ఎలా వెళ్ళాలి?',
     atm: 'దయచేసి చెప్పండి, దగ్గర్లో ఏటీఎం ఎక్కడ ఉంది?',
@@ -756,7 +790,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `Saved on this phone (${d}): routes, counters, staff cards and rates from ${r}. The buttons work offline; voice needs internet.`,
     saveFailed: 'Could not save. Try again with internet.', install: 'Add to home screen',
     slower: 'Speak slower', yes: 'Yes', no: 'No', ratesSaved: 'Rates saved on this phone', langTipTitle: 'Language help:',
-    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag', atm: 'ATM', lost: 'Lost', help: 'Help' },
+    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag', atm: 'ATM', lost: 'Lost', help: 'Help', bus: 'Bus or taxi' },
     tries: ['Dubai terminal 3, I need currency', 'I want a SIM', 'taxi stand', "I'm lost", 'I have a connecting flight', 'I have a forex card', 'They give 1700 dirhams for 500 dollars'],
   },
   hi: {
@@ -764,7 +798,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `इस फ़ोन पर सेव हो गया (${d}): रास्ते, काउंटर, स्टाफ कार्ड और ${r} के रेट। बटन बिना इंटरनेट के चलेंगे; आवाज़ के लिए इंटरनेट चाहिए।`,
     saveFailed: 'सेव नहीं हुआ। इंटरनेट के साथ फिर कोशिश कीजिए।', install: 'होम स्क्रीन पर जोड़ें',
     slower: 'धीरे बोलिए', yes: 'हाँ', no: 'नहीं', ratesSaved: 'इस फ़ोन पर सेव किए रेट', langTipTitle: 'भाषा में मदद:',
-    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया', atm: 'एटीएम', lost: 'रास्ता भूल गए', help: 'मदद' },
+    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया', atm: 'एटीएम', lost: 'रास्ता भूल गए', help: 'मदद', bus: 'बस या टैक्सी' },
     tries: ['dubai terminal teen, paise badalne hain', 'मुझे सिम चाहिए', 'होटल जाने के लिए टैक्सी', 'पता नहीं कहाँ हूँ', 'मेरी कनेक्टिंग फ़्लाइट है', 'मेरे पास फॉरेक्स कार्ड है', '500 dollar ke satrah sau dirham de rahe hain'],
   },
   te: {
@@ -772,7 +806,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `ఈ ఫోన్‌లో సేవ్ అయింది (${d}): దారులు, కౌంటర్లు, స్టాఫ్ కార్డ్‌లు, ${r} రేట్లు. బటన్లు ఇంటర్నెట్ లేకుండా పనిచేస్తాయి; వాయిస్‌కి ఇంటర్నెట్ కావాలి.`,
     saveFailed: 'సేవ్ కాలేదు. ఇంటర్నెట్‌తో మళ్ళీ ప్రయత్నించండి.', install: 'హోమ్ స్క్రీన్‌కి జోడించు',
     slower: 'నెమ్మదిగా మాట్లాడు', yes: 'అవును', no: 'కాదు', ratesSaved: 'ఈ ఫోన్‌లో సేవ్ చేసిన రేట్లు', langTipTitle: 'భాషా సహాయం:',
-    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు', atm: 'ఏటీఎం', lost: 'దారి తప్పాను', help: 'సహాయం' },
+    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు', atm: 'ఏటీఎం', lost: 'దారి తప్పాను', help: 'సహాయం', bus: 'బస్ లేదా టాక్సీ' },
     tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'సిమ్ కావాలి', 'హోటల్‌కి టాక్సీ', 'నేను ఎక్కడున్నానో తెలియదు', 'నాకు కనెక్టింగ్ ఫ్లైట్ ఉంది', 'నా దగ్గర ఫారెక్స్ కార్డ్ ఉంది', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
   },
 };

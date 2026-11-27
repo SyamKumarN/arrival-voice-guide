@@ -23,7 +23,7 @@ Beyond the route, it handles the moments that cost travellers money:
   - "What should I do first?" gives the order of things.
   - Emergencies get the safety reply and help card straight away, whatever else is going on: a lost child, medical help, a robbery, or feeling unsafe.
   - The reply follows the language you speak in.
-- **Golden test set:** 30 traveller questions in English, Hindi and Telugu (`tests/golden.js`), run with the rules in `npm test` and against the live AI before each release.
+- **Golden test set:** 64 traveller questions, including broken grammar and single words, in English, Hindi and Telugu (`tests/golden.js`), run with the rules in `npm test` and against the live AI before each release.
 - **Talking naturally:**
   - It greets you back.
   - "I don't understand, there are two ways" repeats the current step with the sign to follow, and never moves you on.
@@ -102,7 +102,7 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
 
 ## Tests
 
-`npm test` runs 1,635 checks, all without keys or network:
+`npm test` runs 1,740 checks, all without keys or network:
 - **Unit tests:**
   - **Parser (196 sentences in English, Hindi, Hinglish and Telugu):** off-topic requests, advice topics, yes/no, and spoken number variants (మూడ్, త్రీ, वन, टू).
   - **Numbers (18) and the price check (9).**

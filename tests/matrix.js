@@ -49,7 +49,7 @@ const SAY = {
   lost: { en: "I'm lost", hi: 'पता नहीं कहाँ हूँ', hinglish: 'pata nahi kahan hoon', te: 'నేను ఎక్కడున్నానో తెలియదు' },
   seeBelts: { en: 'I can see baggage belts', hi: 'बैगेज बेल्ट दिख रहे हैं', hinglish: 'baggage belt dikh rahe hain', te: 'బ్యాగేజ్ బెల్ట్‌లు కనిపిస్తున్నాయి' },
   staff: { en: 'ask staff', hi: 'स्टाफ से पूछना है', hinglish: 'staff se poochna hai', te: 'స్టాఫ్‌ని అడగాలి' },
-  unknown: { en: "what's the weather like", hi: 'मौसम कैसा है', hinglish: 'mausam kaisa hai', te: 'వాతావరణం ఎలా ఉంది' },
+  unknown: { en: 'blue elephant dancing', hi: 'नीला हाथी नाच रहा', hinglish: 'neela haathi naach raha', te: 'నీలి ఏనుగు డాన్స్' },
   toilet: { en: 'where is the toilet', hi: 'टॉयलेट कहाँ है', hinglish: 'washroom kahan hai', te: 'టాయిలెట్ ఎక్కడ' },
   lostbag: { en: "my bag hasn't arrived", hi: 'मेरा सामान नहीं आया', hinglish: 'mera bag kho gaya', te: 'నా బ్యాగ్ రాలేదు' },
   transit: { en: 'I have a connecting flight', hi: 'मेरी कनेक्टिंग फ़्लाइट है', hinglish: 'meri connecting flight hai', te: 'నాకు కనెక్టింగ్ ఫ్లైట్ ఉంది' },

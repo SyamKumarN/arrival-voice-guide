@@ -9,7 +9,7 @@
 
 export const INTENTS = [
   'next_step', 'step_done', 'jump_to_step', 'list_counters', 'lost_answer', 'how_much',
-  'emergency', 'overview', 'taxi_cost', 'translate', 'guide_out', 'out_of_scope',
+  'emergency', 'overview', 'taxi_cost', 'translate', 'guide_out', 'out_of_scope', 'travel_onward', 'hotel_booking', 'price_followup',
   'greeting', 'confused', 'wifi', 'battery', 'no_data', 'card_declined', 'lost_items', 'missed_flight', 'short_changed', 'taxi_problem',
   'late_night', 'unsafe', 'wheelchair', 'trolley', 'before_after_immigration', 'visa',
   'exchange', 'sim', 'taxi', 'metro', 'atm_where', 'atm_tips', 'price_check', 'amount_query',
@@ -98,7 +98,7 @@ const TOPIC_OF = {
   atm_where: 'atmwhere', atm_tips: 'atm', money_tips: 'tips', traps: 'traps', transit: 'transit', counter_closed: 'closed',
   how_much_to_change: 'howmuch', card_currency_choice: 'dcc', forex_card: 'forex', credit_card: 'credit', debit_card: 'debit',
   leftover_currency: 'leftover', excess_baggage: 'excessbag', pickup: 'pickup', no_staff: 'nostaff', app_help: 'apphelp',
-  list_counters: 'counters', emergency: 'emergency', overview: 'overview', taxi_cost: 'taxicost', translate: 'translate',
+  list_counters: 'counters', travel_onward: 'onward', hotel_booking: 'hotelbook', emergency: 'emergency', overview: 'overview', taxi_cost: 'taxicost', translate: 'translate',
   out_of_scope: 'outofscope', greeting: 'greet', confused: 'confused', wifi: 'wifi', battery: 'battery', no_data: 'nodata',
   card_declined: 'carddecline', lost_items: 'lostitem', missed_flight: 'missedflight', short_changed: 'shortchanged', taxi_problem: 'taxiissue',
   late_night: 'latenight', unsafe: 'unsafe', wheelchair: 'wheelchair', trolley: 'trolley', before_after_immigration: 'beforeafter', visa: 'visa',
@@ -106,7 +106,7 @@ const TOPIC_OF = {
 const OFFTOPIC_OF = { toilet: 'toilet', food: 'food', prayer_room: 'prayer', lounge: 'lounge', shops: 'shop', missing_bag: 'lostbag' };
 const COMMAND_OF = { next: 'next', next_step: 'next', lost: 'lost', repeat: 'repeat', back: 'back', cant_find: 'cantfind', start_over: 'restart', ask_staff: 'staff' };
 // When the rules heard progress or a place, these AI readings are overruled ("I see Thomas Cook near customs" is a place)
-const RULE_FIRST = ['emergency', 'overview', 'taxicost', 'translate', 'confused', 'greet', 'wifi', 'battery', 'nodata', 'carddecline', 'lostitem', 'missedflight', 'shortchanged', 'taxiissue',
+const RULE_FIRST = ['emergency', 'overview', 'taxicost', 'translate', 'onward', 'hotelbook', 'hotelask', 'helpword', 'confused', 'greet', 'wifi', 'battery', 'nodata', 'carddecline', 'lostitem', 'missedflight', 'shortchanged', 'taxiissue',
   'latenight', 'unsafe', 'wheelchair', 'trolley', 'beforeafter', 'visa', 'nostaff'];
 const TIP_INTENTS = ['pickup', 'money_tips', 'atm_tips', 'traps', 'ask_staff', 'list_counters', 'leftover_currency', 'no_staff', 'none'];
 
@@ -126,6 +126,8 @@ export function formToParsed(form, rules, state = null) {
   // A question, confusion or greeting the rules recognised wins ("two ways here" must never move the step)
   if (rules && rules.topic && RULE_FIRST.includes(rules.topic) && TOPIC_OF[f.intent] !== rules.topic) return null;
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
+  // "Is that okay?" right after a price verdict: the rules repeat the verdict
+  if (rules && rules.priceFollow && state && state.lastKind === 'price') return null;
   // A place they named ("I landed in Dubai") or a clear command ("where am I", "start over") beats a chatty AI reading
   const TALK = ['overview', 'confused', 'greeting', 'out_of_scope', 'none'];
   if (rules && TALK.includes(f.intent) && !rules.topic && (rules.airport || rules.terminal || rules.command)) return null;
@@ -150,6 +152,7 @@ export function formToParsed(form, rules, state = null) {
   const i = f.intent;
   if (['exchange', 'sim', 'taxi', 'metro'].includes(i)) p.intent = i;
   else if (i === 'guide_out') p.intent = 'exit';
+  else if (i === 'price_followup') p.priceFollow = true;
   else if (i === 'out_of_scope') { p.topic = 'outofscope'; p.aiAnswer = f.answer || ''; p.card = rules && rules.offtopic ? rules.offtopic : null; }
   else if (COMMAND_OF[i]) p.command = COMMAND_OF[i];
   else if (TOPIC_OF[i]) p.topic = TOPIC_OF[i];
