@@ -140,6 +140,15 @@ export const PARSE_CASES = [
   ['hi', 'नहीं', { yesno: 'no' }, { expecting: 'confirm' }],
   ['te', 'కాదు', { yesno: 'no' }, { expecting: 'confirm' }],
   ['en', 'no', { yesno: null }],
+  // Leftover currency and excess baggage tips
+  ['en', 'what do I do with leftover currency', { topic: 'leftover' }],
+  ['hinglish', 'bacha hua paisa kya karun', { topic: 'leftover' }],
+  ['hi', 'बचे हुए पैसे का क्या करूँ', { topic: 'leftover' }],
+  ['te', 'మిగిలిన డబ్బు ఏం చేయాలి', { topic: 'leftover' }],
+  ['en', 'I have excess baggage', { topic: 'excessbag', offtopic: null }],
+  ['hinglish', 'extra baggage ka paisa dena hai', { topic: 'excessbag' }],
+  ['hi', 'अतिरिक्त सामान का पैसा देना है', { topic: 'excessbag', offtopic: null }],
+  ['te', 'అదనపు లగేజీ ఉంది', { topic: 'excessbag' }],
   // Things that must NOT be understood
   ['en', 'hello there', { airport: null, terminal: null, command: null, intent: null }],
   ['en', 'what do I do now', { numbers: [] }],
@@ -346,6 +355,19 @@ export const FLOW_CASES = [
     lang: 'te-IN',
     turns: [['బ్యాంకాక్ డబ్బు మార్చాలి', { kind: 'confirm' }], ['అవును', { kind: 'step', mode: 'route', has: 'సూపర్‌రిచ్' }]],
   },
+  // Leftover currency and excess baggage: exact wording, spoken and shown, in each language
+  { name: 'Leftover currency (English, exact wording)', lang: 'en-IN',
+    turns: [['what do I do with leftover currency', { kind: 'info', has: 'Change leftover cash before you leave the city; airport counters may ask for a minimum amount. Indian residents can keep some foreign currency for the next trip.' }]] },
+  { name: 'Leftover currency (Hindi)', lang: 'hi-IN',
+    turns: [['बचे हुए पैसे का क्या करूँ', { kind: 'info', has: 'शहर छोड़ने से पहले बचे हुए नकद पैसे बदल लीजिए' }]] },
+  { name: 'Leftover currency (Telugu)', lang: 'te-IN',
+    turns: [['మిగిలిన డబ్బు ఏం చేయాలి', { kind: 'info', has: 'నగరం విడిచి వెళ్ళే ముందే మిగిలిన నగదు మార్చుకోండి' }]] },
+  { name: 'Excess baggage (English, exact wording)', lang: 'en-IN',
+    turns: [['I have excess baggage', { kind: 'info', has: 'Airline counters usually accept cards; keep your card handy instead of cash.' }]] },
+  { name: 'Excess baggage (Hindi)', lang: 'hi-IN',
+    turns: [['अतिरिक्त सामान का पैसा देना है', { kind: 'info', has: 'एयरलाइन काउंटर आमतौर पर कार्ड लेते हैं' }]] },
+  { name: 'Excess baggage (Telugu)', lang: 'te-IN',
+    turns: [['అదనపు లగేజీ ఉంది', { kind: 'info', has: 'ఎయిర్‌లైన్ కౌంటర్లు సాధారణంగా కార్డులు తీసుకుంటాయి' }]] },
 ];
 
 // ---------- Runner ----------

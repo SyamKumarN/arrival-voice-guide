@@ -328,6 +328,8 @@ const EXTRA3 = {
     tipsDone: "That's all the tips.",
     backToRoute: ' Say repeat to hear your current step.',
     info: {
+      leftover: 'Change leftover cash before you leave the city; airport counters may ask for a minimum amount. Indian residents can keep some foreign currency for the next trip.',
+      excessbag: 'Airline counters usually accept cards; keep your card handy instead of cash.',
       transit: "Connecting flight? Don't go through immigration or exit the airport. Follow the Transfer or Flight Connections signs, and ask airline staff if you're unsure.",
       closed: 'If this counter is closed, try the next exchange counter in the arrivals hall, or use an airport ATM and choose the local currency.',
       howmuch: 'Change only what you need for the first day: a taxi, a SIM and a meal. Use your card or a city ATM for the rest.',
@@ -347,6 +349,8 @@ const EXTRA3 = {
     tipsDone: 'बस, इतनी ही सलाह।',
     backToRoute: ' अपना मौजूदा कदम सुनने के लिए दोबारा बोलिए।',
     info: {
+      leftover: 'शहर छोड़ने से पहले बचे हुए नकद पैसे बदल लीजिए; एयरपोर्ट काउंटर कम से कम रकम की शर्त रख सकते हैं। भारतीय निवासी अगली यात्रा के लिए कुछ विदेशी करेंसी रख सकते हैं।',
+      excessbag: 'एयरलाइन काउंटर आमतौर पर कार्ड लेते हैं; नकद की जगह अपना कार्ड पास रखिए।',
       transit: 'कनेक्टिंग फ़्लाइट है? इमिग्रेशन से होकर बाहर मत जाइए। ट्रांसफ़र या फ़्लाइट कनेक्शन के बोर्ड देखिए, और शक हो तो एयरलाइन स्टाफ से पूछिए।',
       closed: 'यह काउंटर बंद हो तो अराइवल्स हॉल में अगला एक्सचेंज काउंटर देखिए, या एयरपोर्ट के एटीएम से पैसे निकालिए और लोकल करेंसी चुनिए।',
       howmuch: 'सिर्फ़ पहले दिन की ज़रूरत जितने पैसे बदलिए: टैक्सी, सिम और एक बार का खाना। बाकी के लिए कार्ड या शहर का एटीएम इस्तेमाल कीजिए।',
@@ -366,6 +370,8 @@ const EXTRA3 = {
     tipsDone: 'చిట్కాలు అయిపోయాయి.',
     backToRoute: ' మీ ప్రస్తుత అడుగు వినడానికి మళ్ళీ అని చెప్పండి.',
     info: {
+      leftover: 'నగరం విడిచి వెళ్ళే ముందే మిగిలిన నగదు మార్చుకోండి; ఎయిర్‌పోర్ట్ కౌంటర్లు కనీస మొత్తం అడగవచ్చు. భారతీయులు తర్వాతి ప్రయాణం కోసం కొంత విదేశీ కరెన్సీ ఉంచుకోవచ్చు.',
+      excessbag: 'ఎయిర్‌లైన్ కౌంటర్లు సాధారణంగా కార్డులు తీసుకుంటాయి; నగదుకు బదులు మీ కార్డ్ దగ్గర ఉంచుకోండి.',
       transit: 'కనెక్టింగ్ ఫ్లైట్ ఉందా? ఇమ్మిగ్రేషన్ దాటి బయటకు వెళ్ళకండి. ట్రాన్స్‌ఫర్ లేదా ఫ్లైట్ కనెక్షన్స్ బోర్డులు చూడండి, సందేహం ఉంటే ఎయిర్‌లైన్ సిబ్బందిని అడగండి.',
       closed: 'ఈ కౌంటర్ మూసి ఉంటే, అరైవల్స్ హాల్‌లో తర్వాతి ఎక్స్ఛేంజ్ కౌంటర్ చూడండి, లేదా ఎయిర్‌పోర్ట్ ఏటీఎం వాడి లోకల్ కరెన్సీ ఎంచుకోండి.',
       howmuch: 'మొదటి రోజుకి కావాల్సినంత మాత్రమే మార్చండి: టాక్సీ, సిమ్, ఒక భోజనం. మిగతాదానికి కార్డ్ లేదా నగరంలోని ఏటీఎం వాడండి.',

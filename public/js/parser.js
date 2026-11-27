@@ -59,6 +59,14 @@ const METRO_WORDS = [
 
 // ---------- Advice topics (order matters: first match wins) ----------
 const TOPICS = [
+  ['leftover', ['leftover', 'left over', 'leftover currency', 'leftover cash', 'leftover money', 'remaining currency', 'remaining cash',
+    'bacha hua paisa', 'bache hue paise', 'bacha paisa', 'bache paise', 'bachi hui currency',
+    'बचे हुए पैसे', 'बचा हुआ पैसा', 'बचे पैसे', 'बची हुई करेंसी', 'बचा हुआ कैश',
+    'మిగిలిన డబ్బు', 'మిగిలిన కరెన్సీ', 'మిగిలిపోయిన డబ్బు', 'మిగిలిన నగదు']],
+  ['excessbag', ['excess baggage', 'extra baggage', 'excess luggage', 'extra luggage', 'overweight bag', 'overweight baggage',
+    'overweight luggage', 'baggage fee', 'extra bag', 'zyada saman', 'zyada samaan', 'jyada saman', 'extra saman', 'extra samaan',
+    'अतिरिक्त सामान', 'ज़्यादा सामान', 'ज्यादा सामान', 'एक्स्ट्रा सामान', 'एक्स्ट्रा बैगेज', 'अतिरिक्त बैगेज',
+    'అదనపు లగేజీ', 'అదనపు లగేజ్', 'అదనపు బ్యాగేజ్', 'ఎక్స్‌ట్రా లగేజ్', 'ఎక్స్ట్రా లగేజ్', 'ఎక్కువ లగేజ్', 'ఎక్కువ లగేజీ']],
   ['transit', ['transit', 'connecting flight', 'connection flight', 'connecting', 'layover', 'transfer flight', 'next flight',
     'agli flight', 'connecting flight hai', 'कनेक्टिंग', 'ट्रांज़िट', 'ट्रांजिट', 'ट्रांसफ़र फ्लाइट', 'अगली फ्लाइट', 'अगली फ़्लाइट',
     'కనెక్టింగ్', 'ట్రాన్సిట్', 'తర్వాతి ఫ్లైట్', 'ఇంకో ఫ్లైట్']],

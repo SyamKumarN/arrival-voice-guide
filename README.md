@@ -18,6 +18,7 @@ This guide lets you just speak:
 - Before it starts guiding, it confirms where you are: "Dubai, Terminal 3. Is that right?" You can answer by voice or with a tap.
 
 Beyond the route, it handles the moments that cost travellers money:
+- **Leftover currency and excess baggage:** short tips on changing leftover cash before you leave the city, and paying airline baggage fees by card.
 - **Advice:** connecting flights (don't exit, follow the Transfer signs), a closed counter, how much to change (only the first day's needs), and the "rupees or local currency?" question (always local).
 - **Cards and ATMs:** forex, credit and debit card advice, plus ATM tips.
 - **Taxis and pickups:** official stands only, meters, pickup points, OTPs, luggage.
@@ -81,13 +82,13 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
 
 ## Tests
 
-`npm test` runs 706 checks, all without keys or network:
-- **Unit tests:** the parser (120 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (19, including the airport data cases: Delhi T2 not listed, Bengaluru T1 ending at an ATM, terminal hints).
-- **Scenario matrix:** 520 conversations, one for every airport (5) × language style (4) × scenario (26). The scenarios cover:
+`npm test` runs 760 checks, all without keys or network:
+- **Unit tests:** the parser (128 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (25, including the airport data cases: Delhi T2 not listed, Bengaluru T1 ending at an ATM, terminal hints).
+- **Scenario matrix:** 560 conversations, one for every airport (5) × language style (4) × scenario (28). The scenarios cover:
   - **Routes:** exchange with confirm, missing airport, missing terminal, confirm "no", SIM, taxi, metro, the full route to the receipt step and the money tips.
   - **Commands:** next/repeat/back/can't find, the price check, I'm lost, ask staff.
   - **Off-topic:** toilet, missing bag.
-  - **Advice:** transit, counter closed, how much to change, forex/credit/debit cards, "rupees or local currency?", ATM tips, pickup tips, money tips, traps.
+  - **Advice:** transit, counter closed, how much to change, forex/credit/debit cards, leftover currency, excess baggage, "rupees or local currency?", ATM tips, pickup tips, money tips, traps.
   - **Unknown requests.**
 - **Content checks:** money tips and traps stay under 15 words in every language, every tip list has the same length in every language, and there's a staff-card question for every topic in Arabic, Thai, Hindi, English and Telugu.
 

@@ -34,7 +34,7 @@ function askTerminal(lang, a, bad = false) {
 // Spoken list topics → which tip list they read
 const LIST_TOPICS = { tips: 'money', traps: 'traps', atm: 'atm', pickup: 'taxi', cards: 'cards' };
 // One-off advice topics
-const INFO_TOPICS = ['transit', 'closed', 'howmuch', 'dcc', 'forex', 'credit', 'debit'];
+const INFO_TOPICS = ['leftover', 'excessbag', 'transit', 'closed', 'howmuch', 'dcc', 'forex', 'credit', 'debit'];
 
 /** Text for the current step, e.g. "Step 2 of 5. Collect your bags…" */
 export function stepText(state, route) {

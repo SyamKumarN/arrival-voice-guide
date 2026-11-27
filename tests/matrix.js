@@ -61,6 +61,8 @@ const SAY = {
   debit: { en: 'I have a debit card', hi: 'मेरे पास डेबिट कार्ड है', hinglish: 'mere paas debit card hai', te: 'నా దగ్గర డెబిట్ కార్డ్ ఉంది' },
   dcc: { en: 'the machine asks rupees or local currency', hi: 'मशीन रुपये या लोकल करेंसी पूछ रही है', hinglish: 'rupaye mein pay karun ya local mein', te: 'రూపాయల్లోనా లోకల్ కరెన్సీలోనా అడుగుతోంది' },
   pickup: { en: 'my driver is picking me up', hi: 'मेरा ड्राइवर लेने आ रहा है', hinglish: 'mera driver pickup karega', te: 'నా డ్రైవర్ పికప్ చేస్తాడు' },
+  leftover: { en: 'what do I do with leftover currency', hi: 'बचे हुए पैसे का क्या करूँ', hinglish: 'bacha hua paisa kya karun', te: 'మిగిలిన డబ్బు ఏం చేయాలి' },
+  excessbag: { en: 'I have excess baggage', hi: 'अतिरिक्त सामान है', hinglish: 'extra baggage ka paisa dena hai', te: 'అదనపు లగేజీ ఉంది' },
   tips: { en: 'any tips', hi: 'कुछ सलाह दीजिए', hinglish: 'kuch tips do', te: 'చిట్కాలు చెప్పండి' },
   traps: { en: 'traps to avoid', hi: 'धोखे बताइए', hinglish: 'dhokhe batao', te: 'మోసాలు చెప్పండి' },
 };
@@ -155,7 +157,7 @@ function scenarios(code, style, data, rates) {
     [say('toilet'), { kind: 'offtopic', staffIntent: 'toilet', staffAirport: code, staffLang: a.staffLanguage, mode: 'route', has: SIM_MARK[style] }]]);
   add('off-topic (missing bag) is not "I\'m lost"', [[`${ap} ${say('lostbag')}`, { kind: 'offtopic', staffIntent: 'lostbag', mode: 'start' }]]);
 
-  for (const t of ['transit', 'howmuch', 'forex', 'credit', 'debit', 'dcc']) {
+  for (const t of ['transit', 'howmuch', 'forex', 'credit', 'debit', 'dcc', 'leftover', 'excessbag']) {
     add(`advice: ${t} (keeps the route)`, [...start(), [say(t), { ...info(t), mode: 'route', step: 0 }]]);
   }
   add('advice: counter closed (keeps the route)', [...start(), [say('next'), { step: 1 }], [say('closed'), { ...info('closed'), mode: 'route', step: 1 }]]);
