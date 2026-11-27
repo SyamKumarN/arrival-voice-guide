@@ -78,11 +78,17 @@ Everything above works with no keys:
 Copy `.env.example` to `.env` (never commit it), or for the live site, set them as Vercel environment variables.
 
 - `SARVAM_API_KEY`: a more natural voice for spoken replies.
-- `AI_API_KEY`: AI understanding (Anthropic API key), used only when the built-in rules don't understand a sentence. The model fills in a fixed form (intent, airport, terminal, amounts, currency) chosen from the app's own lists. The app then answers from its own data, so the AI never writes the answer or names a place. Each call has a 3-second limit; after that the normal "here's what I can do" reply is used. Calls are rate-limited (12 a minute per visitor), and nothing the person says is logged. The default model is `claude-haiku-5-5`, chosen for speed; set `AI_MODEL` to use another. Without the key, everything works as before.
+- `AI_API_KEY`: AI understanding (an Anthropic API key).
+  - **What it does:** every sentence goes to the AI first, together with the conversation so far: airport, terminal, current step and all steps, the last thing the app said, and any amount said earlier. This is how free-form speech gets understood, such as "there's a long corridor, people are walking", "I've taken my bag" or "they're giving only 1500".
+  - **What it can't do:** the AI only fills in a fixed form, choosing from the app's own lists. The app then answers from its own data, so the AI never writes the answer or names a place.
+  - **Fallback:** with no key, offline, or no reply within 4 seconds, the rules answer.
+  - **Speed:** the server is warmed up when the page loads, so the first sentence isn't slow.
+  - **Limits and privacy:** 30 calls a minute per visitor, and nothing the person says is logged.
+  - **Model:** `claude-haiku-5-5` by default; set `AI_MODEL` to use another.
 
 ## Tests
 
-`npm test` runs 1,057 checks, all without keys or network:
+`npm test` runs 1,133 checks, all without keys or network:
 - **Unit tests:**
   - **Parser (196 sentences in English, Hindi, Hinglish and Telugu):** off-topic requests, advice topics, yes/no, and spoken number variants (మూడ్, త్రీ, वन, टू).
   - **Numbers (18) and the price check (9).**
@@ -92,6 +98,12 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
   - **Commands:** next/repeat/back/can't find, the price check, I'm lost, ask staff.
   - **Off-topic:** toilet, missing bag.
   - **Advice:** transit, counter closed, how much to change, forex/credit/debit cards, leftover currency, excess baggage, "rupees or local currency?", ATM tips, pickup tips, money tips, traps.
+  - **Changi T3 test:** your exact Telugu sentences, plus Hindi and English versions, as full conversations from landing to the counter. Also covered:
+    - step progress ("taken", "done") and "I'm in the hall";
+    - listing the counters;
+    - free descriptions when you're lost, with no question asked a third time;
+    - the airport's own currency;
+    - a remembered amount ("they're giving only 1500").
   - **Phone-test fixes:** where is the ATM, nobody here, app help, a price check with no numbers, tea and chai, "how many … for 100 dollars", and switching airport from a tip list.
   - **Unknown requests.**
 - **Microphone (13):** a simulated Chrome-on-Android recogniser that stops after short silences, throws "no-speech" and "aborted", and repeats earlier words. The tests check that one tap keeps listening and joins the pieces.

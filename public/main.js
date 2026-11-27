@@ -7,7 +7,8 @@ import { ui, say, terminalLabel, currencyName, staffLines, STAFF_VOICE, STAFF_DI
 import { formatMoney } from './js/price.js';
 import { pick, short } from './js/text.js';
 import { createListener } from './js/listen.js';
-import { toSentence } from './js/understand.js';
+import { formToParsed, buildContext } from './js/understand.js';
+import { buildRoute } from './js/decide.js';
 
 const $ = (id) => document.getElementById(id);
 const store = {
@@ -51,6 +52,10 @@ async function load() {
     app.rates = saved && saved.rates ? { ...saved, source: 'saved' } : { ...(await getJSON('data/rates-sample.json')), source: 'sample' };
   }
   try { app.config = await getJSON('/api/config', 2500); } catch { /* no server: no upgrades */ }
+  // Warm the AI route up now, so the first sentence isn't slow (no AI call is made)
+  if (app.config.aiUnderstanding && navigator.onLine !== false) {
+    fetch('/api/understand', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"warmup":true}' }).catch(() => {});
+  }
 }
 
 // ---------- Speak back ----------
@@ -199,28 +204,27 @@ async function submit(text) {
   app.heard = text;
   showHeard(text, false);
   const before = app.state;
-  let out = handle(before, text, app.data, app.rates);
+  let out = handle(before, text, app.data, app.rates);       // the rules: always ready, also offline
 
-  // The rules didn't understand it and the server has an AI key: ask the AI to fill in our
-  // fixed form (never an answer), turn that into a sentence our rules know, and answer from
-  // our own data. 3 seconds at most; otherwise the rules' reply stands.
-  if (out.unknown && app.config.aiUnderstanding && navigator.onLine !== false) {
+  // With an AI key: every sentence goes to the AI first, with the conversation so far.
+  // It only fills in our fixed form; the answer comes from our own data via the same dialog.
+  // No key, offline, or no answer within 4 seconds: the rules' reply stands.
+  if (app.config.aiUnderstanding && navigator.onLine !== false) {
     setStatus('thinking');
     try {
       const ctl = new AbortController();
-      const timer = setTimeout(() => ctl.abort(), 3500);
-      const s = before;
+      const timer = setTimeout(() => ctl.abort(), 4000);
       const r = await fetch('/api/understand', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
-        body: JSON.stringify({ text, lang: s.lang, context: { mode: s.mode, expecting: s.expecting, airport: s.airport, terminal: s.terminal, dest: s.dest } }),
+        body: JSON.stringify({ text, lang: before.lang, context: buildContext(before, app.data, app.lastReply, buildRoute) }),
       });
       clearTimeout(timer);
       if (r.ok) {
         const { form } = await r.json();
-        const sentence = toSentence(form);
-        if (sentence) {
-          const again = handle(before, sentence, app.data, app.rates);
-          if (!again.unknown) out = again;
+        const parsed = formToParsed(form, out.parsed);
+        if (parsed) {
+          const ai = handle(before, text, app.data, app.rates, { parsed });
+          if (!ai.unknown) out = ai;
         }
       }
     } catch { /* timeout or offline: keep the rules' reply */ }

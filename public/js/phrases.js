@@ -422,6 +422,50 @@ for (const l of Object.keys(EXTRA4)) {
   Object.assign(T[l], rest);
   Object.assign(T[l].info, info);
 }
+
+// Round 6: Changi T3 test (progress, counters, remembered amounts, no loops)
+const QUALITY_NOTE = {
+  en: { good: 'usually the best rate here', fair: 'a middle rate', pricey: 'usually pricier', unknown: 'rate not compared yet' },
+  hi: { good: 'यहाँ आमतौर पर सबसे अच्छा रेट', fair: 'बीच का रेट', pricey: 'अक्सर महँगा', unknown: 'रेट की तुलना अभी नहीं हुई' },
+  te: { good: 'ఇక్కడ సాధారణంగా మంచి రేటు', fair: 'మధ్యస్థ రేటు', pricey: 'సాధారణంగా ఖరీదు', unknown: 'రేటు ఇంకా పోల్చలేదు' },
+};
+const counterLines = (items, l) => items.map((c, i) => `${i + 1}. ${c.name}, ${c.location} (${QUALITY_NOTE[l][c.quality] || ''})`).join(' ');
+const EXTRA5 = {
+  en: {
+    doneAck: 'Good.',
+    countersList: (name, items) => `${items.length === 1 ? 'One exchange counter is' : items.length + ' exchange counters are'} listed at ${name}: ${counterLines(items, 'en')}.`,
+    countersNone: (name) => `No exchange counter is listed at ${name}. Use an ATM, or ask at the info desk.`,
+    countersGuide: (first) => `Shall I guide you to ${first} step by step? Say yes.`,
+    priceExample: (given, from, offered, to, lang) => `Tell me both amounts, for example: they give ${formatMoney(offered)} ${currencyName(to, lang)} for ${formatMoney(given)} ${currencyName(from, lang)}.`,
+    askOffer: (amt, local, lang) => `How many ${currencyName(local, lang)} are they giving for your ${formatMoney(amt.amount)} ${currencyName(amt.currency, lang)}? For example: they're giving 1,250.`,
+    tapButtons: { confirm: 'Please tap Yes or No below.', airport: 'Please tap your airport below.', terminal: 'Please tap your terminal below.' },
+    lostAskAgain: 'Tell me one thing you can see, for example: passport desks, baggage belts, customs, or a big hall with people waiting.',
+    lostGiveUp: 'Follow the signs for Arrivals or Baggage Claim, or show this card to any staff member.',
+  },
+  hi: {
+    doneAck: 'बढ़िया।',
+    countersList: (name, items) => `${name} में ${items.length} एक्सचेंज काउंटर ${items.length === 1 ? 'है' : 'हैं'}: ${counterLines(items, 'hi')}।`,
+    countersNone: (name) => `${name} में कोई एक्सचेंज काउंटर नहीं है। एटीएम इस्तेमाल कीजिए या इन्फ़ॉर्मेशन डेस्क पर पूछिए।`,
+    countersGuide: (first) => `क्या मैं आपको ${first} तक एक-एक कदम ले चलूँ? हाँ बोलिए।`,
+    priceExample: (given, from, offered, to, lang) => `दोनों रकम बताइए, जैसे: ${formatMoney(given)} ${currencyName(from, lang)} के ${formatMoney(offered)} ${currencyName(to, lang)} दे रहे हैं।`,
+    askOffer: (amt, local, lang) => `आपके ${formatMoney(amt.amount)} ${currencyName(amt.currency, lang)} के वो कितने ${currencyName(local, lang)} दे रहे हैं? जैसे: 1,250 दे रहे हैं।`,
+    tapButtons: { confirm: 'कृपया नीचे हाँ या नहीं दबाइए।', airport: 'कृपया नीचे अपना एयरपोर्ट दबाइए।', terminal: 'कृपया नीचे अपना टर्मिनल दबाइए।' },
+    lostAskAgain: 'कोई एक चीज़ बताइए जो दिख रही हो, जैसे: पासपोर्ट डेस्क, बैगेज बेल्ट, कस्टम्स, या लोगों से भरा बड़ा हॉल।',
+    lostGiveUp: 'Arrivals या Baggage Claim के बोर्ड देखते हुए चलिए, या यह कार्ड किसी भी स्टाफ़ को दिखाइए।',
+  },
+  te: {
+    doneAck: 'బాగుంది.',
+    countersList: (name, items) => `${name}లో ${items.length === 1 ? 'ఒక ఎక్స్ఛేంజ్ కౌంటర్ ఉంది' : items.length + ' ఎక్స్ఛేంజ్ కౌంటర్లు ఉన్నాయి'}: ${counterLines(items, 'te')}.`,
+    countersNone: (name) => `${name}లో ఎక్స్ఛేంజ్ కౌంటర్ లేదు. ఏటీఎం వాడండి, లేదా ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి.`,
+    countersGuide: (first) => `${first} దగ్గరికి ఒక్కో అడుగు తీసుకెళ్ళనా? అవును అని చెప్పండి.`,
+    priceExample: (given, from, offered, to, lang) => `రెండు మొత్తాలూ చెప్పండి, ఉదాహరణకు: ${formatMoney(given)} ${currencyName(from, lang)}కి ${formatMoney(offered)} ${currencyName(to, lang)} ఇస్తున్నారు.`,
+    askOffer: (amt, local, lang) => `మీ ${formatMoney(amt.amount)} ${currencyName(amt.currency, lang)}కి వాళ్ళు ఎన్ని ${currencyName(local, lang)} ఇస్తున్నారు? ఉదాహరణకు: 1,250 ఇస్తున్నారు.`,
+    tapButtons: { confirm: 'దయచేసి కింద అవును లేదా కాదు నొక్కండి.', airport: 'దయచేసి కింద మీ ఎయిర్‌పోర్ట్ నొక్కండి.', terminal: 'దయచేసి కింద మీ టెర్మినల్ నొక్కండి.' },
+    lostAskAgain: 'మీకు కనిపిస్తున్న ఒక్క దాని గురించి చెప్పండి, ఉదాహరణకు: పాస్‌పోర్ట్ డెస్క్‌లు, బ్యాగేజ్ బెల్ట్‌లు, కస్టమ్స్, లేదా జనం వేచి ఉన్న పెద్ద హాల్.',
+    lostGiveUp: 'Arrivals లేదా Baggage Claim బోర్డులు చూస్తూ వెళ్ళండి, లేదా ఈ కార్డ్‌ను ఏ సిబ్బందికైనా చూపించండి.',
+  },
+};
+for (const l of Object.keys(EXTRA5)) Object.assign(T[l], EXTRA5[l]);
 export const tipList = (key, lang) => (TIP_LISTS[key] && (TIP_LISTS[key][short(lang)] || TIP_LISTS[key].en)) || [];
 
 // ---------- Ask-staff card ----------
@@ -437,6 +481,7 @@ export const STAFF = {
 // Metro and the off-topic questions the guide hands over to staff
 const STAFF_MORE = {
   en: {
+    lost: "Excuse me, I'm lost. How do I get to baggage claim and the arrivals hall?",
     atm: 'Excuse me, where is the nearest ATM?',
     metro: 'Excuse me, where is the metro or train?', toilet: 'Excuse me, where is the toilet?',
     prayer: 'Excuse me, where is the prayer room?', food: 'Excuse me, where can I get food or coffee?',
@@ -444,6 +489,7 @@ const STAFF_MORE = {
     lostbag: "Excuse me, my bag hasn't arrived. Where is the baggage services desk?",
   },
   ar: {
+    lost: 'من فضلك، أنا تائه. كيف أصل إلى استلام الأمتعة وصالة الوصول؟',
     atm: 'من فضلك، أين أقرب صراف آلي؟',
     metro: 'من فضلك، أين المترو أو القطار؟', toilet: 'من فضلك، أين دورة المياه؟',
     prayer: 'من فضلك، أين المصلى؟', food: 'من فضلك، أين يمكنني شراء طعام أو قهوة؟',
@@ -451,6 +497,7 @@ const STAFF_MORE = {
     lostbag: 'من فضلك، حقيبتي لم تصل. أين مكتب خدمات الأمتعة؟',
   },
   th: {
+    lost: 'ขอโทษครับ/ค่ะ ฉันหลงทาง ไปที่รับกระเป๋าและโถงผู้โดยสารขาเข้าทางไหน',
     atm: 'ขอโทษครับ/ค่ะ ตู้เอทีเอ็มที่ใกล้ที่สุดอยู่ที่ไหน',
     metro: 'ขอโทษครับ/ค่ะ รถไฟฟ้าอยู่ที่ไหน', toilet: 'ขอโทษครับ/ค่ะ ห้องน้ำอยู่ที่ไหน',
     prayer: 'ขอโทษครับ/ค่ะ ห้องละหมาดอยู่ที่ไหน', food: 'ขอโทษครับ/ค่ะ ร้านอาหารหรือร้านกาแฟอยู่ที่ไหน',
@@ -458,6 +505,7 @@ const STAFF_MORE = {
     lostbag: 'ขอโทษครับ/ค่ะ กระเป๋าของฉันไม่มา ติดต่อแผนกสัมภาระได้ที่ไหน',
   },
   hi: {
+    lost: 'माफ़ कीजिए, मैं रास्ता भूल गया हूँ। बैगेज क्लेम और अराइवल हॉल कैसे जाऊँ?',
     atm: 'कृपया बताइए, सबसे पास का एटीएम कहाँ है?',
     metro: 'कृपया बताइए, मेट्रो या ट्रेन कहाँ है?', toilet: 'कृपया बताइए, शौचालय कहाँ है?',
     prayer: 'कृपया बताइए, प्रार्थना कक्ष कहाँ है?', food: 'कृपया बताइए, खाना या कॉफ़ी कहाँ मिलेगी?',
@@ -465,6 +513,7 @@ const STAFF_MORE = {
     lostbag: 'मेरा सामान नहीं आया। बैगेज सर्विस डेस्क कहाँ है?',
   },
   te: {
+    lost: 'క్షమించండి, నేను దారి తప్పాను. బ్యాగేజ్ క్లెయిమ్, అరైవల్స్ హాల్‌కి ఎలా వెళ్ళాలి?',
     atm: 'దయచేసి చెప్పండి, దగ్గర్లో ఏటీఎం ఎక్కడ ఉంది?',
     metro: 'దయచేసి చెప్పండి, మెట్రో లేదా రైలు ఎక్కడ ఉంది?', toilet: 'దయచేసి చెప్పండి, టాయిలెట్ ఎక్కడ ఉంది?',
     prayer: 'దయచేసి చెప్పండి, ప్రార్థన గది ఎక్కడ ఉంది?', food: 'దయచేసి చెప్పండి, భోజనం లేదా కాఫీ ఎక్కడ దొరుకుతుంది?',
@@ -571,7 +620,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `Saved on this phone (${d}): routes, counters, staff cards and rates from ${r}. The buttons work offline; voice needs internet.`,
     saveFailed: 'Could not save. Try again with internet.', install: 'Add to home screen',
     slower: 'Speak slower', yes: 'Yes', no: 'No', ratesSaved: 'Rates saved on this phone', langTipTitle: 'Language help:',
-    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag', atm: 'ATM' },
+    dest: { metro: 'Metro / train', toilet: 'Toilet', prayer: 'Prayer room', food: 'Food & coffee', shop: 'Shops & duty free', lounge: 'Lounge', lostbag: 'Missing bag', atm: 'ATM', lost: 'Lost' },
     tries: ['Dubai terminal 3, I need currency', 'I want a SIM', 'taxi stand', "I'm lost", 'I have a connecting flight', 'I have a forex card', 'They give 1700 dirhams for 500 dollars'],
   },
   hi: {
@@ -579,7 +628,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `इस फ़ोन पर सेव हो गया (${d}): रास्ते, काउंटर, स्टाफ कार्ड और ${r} के रेट। बटन बिना इंटरनेट के चलेंगे; आवाज़ के लिए इंटरनेट चाहिए।`,
     saveFailed: 'सेव नहीं हुआ। इंटरनेट के साथ फिर कोशिश कीजिए।', install: 'होम स्क्रीन पर जोड़ें',
     slower: 'धीरे बोलिए', yes: 'हाँ', no: 'नहीं', ratesSaved: 'इस फ़ोन पर सेव किए रेट', langTipTitle: 'भाषा में मदद:',
-    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया', atm: 'एटीएम' },
+    dest: { metro: 'मेट्रो / ट्रेन', toilet: 'शौचालय', prayer: 'प्रार्थना कक्ष', food: 'खाना / कॉफ़ी', shop: 'दुकानें', lounge: 'लाउंज', lostbag: 'सामान नहीं आया', atm: 'एटीएम', lost: 'रास्ता भूल गए' },
     tries: ['dubai terminal teen, paise badalne hain', 'मुझे सिम चाहिए', 'होटल जाने के लिए टैक्सी', 'पता नहीं कहाँ हूँ', 'मेरी कनेक्टिंग फ़्लाइट है', 'मेरे पास फॉरेक्स कार्ड है', '500 dollar ke satrah sau dirham de rahe hain'],
   },
   te: {
@@ -587,7 +636,7 @@ const UI_EXTRA3 = {
     saved: (d, r) => `ఈ ఫోన్‌లో సేవ్ అయింది (${d}): దారులు, కౌంటర్లు, స్టాఫ్ కార్డ్‌లు, ${r} రేట్లు. బటన్లు ఇంటర్నెట్ లేకుండా పనిచేస్తాయి; వాయిస్‌కి ఇంటర్నెట్ కావాలి.`,
     saveFailed: 'సేవ్ కాలేదు. ఇంటర్నెట్‌తో మళ్ళీ ప్రయత్నించండి.', install: 'హోమ్ స్క్రీన్‌కి జోడించు',
     slower: 'నెమ్మదిగా మాట్లాడు', yes: 'అవును', no: 'కాదు', ratesSaved: 'ఈ ఫోన్‌లో సేవ్ చేసిన రేట్లు', langTipTitle: 'భాషా సహాయం:',
-    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు', atm: 'ఏటీఎం' },
+    dest: { metro: 'మెట్రో / రైలు', toilet: 'టాయిలెట్', prayer: 'ప్రార్థన గది', food: 'భోజనం / కాఫీ', shop: 'షాపులు', lounge: 'లాంజ్', lostbag: 'బ్యాగ్ రాలేదు', atm: 'ఏటీఎం', lost: 'దారి తప్పాను' },
     tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'సిమ్ కావాలి', 'హోటల్‌కి టాక్సీ', 'నేను ఎక్కడున్నానో తెలియదు', 'నాకు కనెక్టింగ్ ఫ్లైట్ ఉంది', 'నా దగ్గర ఫారెక్స్ కార్డ్ ఉంది', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
   },
 };

@@ -11,15 +11,17 @@
 // state.tipsGiven : the money tips were already offered after the exchange route
 
 import { parse } from './parser.js';
-import { buildRoute, terminalsOf, hasRoute, stepForStage } from './decide.js';
+import { buildRoute, terminalsOf, hasRoute, stepForStage, rankCounters } from './decide.js';
 import { comparePrice, midRate, roundMoney } from './price.js';
-import { say, terminalLabel, tipList } from './phrases.js';
+import { say, terminalLabel, tipList, currencyName } from './phrases.js';
 import { pick } from './text.js';
 
 export function initialState(lang = 'hi-IN') {
   return {
     lang, airport: null, terminal: null, dest: 'exchange', mode: 'start', step: 0, expecting: null,
     confirmed: false, lost: false, tips: null, tipsGiven: false,
+    lastAmount: null,           // { amount, currency } said earlier ("I have 1000 dollars")
+    asks: null,                 // { key, n }: how often the same question was asked again
   };
 }
 
@@ -35,6 +37,24 @@ function askTerminal(lang, a, bad = false) {
 const LIST_TOPICS = { tips: 'money', traps: 'traps', atm: 'atm', pickup: 'taxi', cards: 'cards' };
 // One-off advice topics
 const INFO_TOPICS = ['leftover', 'excessbag', 'transit', 'closed', 'howmuch', 'dcc', 'forex', 'credit', 'debit'];
+
+/** The last step is done: closing line, then (once) the money tips. */
+function finishRoute(state, route, lang) {
+  state.mode = 'done';
+  const done = say(lang, 'done')(state.dest === 'exchange' && route.endsAt === 'atm' ? 'atm' : state.dest);
+  if (state.dest === 'exchange' && !state.tipsGiven) {
+    state.tipsGiven = true;
+    return startTips(state, 'money', done);
+  }
+  return reply('done', done);
+}
+
+/** "Tell me both amounts, for example: they give 129 Singapore dollars for 100 US dollars." */
+function priceExample(lang, local, rates) {
+  if (!local || local === 'USD') return say(lang, 'priceNeedTwo');
+  const offered = roundMoney(100 * midRate(rates, 'USD', local) * 0.97);
+  return say(lang, 'priceExample')(100, 'USD', offered, local, lang);
+}
 
 /** Text for the current step, e.g. "Step 2 of 5. Collect your bags…" */
 export function stepText(state, route) {
@@ -90,12 +110,28 @@ function endTips(state, data) {
   return reply('tips', say(state.lang, 'tipsDone') + tail);
 }
 
-export function handle(prev, sentence, data, rates) {
+/**
+ * One turn. `opts.parsed` lets the optional AI fill in what was said (same shape as parse());
+ * the answer always comes from our data.
+ */
+export function handle(prev, sentence, data, rates, opts = {}) {
   const state = { ...initialState(prev.lang), ...prev };
   const lang = state.lang;
   const out = (st, r, extra = {}) => ({ state: st, reply: r, parsed: p, ...extra });
   const localCurrency = state.airport ? data.airports[state.airport].currency : null;
-  const p = parse(sentence, { expecting: state.expecting, localCurrency });
+  const p = opts.parsed || parse(sentence, { expecting: state.expecting, localCurrency });
+  // Never ask the same question a third time: count re-asks, reset on any other turn
+  const prevAsks = state.asks;
+  state.asks = null;
+  const askedAgain = (key) => {
+    const n = prevAsks && prevAsks.key === key ? prevAsks.n + 1 : 1;
+    state.asks = { key, n };
+    return n;                     // 1 = asking a second time, 2+ = would be the third
+  };
+  const nameHere = () => {
+    const a = state.airport ? data.airports[state.airport] : null;
+    return a ? pick(a.name, lang) + (state.terminal && state.terminal !== 'MAIN' ? ' ' + terminalLabel(state.terminal, lang) : '') : null;
+  };
 
   // 1. Start over
   if (p.command === 'restart') {
@@ -103,6 +139,11 @@ export function handle(prev, sentence, data, rates) {
   }
 
   // 2. Reading a tip list: next / repeat / back move through it; anything else leaves it
+  if (state.mode === 'tips' && state.tips && (p.progress || p.atPlace)) {
+    const { prev: back } = state.tips;
+    if (back.mode === 'route') Object.assign(state, { tips: null, mode: 'route', expecting: null });
+    else return out(state, endTips(state, data));
+  }
   if (state.mode === 'tips' && state.tips) {
     const n = tipList(state.tips.key, lang).length;
     if (p.command === 'next' || p.yesno === 'yes') {
@@ -132,7 +173,7 @@ export function handle(prev, sentence, data, rates) {
     Object.assign(state, { confirmed: false, step: 0, expecting: null, tips: null, lost: false,
       mode: ['route', 'done', 'tips'].includes(state.mode) ? 'info' : state.mode });
   };
-  const sideTopic = p.topic === 'nostaff' || p.topic === 'apphelp' || p.topic === 'atmwhere' || !!p.amountQuery ||
+  const sideTopic = p.topic === 'nostaff' || p.topic === 'apphelp' || p.topic === 'atmwhere' || p.topic === 'counters' || !!p.amountQuery ||
     !!p.offtopic || (p.topic && (INFO_TOPICS.includes(p.topic) || LIST_TOPICS[p.topic]));
   if (sideTopic && (p.airport || p.terminal) && !p.intent) switchContext();
 
@@ -149,29 +190,72 @@ export function handle(prev, sentence, data, rates) {
   }
 
   // 4. Price check works at any point in the flow
+  const local = state.airport ? data.airports[state.airport].currency : null;
+  const offerAmount = p.amounts.length === 1 ? p.amounts[0] : (p.amounts.length === 0 && p.numbers.length === 1 ? { amount: p.numbers[0], currency: null } : null);
   if (p.price) {
     const c = comparePrice(p.price, rates);
+    state.lastAmount = { ...p.price.given };
     if (c) return out(state, reply('price', say(lang, 'price')(c, lang), { price: c }));
+  } else if (p.offered && offerAmount && state.lastAmount && !p.amountQuery) {
+    // "They're giving only 1500" → 1500 in the airport's currency for the amount said earlier
+    const given = state.lastAmount;
+    const cur = offerAmount.currency && offerAmount.currency !== given.currency ? offerAmount.currency
+      : (local && local !== given.currency ? local : null);
+    if (cur) {
+      const c = comparePrice({ given, received: { amount: offerAmount.amount, currency: cur } }, rates);
+      if (c) return out(state, reply('price', say(lang, 'price')(c, lang), { price: c }));
+    }
+    return out(state, reply('ask', say(lang, 'amountNeed')));
   } else if (p.amountQuery) {
     // "How many dirhams for 500 dollars?" → the fair amount at the mid-market rate
     const q = p.amountQuery;
-    const local = state.airport ? data.airports[state.airport].currency : null;
     const to = q.to || (local && local !== q.from ? local : null);
     const from = q.from || (to && to !== 'INR' ? 'INR' : null);
     const rate = from && to && from !== to ? midRate(rates, from, to) : null;
     if (!rate) return out(state, reply('ask', say(lang, 'amountNeed')));
     const fair = roundMoney(q.amount * rate);
+    state.lastAmount = { amount: q.amount, currency: from };
     return out(state, reply('amount', say(lang, 'amountFair')(q.amount, from, fair, to, lang), { amount: { amount: q.amount, from, to, fair } }));
-  } else if (p.priceCheck && !p.airport && !p.command) {
-    return out(state, reply('ask', say(lang, 'priceNeedTwo')));
-  } else if (p.amounts.length === 1 && !p.airport && !p.terminal && !p.command && !p.topic) {
-    return out(state, reply('ask', say(lang, 'priceNeedTwo')));
+  } else if ((p.priceCheck && !p.airport && !p.command) ||
+    (p.amounts.length === 1 && !p.airport && !p.terminal && !p.command && !p.topic)) {
+    // Ask for what's missing, with an example in this airport's currency
+    if (p.amounts.length === 1 && p.amounts[0].given !== false) state.lastAmount = { amount: p.amounts[0].amount, currency: p.amounts[0].currency };
+    if (state.lastAmount && local && local !== state.lastAmount.currency) {
+      return out(state, reply('ask', say(lang, 'askOffer')(state.lastAmount, local, lang)));
+    }
+    return out(state, reply('ask', priceExample(lang, local, rates)));
   }
 
   // 5. Outside our scope: say what we do, and hand the question to staff (never guess a location)
-  if (p.offtopic) {
+  if (p.offtopic && !(state.expecting === 'stage' && p.stage)) {
     const staff = { intent: p.offtopic, airport: p.airport || state.airport };
     return out(state, reply('offtopic', say(lang, 'offtopic'), { staff }));
+  }
+
+  // "How many / which exchange counters are here?" → every counter we list for this terminal
+  if (p.topic === 'counters') {
+    state.dest = 'exchange';
+    if (!state.airport) {
+      Object.assign(state, { mode: 'ask', expecting: 'airport' });
+      return out(state, reply('ask', say(lang, 'askAirport')));
+    }
+    const a = data.airports[state.airport];
+    const terms = terminalsOf(data, state.airport);
+    if (terms.length === 1) state.terminal = terms[0];
+    if (!state.terminal) {
+      Object.assign(state, { mode: 'ask', expecting: 'terminal' });
+      return out(state, reply('ask', askTerminal(lang, a)));
+    }
+    const list = rankCounters(a, state.terminal);
+    const items = list.map((c) => ({ name: pick(c.name, lang), location: pick(c.location, lang), quality: c.quality }));
+    if (!items.length) return out(state, reply('info', say(lang, 'countersNone')(nameHere()), { topic: 'counters', counters: [] }));
+    let text = say(lang, 'countersList')(nameHere(), items);
+    if (state.mode !== 'route') {
+      // Offer to guide them to the first one
+      Object.assign(state, { mode: 'confirm', expecting: 'confirm', confirmed: false, step: 0 });
+      text += ' ' + say(lang, 'countersGuide')(items[0].name);
+    }
+    return out(state, reply('info', text, { topic: 'counters', counters: items }));
   }
 
   // 6. "Where is the ATM?": the place, from our data only; otherwise the safe answer and a card
@@ -201,8 +285,11 @@ export function handle(prev, sentence, data, rates) {
     } else if (p.yesno === 'no') {
       Object.assign(state, { airport: null, terminal: null, confirmed: false, mode: 'ask', expecting: 'airport' });
       return out(state, reply('ask', say(lang, 'confirmNo')));
-    } else if (!p.intent && !p.command) {
+    } else if (!p.intent && !p.command && !(p.stage && (p.atPlace || p.progress))) {
+      if (askedAgain('confirm') >= 2) return out(state, reply('confirm', say(lang, 'tapButtons').confirm), { unknown: true });
       return out(state, reply('confirm', confirmQuestion(state, data)), { unknown: true });
+    } else if (p.stage && (p.atPlace || p.progress)) {
+      Object.assign(state, { confirmed: true, expecting: null });   // "I'm already in the hall" answers "is that right?"
     }
   }
 
@@ -223,7 +310,12 @@ export function handle(prev, sentence, data, rates) {
       }
     }
     if (!p.airport && !p.terminal && !p.intent && p.command !== 'next') {
-      return out(state, reply('ask', say(lang, 'lostAsk')), { unknown: !p.command });
+      if (askedAgain('stage') >= 2) {
+        // Still can't tell: point to the signs and hand over to staff, instead of asking again
+        Object.assign(state, { expecting: null, lost: false, mode: 'info' });
+        return out(state, reply('info', say(lang, 'lostGiveUp'), { staff: { intent: 'lost', airport: state.airport } }), { unknown: true });
+      }
+      return out(state, reply('ask', say(lang, 'lostAskAgain')), { unknown: !p.command });
     }
     // A new airport or terminal ("actually I'm in Dubai") keeps the lost flow going;
     // a new destination or a command means they've moved on.
@@ -231,11 +323,45 @@ export function handle(prev, sentence, data, rates) {
     if (p.intent || p.command) state.lost = false;
   }
 
+  if (state.mode !== 'route' && state.airport && state.terminal && p.stage && (p.atPlace || p.progress) &&
+      !p.intent && !p.airport && state.expecting !== 'airport' && state.expecting !== 'terminal') {
+    const r = currentRoute(state, data);
+    const i = r ? stepForStage(r, p.stage) : -1;
+    if (r && i >= 0) {
+      Object.assign(state, { mode: 'route', step: i, expecting: null, lost: false, confirmed: true });
+      return out(state, reply('step', say(lang, 'lostFound')(p.stage) + ' ' + stepText(state, r)));
+    }
+  }
+
   // 9. Step commands while guiding
   const route = currentRoute(state, data);
   const changed = (p.airport && p.airport !== state.airport) || (p.terminal && p.terminal !== state.terminal) ||
     (p.intent && p.intent !== state.dest);
   if (state.mode === 'route' && route && !changed && !state.lost) {
+    if (Number.isInteger(p.jumpStep) && p.jumpStep >= 0 && p.jumpStep < route.steps.length) {
+      // The AI matched "I'm past the escalators" to one of our steps
+      state.step = p.jumpStep;
+      return out(state, reply('step', say(lang, 'doneAck') + ' ' + stepText(state, route)));
+    }
+    if (p.stage && p.atPlace) {
+      // "I'm in the hall", "I can see the belts" → carry on from that step
+      const i = stepForStage(route, p.stage);
+      if (i >= 0) {
+        state.step = i;
+        return out(state, reply('step', say(lang, 'lostFound')(p.stage) + ' ' + stepText(state, route)));
+      }
+    }
+    if (p.progress && p.command !== 'back' && p.command !== 'repeat') {
+      // "Taken", "done", "బ్యాగ్ తీసుకున్నాను" → that step is done; give the next one
+      let next = state.step + 1;
+      if (p.stage) {
+        const last = route.steps.map((st) => st.stage).lastIndexOf(p.stage);
+        if (last >= 0) next = Math.max(next, last + 1);
+      }
+      if (next >= route.steps.length) return out(state, finishRoute(state, route, lang));
+      state.step = next;
+      return out(state, reply('step', say(lang, 'doneAck') + ' ' + stepText(state, route)));
+    }
     if (p.command === 'cantfind') {
       return out(state, reply('fallback', say(lang, 'cantFind')(pick(route.fallback, lang))));
     }
@@ -246,16 +372,7 @@ export function handle(prev, sentence, data, rates) {
       return out(state, reply('step', stepText(state, route)));
     }
     if (p.command === 'next') {
-      if (state.step + 1 >= route.steps.length) {
-        state.mode = 'done';
-        const done = say(lang, 'done')(state.dest === 'exchange' && route.endsAt === 'atm' ? 'atm' : state.dest);
-        // Once, after the exchange route: three short money tips
-        if (state.dest === 'exchange' && !state.tipsGiven) {
-          state.tipsGiven = true;
-          return out(state, startTips(state, 'money', done));
-        }
-        return out(state, reply('done', done));
-      }
+      if (state.step + 1 >= route.steps.length) return out(state, finishRoute(state, route, lang));
       state.step += 1;
       return out(state, reply('step', stepText(state, route)));
     }
@@ -272,9 +389,13 @@ export function handle(prev, sentence, data, rates) {
   // 10. Fill in airport, terminal and destination
   const understood = p.airport || p.terminal || p.intent || state.lost || confirmedNow;
   if (!understood) {
-    if (state.expecting === 'airport') return out(state, reply('ask', say(lang, 'unknown') + ' ' + say(lang, 'askAirport')), { unknown: true });
+    if (state.expecting === 'airport') {
+      if (askedAgain('airport') >= 2) return out(state, reply('ask', say(lang, 'tapButtons').airport), { unknown: true });
+      return out(state, reply('ask', say(lang, 'unknown') + ' ' + say(lang, 'askAirport')), { unknown: true });
+    }
     if (state.expecting === 'terminal') {
       const a = data.airports[state.airport];
+      if (askedAgain('terminal') >= 2) return out(state, reply('ask', say(lang, 'tapButtons').terminal), { unknown: true });
       return out(state, reply('ask', askTerminal(lang, a)), { unknown: true });
     }
     return out(state, reply('unknown', capabilities(lang)), { unknown: true });

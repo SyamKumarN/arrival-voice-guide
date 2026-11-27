@@ -142,7 +142,8 @@ const OFFTOPIC = [
 const ATM_ADVICE = ['tips', 'tip', 'advice', 'safe', 'safely', 'fee', 'fees', 'charges', 'charge', 'withdraw', 'withdrawal',
   'salah', 'सलाह', 'टिप्स', 'फ़ीस', 'फीस', 'चार्ज', 'చిట్కా', 'సలహా', 'ఫీజు', 'ఛార్జ్'];
 // "How many dirhams for 500 dollars?"
-const HOW_MANY = ['how many', 'how much will i get', 'how much do i get', 'how much would i get', 'how much is',
+const HOW_MANY = ['how many', 'how much will i get', 'how much do i get', 'how much would i get', 'how much is', 'how much',
+  'ఎంత', 'అంత వస్తాయి', 'ఎంతొస్తాయి',
   'kitne', 'kitna milega', 'kitne milenge', 'कितने', 'कितना मिलेगा', 'कितने मिलेंगे',
   'ఎన్ని', 'ఎంత వస్తుంది', 'ఎంత వస్తాయి', 'ఎంత ఇస్తారు', 'ఎంత వస్తది'];
 // "Price check" without numbers
@@ -159,18 +160,46 @@ const NO_WORDS = ['no', 'nope', 'wrong', 'not right', 'incorrect', 'nahi', 'nahi
 
 // ---------- "What do you see?" answers, for the I'm-lost flow ----------
 const STAGES = {
-  immigration: ['passport', 'passports', 'passport counter', 'immigration', 'pasport', 'पासपोर्ट', 'इमिग्रेशन', 'पासपोर्ट काउंटर', 'పాస్పోర్ట్', 'పాస్‌పోర్ట్', 'ఇమ్మిగ్రేషన్'],
-  baggage: ['baggage', 'bags', 'bag', 'belt', 'belts', 'luggage', 'carousel', 'samaan', 'saman', 'बैगेज', 'सामान', 'बेल्ट', 'लगेज', 'बैग', 'బ్యాగేజ్', 'బెల్ట్', 'లగేజ్', 'సామాను', 'బ్యాగ'],
-  customs: ['customs', 'custom', 'कस्टम', 'కస్టమ్'],
-  arrivals: ['arrivals', 'arrival', 'arrivals hall', 'exit', 'outside', 'bahar', 'अराइवल', 'बाहर', 'एग्ज़िट', 'అరైవల్', 'బయట'],
+  immigration: ['passport', 'passports', 'passport counter', 'immigration', 'pasport', 'passport control', 'automated gates', 'e gates',
+    'corridor', 'long corridor', 'walkway', 'travelator', 'people walking', 'officer', 'officers', 'escalator', 'escalators',
+    'पासपोर्ट', 'इमिग्रेशन', 'पासपोर्ट काउंटर', 'गलियारा', 'कॉरिडोर', 'लोग चल रहे', 'अफ़सर', 'अफसर', 'ऑफिसर', 'एस्केलेटर',
+    'పాస్పోర్ట్', 'పాస్‌పోర్ట్', 'ఇమ్మిగ్రేషన్', 'కారిడార్', 'కారిడర్', 'నడుస్తున్నారు', 'ఆఫీసర్', 'అధికారులు', 'ఎస్కలేటర్'],
+  baggage: ['baggage', 'bags', 'bag', 'belt', 'belts', 'luggage', 'carousel', 'trolley', 'trolleys', 'samaan', 'saman', 'duty free', 'shops',
+    'बैगेज', 'सामान', 'बेल्ट', 'लगेज', 'बैग', 'ट्रॉली', 'ड्यूटी फ्री', 'ड्यूटी फ़्री', 'दुकानें',
+    'బ్యాగేజ్', 'బెల్ట్', 'లగేజ్', 'సామాను', 'బ్యాగ', 'ట్రాలీ', 'డ్యూటీ ఫ్రీ', 'షాపులు'],
+  customs: ['customs', 'custom', 'green channel', 'red channel', 'scanner', 'x ray', 'कस्टम', 'ग्रीन चैनल', 'रेड चैनल', 'కస్టమ్', 'గ్రీన్ చానెల్', 'స్కానర్'],
+  arrivals: ['arrivals', 'arrival', 'arrivals hall', 'hall', 'meeting hall', 'exit', 'outside', 'bahar', 'people waiting', 'name boards',
+    'अराइवल', 'बाहर', 'एग्ज़िट', 'हॉल', 'अराइवल्स हॉल', 'అరైవల్', 'బయట', 'హాల్', 'ఎగ్జిట్'],
 };
+// "I'm in / at / I can see …": the sentence says where they are
+const PLACE_WORDS = ['im in', 'i am in', 'im at', 'i am at', 'i can see', 'i see', 'there is', 'theres', 'there are', 'im near', 'i am near', 'here',
+  'already', 'now in', 'in the', 'at the', 'है', 'हैं',
+  'में हूँ', 'में हूं', 'पर हूँ', 'पे हूँ', 'के पास हूँ', 'दिख रहा', 'दिख रही', 'दिख रहे', 'यहाँ', 'main hoon', 'pe hoon', 'dikh raha', 'dikh rahe',
+  'ఉన్నాను', 'ఉన్నా', 'ఉంది', 'ఉన్నారు', 'కనిపిస్తుంది', 'కనిపిస్తున్నాయి', 'కనిపిస్తోంది', 'కనిపిస్తున్నారు', 'ఇక్కడ'];
+// "Taken / done / reached": the current step is finished
+// "Where is the belt?" asks for a place; it doesn't say where they are
+const QUESTION_WORDS = ['where', 'which way', 'how do i get', 'kahan', 'kidhar', 'कहाँ', 'कहां', 'किधर', 'ఎక్కడ', 'ఎటు', 'ఎలా వెళ్ళాలి'];
+const DONE_WORDS = ['done', 'taken', 'took', 'got my bags', 'got my bag', 'got the bags', 'collected', 'reached', 'finished', 'completed',
+  'cleared', 'passed', 'im through', 'i am through', 'ho gaya', 'ho gayi', 'le liya', 'le liye', 'mil gaya', 'mil gaye', 'pahunch gaya',
+  'हो गया', 'हो गई', 'ले लिया', 'ले लिए', 'ले ली', 'मिल गया', 'मिल गए', 'पहुँच गया', 'पहुंच गया', 'पहुँच गई', 'कर लिया', 'पार कर लिया',
+  'తీసుకున్నా', 'తీసేసుకున్నా', 'అయిపోయింది', 'అయింది', 'చేరుకున్నా', 'వచ్చేశా', 'దాటాను', 'దాటేశా', 'పూర్తయింది', 'కలెక్ట్ చేశా'];
+// "How many / which exchange counters are here?"
+const COUNTER_LIST = ['how many counters', 'how many exchange counters', 'which counters', 'which exchange counters', 'list counters',
+  'list the counters', 'what counters', 'counters here', 'kitne counter', 'kaun se counter', 'कितने काउंटर', 'कौन से काउंटर', 'कौन कौन से काउंटर',
+  'kitne exchange counter', 'कितने एक्सचेंज काउंटर', 'कौन से एक्सचेंज काउंटर', 'काउंटर कितने',
+  'ఎన్ని ఎక్స్చేంజ్ కౌంటర్లు', 'ఎన్ని ఎక్స్ఛేంజ్ కౌంటర్లు', 'ఎన్ని కౌంటర్లు', 'ఏ కౌంటర్లు', 'ఏయే కౌంటర్లు', 'కౌంటర్లు ఉన్నాయి'];
+// "They're giving 1500": an offer, to compare with the amount said earlier
+const OFFER_WORDS = ['giving', 'offering', 'they give', 'they gave', 'offered', 'gave me', 'de rahe', 'de raha', 'dete hain', 'diya',
+  'दे रहे', 'दे रहा', 'देते हैं', 'दिया', 'ఇస్తున్నారు', 'ఇస్తారంట', 'ఇస్తామన్నారు', 'ఇచ్చారు', 'ఇస్తున్నాడు', 'ఇస్తున్నది'];
+
 
 // ---------- Commands (checked in this order) ----------
 const COMMANDS = [
   ['restart', ['start over', 'start again', 'restart', 'reset', 'new search', 'shuru se', 'phir se shuru',
     'फिर से शुरू', 'शुरू से', 'नए सिरे', 'మొదటి నుంచి', 'మళ్ళీ మొదలు', 'మళ్లీ మొదలు']],
-  ['staff', ['ask staff', 'staff', 'show staff', 'staff card', 'help card', 'show card', 'ask someone',
-    'स्टाफ', 'स्टाफ़', 'कर्मचारी', 'staff se', 'స్టాఫ్', 'సిబ్బంది']],
+  ['staff', ['ask staff', 'show staff', 'staff card', 'help card', 'show card', 'ask someone', 'staff se',
+    'स्टाफ से पूछ', 'स्टाफ़ से पूछ', 'कर्मचारी से पूछ', 'स्टाफ कार्ड', 'स्टाफ़ कार्ड',
+    'స్టాఫ్ని అడగ', 'స్టాఫ్ ని అడగ', 'సిబ్బందిని అడగ', 'స్టాఫ్ కార్డ్', 'స్టాఫ్కి చూపించ']],
   ['lost', ['lost', 'i am lost', 'im lost', 'where am i', 'dont know where i am', 'do not know where i am',
     'kho gaya', 'kho gayi', 'pata nahi kahan', 'pata nahin kahan', 'खो गया', 'खो गई', 'खो गयी', 'पता नहीं कहाँ', 'पता नहीं कहां',
     'मैं कहाँ हूँ', 'ఎక్కడున్నానో తెలియదు', 'ఎక్కడ ఉన్నానో తెలియదు', 'తప్పిపోయాను', 'నేను ఎక్కడ ఉన్నాను']],
@@ -360,6 +389,8 @@ export function parse(raw, ctx = {}) {
     if (hasAny(p, words)) { command = name; break; }
   }
   if (!command && tokens.length <= 3 && hasAny(p, SOFT_NEXT)) command = 'next';
+  // A staff word on its own ("staff", "స్టాఫ్") is a request; inside a sentence it's just people ("officers are sitting")
+  if (!command && tokens.length <= 2 && hasAny(p, ['staff', 'स्टाफ', 'स्टाफ़', 'కర్మచారి', 'స్టాఫ్', 'సిబ్బంది'])) command = 'staff';
 
   // Where the traveller is, when they answer "What do you see?"
   let stage = null;
@@ -406,8 +437,16 @@ export function parse(raw, ctx = {}) {
     else if (hasAny(p, YES_WORDS)) yesno = 'yes';
   }
 
-  // "How many dirhams for 500 dollars?": one amount and the currency they want
-  const numbers = findNumbers(tokens, (t) => !!currencyOf(t)).map((n) => n.value);
+  // Progress, place and counter questions
+  const progress = hasAny(p, DONE_WORDS);
+  const atPlace = !!stage && hasAny(p, PLACE_WORDS) && !hasAny(p, QUESTION_WORDS);
+  if (hasAny(p, COUNTER_LIST)) { topic = 'counters'; if (intent === 'exchange') intent = null; }
+  const offered = hasAny(p, OFFER_WORDS);
+
+  // "How many dirhams for 500 dollars?": one amount and the currency they want.
+  // The number after "terminal" is a terminal, not an amount.
+  const isTermTok = (t) => TERMINAL_WORDS.includes(t) || /^(टर्मिनल|టెర్మినల్|టర్మినల్)/.test(t);
+  const numbers = findNumbers(tokens, (t) => !!currencyOf(t)).filter((n) => !isTermTok(tokens[n.start - 1])).map((n) => n.value);
   let amountQuery = null;
   const pairs = price ? price.pairs : [];
   if (hasAny(p, HOW_MANY) && !(price && price.given) && (pairs.length === 1 || (pairs.length === 0 && numbers.length === 1))) {
@@ -441,13 +480,16 @@ export function parse(raw, ctx = {}) {
     numbers,
     amountQuery,
     priceCheck,
+    progress,
+    atPlace,
+    offered,
   };
 }
 
 /** How much a parse "understood" — used to choose between speech alternatives. */
 export function score(parsed) {
   return (parsed.command ? 3 : 0) + (parsed.stage ? 1 : 0) + (parsed.price ? 4 : 0) + (parsed.airport ? 2 : 0) +
-    (parsed.terminal ? 2 : 0) + (parsed.intent ? 1 : 0) + (parsed.topic ? 1 : 0) + (parsed.offtopic ? 1 : 0) + (parsed.amountQuery ? 3 : 0) +
+    (parsed.terminal ? 2 : 0) + (parsed.intent ? 1 : 0) + (parsed.topic ? 1 : 0) + (parsed.offtopic ? 1 : 0) + (parsed.amountQuery ? 3 : 0) + (parsed.progress ? 1 : 0) +
     (parsed.yesno ? 2 : 0);
 }
 

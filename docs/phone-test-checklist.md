@@ -65,4 +65,14 @@ Open https://arrival-voice.vercel.app in **Chrome on Android** and allow the mic
 | "ట్రాప్స్ చెప్పండి" / "जाल बताइए" | The 5 traps, never the money tips. |
 | "టీ ఎక్కడ దొరుకుతుంది" / "चाय कहाँ मिलेगी" | The scope line, then a staff card asking where to get food or coffee. |
 
+## 7. Changi T3 conversation (Telugu, AI on)
+| Say | Expect |
+|---|---|
+| "సింగపూర్ చాంగి టెర్మినల్ 3 లో ఎన్ని ఎక్స్చేంజ్ కౌంటర్లు ఉన్నాయి" → "అవును" | Lists the counters (Travelex in the Arrival Meeting Hall), offers to guide you there, then starts the route. |
+| "పొడవైన కారిడార్ ఉంది, జనం నడుస్తున్నారు" | Immigration step. No question asked a third time. |
+| "తీసుకున్నాను" / "బ్యాగ్ తీసుకున్నాను" | The next step, never tips. |
+| "నేనెప్పుడూ హాల్లో ఉన్నాను" | Jumps to the counter step. |
+| "నా దగ్గర 1000 డాలర్లు ఉన్నాయి, ఎంత వస్తాయి" → "నాకు కేవలం 1500 ఇస్తున్నారు" | About 1,291 Singapore dollars, then 1,500 SGD compared with 1,000 USD. |
+| "ఆఫీసర్స్ కూర్చున్నారు" | No staff card unless you ask for it. |
+
 **Write down:** your phone model, Android and Chrome versions, and anything misheard (exactly what the app showed under "You said").
