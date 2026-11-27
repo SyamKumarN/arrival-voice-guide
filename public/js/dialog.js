@@ -383,7 +383,8 @@ export function handle(prev, sentence, data, rates, opts = {}) {
       if (later >= 0) i = later;
       if (i >= 0) {
         state.step = i;
-        return out(state, reply('step', say(lang, 'lostFound')(p.stage) + ' ' + stepText(state, route)));
+        const lead = later >= 0 ? say(lang, 'doneAck') : say(lang, 'lostFound')(p.stage);
+        return out(state, reply('step', lead + ' ' + stepText(state, route)));
       }
     }
     if (!p.command && (p.placeTalk || p.progress) && !p.stage && (!p.intent || p.intent === 'metro')) {
