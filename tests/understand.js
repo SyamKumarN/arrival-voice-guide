@@ -96,6 +96,18 @@ export async function runUnderstand(data, rates) {
     check('AI repeats the context place in "yes": route starts, no confirm loop', log[1].reply.kind === 'step' && log[1].state.mode === 'route' && log[2].state.step === 1,
       log.map((r) => r.reply.kind + ':' + r.state.step).join(' '));
   }
+  {
+    const st0 = { ...initialState('en-IN'), airport: 'BKK', terminal: 'MAIN', mode: 'route', step: 4, confirmed: true };
+    const r1 = handle(st0, 'reached', data, rates, { parsed: formToParsed(G({ intent: 'step_done', stage: 'arrivals' }), parse('reached', {}), st0) });
+    check('AI "reached" with a guessed stage: just the next step, not the end', r1.reply.kind === 'step' && r1.state.step === 5, r1.reply.kind + ':' + r1.state.step);
+    const st1 = { ...initialState('te-IN'), airport: 'BLR', terminal: 'T2', mode: 'route', step: 2, confirmed: true };
+    const t1 = 'కస్టమ్స్ దగ్గర థామస్ కుక్ కనిపిస్తుంది';
+    check('AI list_counters for "I see Thomas Cook near customs": the rules place wins', formToParsed(G({ intent: 'list_counters' }), parse(t1, {}), st1) === null);
+    const t2 = 'వంద డాలర్లకి 3200 బాట్ ఇస్తున్నారు';
+    check('AI drops one of two amounts: the rules full price wins', formToParsed(G({ intent: 'price_check', amounts: [{ amount: 3200, currency: 'THB' }] }), parse(t2, {}), null) === null && !!parse(t2, {}).price);
+    const t3 = 'delhi T3, I want to change leftover dirhams to rupees';
+    check('AI leftover tip for "I want to change leftover dirhams": exchange wins', formToParsed(G({ intent: 'leftover_currency' }), parse(t3, {}), null) === null);
+  }
   check('AI form "none" → the rules decide', formToParsed(G({}), parse('next', {})) === null);
 
   // Guards: anything off the list is dropped, never passed on

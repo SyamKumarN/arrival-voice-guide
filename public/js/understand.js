@@ -97,7 +97,8 @@ const TOPIC_OF = {
 };
 const OFFTOPIC_OF = { toilet: 'toilet', food: 'food', prayer_room: 'prayer', lounge: 'lounge', shops: 'shop', missing_bag: 'lostbag' };
 const COMMAND_OF = { next: 'next', next_step: 'next', lost: 'lost', repeat: 'repeat', back: 'back', cant_find: 'cantfind', start_over: 'restart', ask_staff: 'staff' };
-const TIP_INTENTS = ['pickup', 'money_tips', 'atm_tips', 'traps', 'ask_staff'];
+// When the rules heard progress or a place, these AI readings are overruled ("I see Thomas Cook near customs" is a place)
+const TIP_INTENTS = ['pickup', 'money_tips', 'atm_tips', 'traps', 'ask_staff', 'list_counters', 'leftover_currency', 'no_staff', 'none'];
 
 /**
  * Turn the AI's form into the same shape parse() returns, so the dialog answers it from our data.
@@ -113,6 +114,12 @@ export function formToParsed(form, rules, state = null) {
     if (f.terminal && f.terminal === state.terminal && !f.airport) f.terminal = null;
   }
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
+  // The rules read both amounts of a price ("100 dollars, they give 3200 baht"): keep that
+  if (rules && rules.price && (f.intent === 'price_check' || f.intent === 'how_much' || f.intent === 'amount_query')) return null;
+  // "I want to change leftover dirhams": they want to exchange now, not the leftover tip
+  if (rules && rules.intent && f.intent === 'leftover_currency') return null;
+  // A place the rules recognised ("big hall", "belts") beats the AI's step number
+  if (rules && rules.atPlace && rules.stage && f.intent === 'jump_to_step') return null;
   const p = {
     raw: rules ? rules.raw : '', norm: rules ? rules.norm : '',
     airport: f.airport, terminal: f.terminal, intent: null, command: null, stage: null, topic: null, offtopic: null,
@@ -125,7 +132,7 @@ export function formToParsed(form, rules, state = null) {
   else if (TOPIC_OF[i]) p.topic = TOPIC_OF[i];
   else if (OFFTOPIC_OF[i]) p.offtopic = OFFTOPIC_OF[i];
   else if (i === 'yes' || i === 'no') p.yesno = i;
-  else if (i === 'step_done') { p.progress = true; p.stage = f.stage; }
+  else if (i === 'step_done') { p.progress = true; p.stage = rules && rules.stage ? rules.stage : null; }   // only a stage they named
   else if (i === 'jump_to_step') { if (f.step) p.jumpStep = f.step - 1; else if (f.stage) { p.stage = f.stage; p.atPlace = true; } else return null; }
   else if (i === 'lost_answer') { if (!f.stage) return null; p.stage = f.stage; p.atPlace = true; }
   else if (i === 'price_check') {

@@ -189,7 +189,8 @@ const COUNTER_LIST = ['how many counters', 'how many exchange counters', 'which 
   'kitne exchange counter', 'कितने एक्सचेंज काउंटर', 'कौन से एक्सचेंज काउंटर', 'काउंटर कितने',
   'ఎన్ని ఎక్స్చేంజ్ కౌంటర్లు', 'ఎన్ని ఎక్స్ఛేంజ్ కౌంటర్లు', 'ఎన్ని కౌంటర్లు', 'ఏ కౌంటర్లు', 'ఏయే కౌంటర్లు', 'కౌంటర్లు ఉన్నాయి'];
 // "They're giving 1500": an offer, to compare with the amount said earlier
-const OFFER_WORDS = ['giving', 'offering', 'they give', 'they gave', 'offered', 'gave me', 'de rahe', 'de raha', 'dete hain', 'diya',
+const OFFER_WORDS = ['giving', 'offering', 'they give', 'they gave', 'offered', 'gave me', 'says', 'saying', 'quoted', 'quoting', 'de rahe', 'de raha', 'dete hain', 'diya',
+  'bol raha', 'bol rahe', 'keh raha', 'बोल रहा', 'बोल रहे', 'कह रहा', 'कह रहे', 'చెప్తున్నాడు', 'చెప్తున్నారు', 'అంటున్నాడు', 'అంటున్నారు',
   'दे रहे', 'दे रहा', 'देते हैं', 'दिया', 'ఇస్తున్నారు', 'ఇస్తారంట', 'ఇస్తామన్నారు', 'ఇచ్చారు', 'ఇస్తున్నాడు', 'ఇస్తున్నది'];
 
 
@@ -202,7 +203,7 @@ const COMMANDS = [
     'స్టాఫ్ని అడగ', 'స్టాఫ్ ని అడగ', 'సిబ్బందిని అడగ', 'స్టాఫ్ కార్డ్', 'స్టాఫ్కి చూపించ']],
   ['lost', ['lost', 'i am lost', 'im lost', 'where am i', 'dont know where i am', 'do not know where i am',
     'kho gaya', 'kho gayi', 'pata nahi kahan', 'pata nahin kahan', 'खो गया', 'खो गई', 'खो गयी', 'पता नहीं कहाँ', 'पता नहीं कहां',
-    'मैं कहाँ हूँ', 'ఎక్కడున్నానో తెలియదు', 'ఎక్కడ ఉన్నానో తెలియదు', 'తప్పిపోయాను', 'నేను ఎక్కడ ఉన్నాను']],
+    'मैं कहाँ हूँ', 'कहाँ हूँ', 'कहां हूं', 'समझ नहीं आ रहा कहाँ', 'ఎక్కడున్నానో', 'ఎక్కడ ఉన్నానో అర్థం', 'ఎక్కడున్నానో తెలియదు', 'ఎక్కడ ఉన్నానో తెలియదు', 'తప్పిపోయాను', 'నేను ఎక్కడ ఉన్నాను']],
   ['cantfind', ['cant find', 'cannot find', 'can not find', 'couldnt find', 'not finding', 'dont see',
     'cant see', 'where is it', 'nahi mil raha', 'nahin mil raha', 'nahi mila',
     'nahin mila', 'nahi mil rahi', 'nahi dikh', 'nahin dikh', 'mil nahi raha', 'nhi mil raha',
@@ -424,6 +425,11 @@ export function parse(raw, ctx = {}) {
   else if (hasAny(p, TAXI_WORDS) && topic !== 'pickup') intent = 'taxi';
   else if (hasAny(p, EXCHANGE_WORDS) || (price && price.given)) intent = 'exchange';
 
+  // "I want to change my leftover dirhams" is a request to exchange now, not the leftover tip
+  if (topic === 'leftover' && hasAny(p, ['want to change', 'want to exchange', 'need to change', 'convert', 'change to', 'change into',
+    'badalna hai', 'badalne hain', 'बदलना है', 'बदलने हैं', 'बदलवाने', 'మార్చాలి', 'మార్చుకోవాలి', 'మార్చేయాలి'])) {
+    topic = null; intent = intent || 'exchange';
+  }
   // Outside what the guide does (toilets, food, shops …). "My bag hasn't arrived" isn't "I'm lost".
   let offtopic = null;
   for (const [name, words] of OFFTOPIC) {

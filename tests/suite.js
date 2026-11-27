@@ -686,6 +686,12 @@ export const FLOW_CASES = [
     turns: [['Dubai', { kind: 'ask', expecting: 'terminal' }], ['hmm', { kind: 'ask' }], ['not sure', { kind: 'ask', has: 'tap your terminal' }]] },
   { name: 'Sim: "బ్యాగ్ తీసుకున్నా" while being asked to confirm → straight to the step after bags', lang: 'te-IN',
     turns: [['బెంగళూరు టెర్మినల్ టూ', { kind: 'confirm' }], ['బ్యాగ్ తీసుకున్నా', { kind: 'step', mode: 'route', step: 2 }]] },
+  { name: 'Sim: "समझ नहीं आ रहा कहाँ हूँ" mid-route → what do you see', lang: 'hi-IN',
+    turns: [['सिंगापुर टर्मिनल 4 पर हूँ, पैसे बदलवाने हैं', { kind: 'confirm' }], ['जी हाँ', { step: 0 }],
+      ['समझ नहीं आ रहा कहाँ हूँ', { kind: 'ask', expecting: 'stage' }], ['एक बड़ा हॉल है लोग नाम के बोर्ड लेकर खड़े हैं', { kind: 'step', step: 3 }]] },
+  { name: 'Sim: "काउंटर वाला 340 बोल रहा है" after an amount → price check', lang: 'hi-IN',
+    turns: [['दुबई टर्मिनल 1 पर हूँ', { kind: 'confirm' }], ['हाँ', { step: 0 }], ['100 डॉलर के कितने दिरहम मिलेंगे', { kind: 'amount' }],
+      ['काउंटर वाला 340 बोल रहा है', { kind: 'price', has: '340' }]] },
 ];
 
 // ---------- Runner ----------
