@@ -126,6 +126,9 @@ export function formToParsed(form, rules, state = null) {
   // A question, confusion or greeting the rules recognised wins ("two ways here" must never move the step)
   if (rules && rules.topic && RULE_FIRST.includes(rules.topic) && TOPIC_OF[f.intent] !== rules.topic) return null;
   if (rules && (rules.progress || rules.atPlace) && TIP_INTENTS.includes(f.intent)) return null;
+  // A place they named ("I landed in Dubai") or a clear command ("where am I", "start over") beats a chatty AI reading
+  const TALK = ['overview', 'confused', 'greeting', 'out_of_scope', 'none'];
+  if (rules && TALK.includes(f.intent) && !rules.topic && (rules.airport || rules.terminal || rules.command)) return null;
   // "Out of scope" only when the rules found nothing they can answer from our data
   if (f.intent === 'out_of_scope' && rules && (rules.intent || (rules.topic && rules.topic !== 'outofscope') || rules.command || rules.offtopic || rules.price ||
     rules.amountQuery || rules.stage || rules.progress)) return null;

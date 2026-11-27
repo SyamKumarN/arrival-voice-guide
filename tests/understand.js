@@ -113,6 +113,9 @@ export async function runUnderstand(data, rates) {
     const r2 = handle(st2, 'got both suitcases', data, rates, { parsed: formToParsed(G({ intent: 'step_done' }), parse('got both suitcases', {}), st2) });
     check('AI step_done "got both suitcases": exactly one step on', r2.state.step === 2, String(r2.state.step));
   }
+  check('AI overview for "I landed in Dubai": the named place wins', formToParsed(G({ intent: 'overview' }), parse('I landed in Dubai', {}), initialState('en-IN')) === null);
+  check('AI confused for "Where am I?": the lost flow wins', formToParsed(G({ intent: 'confused' }), parse('Where am I?', {}), initialState('en-IN')) === null);
+  check('AI confused for a real confusion sentence is kept', !!formToParsed(G({ intent: 'confused' }), parse('there are two routes', {}), initialState('en-IN')));
   check('AI form "none" → the rules decide', formToParsed(G({}), parse('next', {})) === null);
 
   // Guards: anything off the list is dropped, never passed on
