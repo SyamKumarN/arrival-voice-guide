@@ -3,7 +3,7 @@
 // is stored on the phone. Online, the network is tried first so updates show up;
 // offline, the stored copy is used. Voice recognition still needs the internet.
 
-const CACHE = 'arrival-guide-v4';
+const CACHE = 'arrival-guide-v5';
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {

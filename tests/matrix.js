@@ -145,7 +145,7 @@ function scenarios(code, style, data, rates) {
     [say('lost'), { kind: 'ask', expecting: 'airport' }],
     ...(multi ? [[ap, { kind: 'ask', expecting: 'terminal' }], [terminalAnswer(style, tNum), confirm]] : [[ap, confirm]]),
     [say('yes'), { kind: 'ask', expecting: 'stage', mode: 'lost' }],
-    [say('seeBelts'), { kind: 'step', mode: 'route', step: 1 }],
+    [say('seeBelts'), { kind: 'step', mode: 'route', step: a.routes[lastT].findIndex((id) => a.steps[id].stage === 'baggage') }],
   ]);
 
   add(`ask staff card (${a.staffLanguage} + English)`, [...start(),

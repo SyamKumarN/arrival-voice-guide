@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-27b",
+  "version": "2026-11-27c",
   "airports": {
     "DXB": {
       "name": {
@@ -25,9 +25,9 @@
           "side": "landside",
           "quality": "good",
           "location": {
-            "en": "Arrivals Hall, near Le Clos",
-            "hi": "अराइवल्स हॉल, ले क्लो के पास",
-            "te": "అరైవల్స్ హాల్, లె క్లో దగ్గర"
+            "en": "Arrivals Hall, near the Le Clos shop",
+            "hi": "अराइवल्स हॉल, ले क्लो दुकान के पास",
+            "te": "అరైవల్స్ హాల్, లె క్లో షాప్ దగ్గర"
           }
         },
         {
@@ -82,12 +82,12 @@
           "id": "dxb-t3-landside",
           "terminal": "T3",
           "name": {
-            "en": "Landside exchange counters",
-            "hi": "लैंडसाइड एक्सचेंज काउंटर",
-            "te": "ల్యాండ్‌సైడ్ ఎక్స్ఛేంజ్ కౌంటర్లు"
+            "en": "Exchange counters",
+            "hi": "एक्सचेंज काउंटर",
+            "te": "ఎక్స్ఛేంజ్ కౌంటర్లు"
           },
           "side": "landside",
-          "quality": "fair",
+          "quality": "unknown",
           "location": {
             "en": "Just past the Customs Hall exit",
             "hi": "कस्टम्स हॉल से निकलते ही",
@@ -102,18 +102,6 @@
           "te": "అరైవల్స్ బోర్డులు చూస్తూ ఇమ్మిగ్రేషన్ వరకు వెళ్ళండి.",
           "stage": "immigration"
         },
-        "bags_travelex": {
-          "en": "After Immigration, collect your bags. You will see Travelex counters in the baggage hall. They are usually pricier, so don't change money here.",
-          "hi": "इमिग्रेशन के बाद अपना सामान लीजिए। बैगेज हॉल में ट्रैवलेक्स के काउंटर दिखेंगे। ये आमतौर पर महँगे होते हैं, इसलिए यहाँ पैसे मत बदलिए।",
-          "te": "ఇమ్మిగ్రేషన్ తర్వాత మీ బ్యాగులు తీసుకోండి. బ్యాగేజ్ హాల్‌లో ట్రావెలెక్స్ కౌంటర్లు కనిపిస్తాయి. వాటి రేటు సాధారణంగా ఎక్కువ, కాబట్టి ఇక్కడ డబ్బు మార్చకండి.",
-          "stage": "baggage"
-        },
-        "bags": {
-          "en": "After Immigration, collect your bags from the baggage hall.",
-          "hi": "इमिग्रेशन के बाद बैगेज हॉल से अपना सामान लीजिए।",
-          "te": "ఇమ్మిగ్రేషన్ తర్వాత బ్యాగేజ్ హాల్ నుంచి మీ బ్యాగులు తీసుకోండి.",
-          "stage": "baggage"
-        },
         "customs_t1": {
           "en": "Walk out through Customs into the Arrivals Hall.",
           "hi": "कस्टम्स से होकर बाहर अराइवल्स हॉल में आइए।",
@@ -121,9 +109,9 @@
           "stage": "customs"
         },
         "counter_t1": {
-          "en": "Look for Al Ansari Exchange in the Arrivals Hall, near Le Clos.",
-          "hi": "अराइवल्स हॉल में ले क्लो के पास अल अंसारी एक्सचेंज ढूँढिए।",
-          "te": "అరైవల్స్ హాల్‌లో లె క్లో దగ్గర అల్ అన్సారీ ఎక్స్ఛేంజ్ కోసం చూడండి.",
+          "en": "Look for Al Ansari Exchange in the Arrivals Hall, near the Le Clos shop. A Travelex counter on the public side is another option.",
+          "hi": "अराइवल्स हॉल में ले क्लो दुकान के पास अल अंसारी एक्सचेंज ढूँढिए। बाहर वाले हिस्से में ट्रैवलेक्स काउंटर भी एक विकल्प है।",
+          "te": "అరైవల్స్ హాల్‌లో లె క్లో షాప్ దగ్గర అల్ అన్సారీ ఎక్స్ఛేంజ్ కోసం చూడండి. బయటి వైపు ఉన్న ట్రావెలెక్స్ కౌంటర్ కూడా ఒక ఆప్షన్.",
           "stage": "arrivals"
         },
         "customs_t2": {
@@ -133,9 +121,9 @@
           "stage": "customs"
         },
         "counter_t2": {
-          "en": "Find the currency exchange in the central corridor.",
-          "hi": "बीच वाले कॉरिडोर में करेंसी एक्सचेंज ढूँढिए।",
-          "te": "మధ్య కారిడార్‌లో కరెన్సీ ఎక్స్ఛేంజ్ కోసం చూడండి.",
+          "en": "Follow the signs to the currency exchange in the central arrivals corridor.",
+          "hi": "बीच वाले अराइवल्स कॉरिडोर में करेंसी एक्सचेंज के बोर्ड देखते हुए जाइए।",
+          "te": "మధ్య అరైవల్స్ కారిడార్‌లో కరెన్సీ ఎక్స్ఛేంజ్ బోర్డులు చూస్తూ వెళ్ళండి.",
           "stage": "arrivals"
         },
         "customs_t3": {
@@ -145,9 +133,9 @@
           "stage": "customs"
         },
         "counter_t3": {
-          "en": "The landside exchange counters are just past the Customs Hall exit. Pick one that shows its rate clearly.",
-          "hi": "कस्टम्स हॉल से निकलते ही एक्सचेंज काउंटर मिलेंगे। ऐसा काउंटर चुनिए जिसका रेट साफ़ दिख रहा हो।",
-          "te": "కస్టమ్స్ హాల్ బయటకు రాగానే ఎక్స్ఛేంజ్ కౌంటర్లు ఉంటాయి. రేటు స్పష్టంగా చూపించే కౌంటర్‌ను ఎంచుకోండి.",
+          "en": "The exchange counters are just past the Customs Hall exit. Their rates haven't been compared yet, so pick one that shows its rate clearly.",
+          "hi": "कस्टम्स हॉल से निकलते ही एक्सचेंज काउंटर मिलेंगे। इनके रेट की तुलना अभी नहीं हुई है, इसलिए ऐसा काउंटर चुनिए जिसका रेट साफ़ दिख रहा हो।",
+          "te": "కస్టమ్స్ హాల్ బయటకు రాగానే ఎక్స్ఛేంజ్ కౌంటర్లు ఉంటాయి. వాటి రేట్లు ఇంకా పోల్చి చూడలేదు, కాబట్టి రేటు స్పష్టంగా చూపించే కౌంటర్‌ను ఎంచుకోండి.",
           "stage": "arrivals"
         },
         "final_amount": {
@@ -185,26 +173,56 @@
           "hi": "हॉल में राइड ऑफ़र करने वालों को नज़रअंदाज़ कीजिए। सिर्फ़ आधिकारिक टैक्सी स्टैंड का इस्तेमाल कीजिए।",
           "te": "హాల్‌లో రైడ్ ఆఫర్ చేసేవాళ్ళను పట్టించుకోకండి. అధికారిక టాక్సీ స్టాండ్ మాత్రమే వాడండి.",
           "stage": "arrivals"
+        },
+        "bags_t1": {
+          "en": "After Immigration, collect your bags from belts 1 to 8.",
+          "hi": "इमिग्रेशन के बाद बेल्ट 1 से 8 पर अपना सामान लीजिए।",
+          "te": "ఇమ్మిగ్రేషన్ తర్వాత 1 నుంచి 8 నంబర్ బెల్ట్‌ల దగ్గర మీ బ్యాగులు తీసుకోండి.",
+          "stage": "baggage"
+        },
+        "bags_t1_travelex": {
+          "en": "After Immigration, collect your bags from belts 1 to 8. You will see Travelex counters in the baggage hall. They are usually pricier, so don't change money here.",
+          "hi": "इमिग्रेशन के बाद बेल्ट 1 से 8 पर अपना सामान लीजिए। बैगेज हॉल में ट्रैवलेक्स के काउंटर दिखेंगे। ये आमतौर पर महँगे होते हैं, इसलिए यहाँ पैसे मत बदलिए।",
+          "te": "ఇమ్మిగ్రేషన్ తర్వాత 1 నుంచి 8 నంబర్ బెల్ట్‌ల దగ్గర మీ బ్యాగులు తీసుకోండి. బ్యాగేజ్ హాల్‌లో ట్రావెలెక్స్ కౌంటర్లు కనిపిస్తాయి. వాటి రేటు సాధారణంగా ఎక్కువ, కాబట్టి ఇక్కడ డబ్బు మార్చకండి.",
+          "stage": "baggage"
+        },
+        "bags_t2": {
+          "en": "After Immigration, collect your bags from belts 1 to 6. Oversized bags have their own area.",
+          "hi": "इमिग्रेशन के बाद बेल्ट 1 से 6 पर अपना सामान लीजिए। बड़े आकार का सामान अलग जगह मिलता है।",
+          "te": "ఇమ్మిగ్రేషన్ తర్వాత 1 నుంచి 6 నంబర్ బెల్ట్‌ల దగ్గర మీ బ్యాగులు తీసుకోండి. పెద్ద సైజు బ్యాగులు వేరే చోట వస్తాయి.",
+          "stage": "baggage"
+        },
+        "bags_t3": {
+          "en": "After Immigration, collect your bags from belts 1 to 14.",
+          "hi": "इमिग्रेशन के बाद बेल्ट 1 से 14 पर अपना सामान लीजिए।",
+          "te": "ఇమ్మిగ్రేషన్ తర్వాత 1 నుంచి 14 నంబర్ బెల్ట్‌ల దగ్గర మీ బ్యాగులు తీసుకోండి.",
+          "stage": "baggage"
+        },
+        "bags_t3_travelex": {
+          "en": "After Immigration, collect your bags from belts 1 to 14. You will see Travelex counters in the baggage hall. They are usually pricier, so don't change money here.",
+          "hi": "इमिग्रेशन के बाद बेल्ट 1 से 14 पर अपना सामान लीजिए। बैगेज हॉल में ट्रैवलेक्स के काउंटर दिखेंगे। ये आमतौर पर महँगे होते हैं, इसलिए यहाँ पैसे मत बदलिए।",
+          "te": "ఇమ్మిగ్రేషన్ తర్వాత 1 నుంచి 14 నంబర్ బెల్ట్‌ల దగ్గర మీ బ్యాగులు తీసుకోండి. బ్యాగేజ్ హాల్‌లో ట్రావెలెక్స్ కౌంటర్లు కనిపిస్తాయి. వాటి రేటు సాధారణంగా ఎక్కువ, కాబట్టి ఇక్కడ డబ్బు మార్చకండి.",
+          "stage": "baggage"
         }
       },
       "routes": {
         "T1": [
           "immigration",
-          "bags_travelex",
+          "bags_t1_travelex",
           "customs_t1",
           "counter_t1",
           "final_amount"
         ],
         "T2": [
           "immigration",
-          "bags",
+          "bags_t2",
           "customs_t2",
           "counter_t2",
           "final_amount"
         ],
         "T3": [
           "immigration",
-          "bags_travelex",
+          "bags_t3_travelex",
           "customs_t3",
           "counter_t3",
           "final_amount"
@@ -212,9 +230,19 @@
       },
       "warnings": [
         {
-          "en": "Travelex counters in the baggage hall usually give a poorer rate. Compare after Customs.",
-          "hi": "बैगेज हॉल वाले ट्रैवलेक्स काउंटर अक्सर कम रेट देते हैं। कस्टम्स के बाद तुलना कीजिए।",
-          "te": "బ్యాగేజ్ హాల్‌లోని ట్రావెలెక్స్ కౌంటర్లు సాధారణంగా తక్కువ రేటు ఇస్తాయి. కస్టమ్స్ తర్వాత పోల్చి చూడండి."
+          "en": "Travelex counters in the baggage hall usually give a poorer rate. Clear Customs first and change money in the public Arrivals Hall.",
+          "hi": "बैगेज हॉल वाले ट्रैवलेक्स काउंटर अक्सर कम रेट देते हैं। पहले कस्टम्स पार कीजिए, फिर बाहर अराइवल्स हॉल में पैसे बदलिए।",
+          "te": "బ్యాగేజ్ హాల్‌లోని ట్రావెలెక్స్ కౌంటర్లు సాధారణంగా తక్కువ రేటు ఇస్తాయి. ముందు కస్టమ్స్ దాటి, బయట అరైవల్స్ హాల్‌లో డబ్బు మార్చండి."
+        },
+        {
+          "en": "Ordering Travelex currency online before you travel usually gives a better rate than walking up. You collect it at the landside collection point in T1 or T3.",
+          "hi": "यात्रा से पहले ट्रैवलेक्स से ऑनलाइन करेंसी ऑर्डर करने पर अक्सर काउंटर से बेहतर रेट मिलता है। इसे T1 या T3 के बाहर वाले कलेक्शन पॉइंट से लेते हैं।",
+          "te": "ప్రయాణానికి ముందే ట్రావెలెక్స్‌లో ఆన్‌లైన్‌లో కరెన్సీ ఆర్డర్ చేస్తే సాధారణంగా కౌంటర్ కంటే మంచి రేటు వస్తుంది. దాన్ని T1 లేదా T3 బయటి కలెక్షన్ పాయింట్‌లో తీసుకుంటారు."
+        },
+        {
+          "en": "Carrying more than AED 60,000 in cash, or the same value in other currencies? Declare it on arrival through the Afseh app or website. Declaring is free.",
+          "hi": "AED 60,000 से ज़्यादा नकद, या दूसरी करेंसी में उतनी ही रकम, साथ है? आते समय अफ़्सेह ऐप या वेबसाइट पर बताइए। यह मुफ़्त है।",
+          "te": "AED 60,000 కంటే ఎక్కువ నగదు, లేదా వేరే కరెన్సీలో అంతే విలువ, మీ దగ్గర ఉందా? వచ్చినప్పుడు అఫ్సే యాప్ లేదా వెబ్‌సైట్‌లో డిక్లేర్ చేయండి. దీనికి ఛార్జీ లేదు."
         },
         {
           "en": "The dirham is pegged at about 3.6725 per US dollar. A rate far below that means a big margin.",
@@ -231,21 +259,21 @@
         "routes": {
           "T1": [
             "immigration",
-            "bags",
+            "bags_t1",
             "customs_t1",
             "sim_counter",
             "sim_passport"
           ],
           "T2": [
             "immigration",
-            "bags",
+            "bags_t2",
             "customs_t2",
             "sim_counter",
             "sim_passport"
           ],
           "T3": [
             "immigration",
-            "bags",
+            "bags_t3",
             "customs_t3",
             "sim_counter",
             "sim_passport"
@@ -261,7 +289,7 @@
         "routes": {
           "T1": [
             "immigration",
-            "bags",
+            "bags_t1",
             "customs_t1",
             "taxi_touts",
             "taxi_signs",
@@ -269,7 +297,7 @@
           ],
           "T2": [
             "immigration",
-            "bags",
+            "bags_t2",
             "customs_t2",
             "taxi_touts",
             "taxi_signs",
@@ -277,7 +305,7 @@
           ],
           "T3": [
             "immigration",
-            "bags",
+            "bags_t3",
             "customs_t3",
             "taxi_touts",
             "taxi_signs",
@@ -291,7 +319,12 @@
         }
       },
       "staffLanguage": "ar",
-      "lastChecked": "2026-11-27"
+      "lastChecked": "2026-10",
+      "terminalHint": {
+        "en": "Emirates uses Terminal 3, flydubai mostly Terminal 2, and most other airlines Terminal 1.",
+        "hi": "एमिरेट्स टर्मिनल 3 से, फ़्लाईदुबई ज़्यादातर टर्मिनल 2 से, और बाकी ज़्यादातर एयरलाइंस टर्मिनल 1 से चलती हैं।",
+        "te": "ఎమిరేట్స్ టెర్మినల్ 3, ఫ్లైదుబాయ్ ఎక్కువగా టెర్మినల్ 2, మిగతా చాలా ఎయిర్‌లైన్స్ టెర్మినల్ 1 వాడతాయి."
+      }
     },
     "BLR": {
       "name": {
@@ -301,43 +334,42 @@
       },
       "currency": "INR",
       "staffLanguage": "hi",
-      "lastChecked": null,
-      "pendingData": true,
+      "lastChecked": "2026-10",
       "terminals": [
         "T1",
         "T2"
       ],
       "counters": [
         {
-          "id": "bengaluru-t1",
-          "terminal": "T1",
+          "id": "blr-t2-forecourt",
+          "terminal": "T2",
           "name": {
-            "en": "Currency exchange counters",
-            "hi": "करेंसी एक्सचेंज काउंटर",
-            "te": "కరెన్సీ ఎక్స్ఛేంజ్ కౌంటర్లు"
+            "en": "Thomas Cook",
+            "hi": "थॉमस कुक",
+            "te": "థామస్ కుక్"
           },
           "side": "landside",
-          "quality": "fair",
+          "quality": "unknown",
           "location": {
-            "en": "Arrivals hall (ask at the info desk)",
-            "hi": "अराइवल्स हॉल (इन्फ़ॉर्मेशन डेस्क पर पूछिए)",
-            "te": "అరైవల్స్ హాల్ (ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి)"
+            "en": "Level 0, Arrival Forecourt, just outside the exit",
+            "hi": "लेवल 0, अराइवल फ़ोरकोर्ट, एग्ज़िट के ठीक बाहर",
+            "te": "లెవల్ 0, అరైవల్ ఫోర్‌కోర్ట్, ఎగ్జిట్ బయటే"
           }
         },
         {
-          "id": "bengaluru-t2",
+          "id": "blr-t2-customs",
           "terminal": "T2",
           "name": {
-            "en": "Currency exchange counters",
-            "hi": "करेंसी एक्सचेंज काउंटर",
-            "te": "కరెన్సీ ఎక్స్ఛేంజ్ కౌంటర్లు"
+            "en": "Thomas Cook",
+            "hi": "थॉमस कुक",
+            "te": "థామస్ కుక్"
           },
-          "side": "landside",
-          "quality": "fair",
+          "side": "airside",
+          "quality": "unknown",
           "location": {
-            "en": "Arrivals hall (ask at the info desk)",
-            "hi": "अराइवल्स हॉल (इन्फ़ॉर्मेशन डेस्क पर पूछिए)",
-            "te": "అరైవల్స్ హాల్ (ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి)"
+            "en": "Level 0, next to Indian Customs, before the exit",
+            "hi": "लेवल 0, इंडियन कस्टम्स के पास, एग्ज़िट से पहले",
+            "te": "లెవల్ 0, ఇండియన్ కస్టమ్స్ పక్కన, ఎగ్జిట్ ముందు"
           }
         }
       ],
@@ -349,37 +381,53 @@
           "stage": "immigration"
         },
         "bags": {
-          "en": "After Immigration, collect your bags from the baggage hall.",
-          "hi": "इमिग्रेशन के बाद बैगेज हॉल से अपना सामान लीजिए।",
-          "te": "ఇమ్మిగ్రేషన్ తర్వాత బ్యాగేజ్ హాల్ నుంచి మీ బ్యాగులు తీసుకోండి.",
+          "en": "After Immigration, go to Baggage Claim on Level 0 and collect your bags from belts 1 to 8.",
+          "hi": "इमिग्रेशन के बाद लेवल 0 पर बैगेज क्लेम जाइए और बेल्ट 1 से 8 पर अपना सामान लीजिए।",
+          "te": "ఇమ్మిగ్రేషన్ తర్వాత లెవల్ 0లో బ్యాగేజ్ క్లెయిమ్‌కి వెళ్ళి, 1 నుంచి 8 నంబర్ బెల్ట్‌ల దగ్గర మీ బ్యాగులు తీసుకోండి.",
           "stage": "baggage"
         },
         "customs": {
-          "en": "Walk out through Customs into the arrivals hall.",
-          "hi": "कस्टम्स से होकर बाहर अराइवल्स हॉल में आइए।",
-          "te": "కస్టమ్స్ దాటి బయట అరైవల్స్ హాల్‌లోకి రండి.",
+          "en": "Clear Customs. A Thomas Cook counter is right next to Indian Customs, before you exit.",
+          "hi": "कस्टम्स पार कीजिए। इंडियन कस्टम्स के ठीक पास, एग्ज़िट से पहले, थॉमस कुक का काउंटर है।",
+          "te": "కస్టమ్స్ దాటండి. ఇండియన్ కస్టమ్స్ పక్కనే, ఎగ్జిట్ ముందు, థామస్ కుక్ కౌంటర్ ఉంది.",
           "stage": "customs"
         },
         "counter": {
-          "en": "In the arrivals hall, look for the currency exchange signs. If you can't see them, ask at the info desk.",
-          "hi": "अराइवल्स हॉल में करेंसी एक्सचेंज के बोर्ड देखिए। न दिखें तो इन्फ़ॉर्मेशन डेस्क पर पूछिए।",
-          "te": "అరైవల్స్ హాల్‌లో కరెన్సీ ఎక్స్ఛేంజ్ బోర్డుల కోసం చూడండి. కనిపించకపోతే ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి.",
+          "en": "Leave through Exit Gate 1 or Exit Gate 4. Another Thomas Cook counter is in the Arrival Forecourt, just outside. Both are open 24 hours.",
+          "hi": "एग्ज़िट गेट 1 या एग्ज़िट गेट 4 से बाहर निकलिए। ठीक बाहर अराइवल फ़ोरकोर्ट में थॉमस कुक का एक और काउंटर है। दोनों 24 घंटे खुले रहते हैं।",
+          "te": "ఎగ్జిట్ గేట్ 1 లేదా ఎగ్జిట్ గేట్ 4 నుంచి బయటకు రండి. బయటే అరైవల్ ఫోర్‌కోర్ట్‌లో ఇంకో థామస్ కుక్ కౌంటర్ ఉంది. రెండూ 24 గంటలు తెరిచి ఉంటాయి.",
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in rupees before you pay. Count the money at the counter and ask for a receipt.",
-          "hi": "पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
-          "te": "డబ్బు ఇచ్చే ముందు రూపాయల్లో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
+          "en": "Say how much you want to change, and ask for the final amount in rupees before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "जितने पैसे बदलने हैं बताइए, और पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "ఎంత మార్చాలో చెప్పండి. డబ్బు ఇచ్చే ముందు రూపాయలలో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
+          "stage": "arrivals"
+        },
+        "t1_bags": {
+          "en": "Collect your bags from the baggage belt.",
+          "hi": "बेल्ट से अपना सामान लीजिए।",
+          "te": "బెల్ట్ దగ్గర మీ బ్యాగులు తీసుకోండి.",
+          "stage": "baggage"
+        },
+        "t1_exit": {
+          "en": "Walk out into the arrivals area.",
+          "hi": "बाहर अराइवल्स एरिया में आइए।",
+          "te": "బయట అరైవల్స్ ఏరియాలోకి రండి.",
+          "stage": "arrivals"
+        },
+        "t1_none": {
+          "en": "The airport lists no exchange counter in Terminal 1. Use an ATM at the kerbside or in the check-in hall, or change money in Terminal 2.",
+          "hi": "एयरपोर्ट की सूची में टर्मिनल 1 में कोई एक्सचेंज काउंटर नहीं है। बाहर कर्बसाइड या चेक-इन हॉल के एटीएम का इस्तेमाल कीजिए, या टर्मिनल 2 में पैसे बदलिए।",
+          "te": "ఎయిర్‌పోర్ట్ లిస్ట్ ప్రకారం టెర్మినల్ 1లో ఎక్స్ఛేంజ్ కౌంటర్ లేదు. బయట కర్బ్‌సైడ్ లేదా చెక్-ఇన్ హాల్‌లోని ఏటీఎం వాడండి, లేదా టెర్మినల్ 2లో డబ్బు మార్చండి.",
           "stage": "arrivals"
         }
       },
       "routes": {
         "T1": [
-          "immigration",
-          "bags",
-          "customs",
-          "counter",
-          "final_amount"
+          "t1_bags",
+          "t1_exit",
+          "t1_none"
         ],
         "T2": [
           "immigration",
@@ -391,15 +439,25 @@
       },
       "warnings": [
         {
-          "en": "Exchange counter details for this airport are still being checked. Ask at the info desk if anything looks different.",
-          "hi": "इस एयरपोर्ट के एक्सचेंज काउंटर की जानकारी अभी जाँची जा रही है। कुछ अलग लगे तो इन्फ़ॉर्मेशन डेस्क पर पूछिए।",
-          "te": "ఈ ఎయిర్‌పోర్ట్ ఎక్స్ఛేంజ్ కౌంటర్ వివరాలు ఇంకా చెక్ చేస్తున్నాం. ఏదైనా వేరుగా ఉంటే ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి."
+          "en": "The airport lists Thomas Cook as its exchange operator, open 24 hours at four spots in Terminal 2.",
+          "hi": "एयरपोर्ट थॉमस कुक को अपना एक्सचेंज ऑपरेटर बताता है, जो टर्मिनल 2 में चार जगह 24 घंटे खुला रहता है।",
+          "te": "ఎయిర్‌పోర్ట్ థామస్ కుక్‌ను తన ఎక్స్ఛేంజ్ ఆపరేటర్‌గా చూపిస్తుంది, టెర్మినల్ 2లో నాలుగు చోట్ల 24 గంటలు తెరిచి ఉంటుంది."
+        },
+        {
+          "en": "There is no exchange counter or ATM on Level 1, the international transfer corridor.",
+          "hi": "लेवल 1, यानी इंटरनेशनल ट्रांसफ़र कॉरिडोर में, न एक्सचेंज काउंटर है न एटीएम।",
+          "te": "లెవల్ 1, అంటే ఇంటర్నేషనల్ ట్రాన్స్‌ఫర్ కారిడార్‌లో, ఎక్స్ఛేంజ్ కౌంటర్ గానీ ఏటీఎం గానీ లేవు."
         }
       ],
       "fallback": {
         "en": "Ask any airport staff member or the info desk for \"currency exchange\". Say \"ask staff\" for a card you can show them.",
         "hi": "किसी भी एयरपोर्ट स्टाफ़ या इन्फ़ॉर्मेशन डेस्क से \"करेंसी एक्सचेंज\" पूछिए। उन्हें दिखाने के लिए कार्ड चाहिए तो \"स्टाफ से पूछना है\" बोलिए।",
         "te": "ఏ ఎయిర్‌పోర్ట్ సిబ్బందినైనా లేదా ఇన్ఫర్మేషన్ డెస్క్‌ను \"కరెన్సీ ఎక్స్ఛేంజ్\" ఎక్కడ అని అడగండి. వాళ్ళకు చూపించడానికి కార్డ్ కావాలంటే \"స్టాఫ్‌ని అడగాలి\" అని చెప్పండి."
+      },
+      "terminalHint": {
+        "en": "International flights use Terminal 2. Terminal 1 is domestic.",
+        "hi": "इंटरनेशनल फ़्लाइट्स टर्मिनल 2 पर आती हैं। टर्मिनल 1 डोमेस्टिक है।",
+        "te": "ఇంటర్నేషనల్ ఫ్లైట్లు టెర్మినల్ 2కి వస్తాయి. టెర్మినల్ 1 డొమెస్టిక్."
       }
     },
     "DEL": {
@@ -410,112 +468,127 @@
       },
       "currency": "INR",
       "staffLanguage": "hi",
-      "lastChecked": null,
-      "pendingData": true,
+      "lastChecked": "2026-10",
       "terminals": [
         "T1",
-        "T2",
         "T3"
       ],
       "counters": [
         {
-          "id": "delhi-t1",
-          "terminal": "T1",
-          "name": {
-            "en": "Currency exchange counters",
-            "hi": "करेंसी एक्सचेंज काउंटर",
-            "te": "కరెన్సీ ఎక్స్ఛేంజ్ కౌంటర్లు"
-          },
-          "side": "landside",
-          "quality": "fair",
-          "location": {
-            "en": "Arrivals hall (ask at the info desk)",
-            "hi": "अराइवल्स हॉल (इन्फ़ॉर्मेशन डेस्क पर पूछिए)",
-            "te": "అరైవల్స్ హాల్ (ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి)"
-          }
-        },
-        {
-          "id": "delhi-t2",
-          "terminal": "T2",
-          "name": {
-            "en": "Currency exchange counters",
-            "hi": "करेंसी एक्सचेंज काउंटर",
-            "te": "కరెన్సీ ఎక్స్ఛేంజ్ కౌంటర్లు"
-          },
-          "side": "landside",
-          "quality": "fair",
-          "location": {
-            "en": "Arrivals hall (ask at the info desk)",
-            "hi": "अराइवल्स हॉल (इन्फ़ॉर्मेशन डेस्क पर पूछिए)",
-            "te": "అరైవల్స్ హాల్ (ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి)"
-          }
-        },
-        {
-          "id": "delhi-t3",
+          "id": "del-t3-ebix",
           "terminal": "T3",
           "name": {
-            "en": "Currency exchange counters",
-            "hi": "करेंसी एक्सचेंज काउंटर",
-            "te": "కరెన్సీ ఎక్స్ఛేంజ్ కౌంటర్లు"
+            "en": "EbixCash World Money",
+            "hi": "एबिक्सकैश वर्ल्ड मनी",
+            "te": "ఎబిక్స్‌క్యాష్ వరల్డ్ మనీ"
           },
-          "side": "landside",
-          "quality": "fair",
+          "side": "unknown",
+          "quality": "unknown",
           "location": {
-            "en": "Arrivals hall (ask at the info desk)",
-            "hi": "अराइवल्स हॉल (इन्फ़ॉर्मेशन डेस्क पर पूछिए)",
-            "te": "అరైవల్స్ హాల్ (ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి)"
+            "en": "International Arrivals, near the Coca-Cola vending machine and the IndusInd Bank ATM",
+            "hi": "इंटरनेशनल अराइवल्स, कोका-कोला वेंडिंग मशीन और इंडसइंड बैंक एटीएम के पास",
+            "te": "ఇంటర్నేషనల్ అరైవల్స్, కోకా-కోలా వెండింగ్ మెషీన్, ఇండస్‌ఇండ్ బ్యాంక్ ఏటీఎం దగ్గర"
+          }
+        },
+        {
+          "id": "del-t3-pnb",
+          "terminal": "T3",
+          "name": {
+            "en": "Punjab National Bank",
+            "hi": "पंजाब नेशनल बैंक",
+            "te": "పంజాబ్ నేషనల్ బ్యాంక్"
+          },
+          "side": "unknown",
+          "quality": "unknown",
+          "location": {
+            "en": "Domestic and International Arrivals",
+            "hi": "डोमेस्टिक और इंटरनेशनल अराइवल्स",
+            "te": "డొమెస్టిక్, ఇంటర్నేషనల్ అరైవల్స్"
+          }
+        },
+        {
+          "id": "del-t1-pnb",
+          "terminal": "T1",
+          "name": {
+            "en": "Punjab National Bank",
+            "hi": "पंजाब नेशनल बैंक",
+            "te": "పంజాబ్ నేషనల్ బ్యాంక్"
+          },
+          "side": "unknown",
+          "quality": "unknown",
+          "location": {
+            "en": "Arrivals",
+            "hi": "अराइवल्स",
+            "te": "అరైవల్స్"
           }
         }
       ],
       "steps": {
         "immigration": {
-          "en": "Follow the Arrivals signs to Immigration.",
-          "hi": "अराइवल्स के बोर्ड देखते हुए इमिग्रेशन तक जाइए।",
-          "te": "అరైవల్స్ బోర్డులు చూస్తూ ఇమ్మిగ్రేషన్ వరకు వెళ్ళండి.",
+          "en": "Follow the signs to Immigration. Indian passport holders use the Indian passport counters.",
+          "hi": "बोर्ड देखते हुए इमिग्रेशन तक जाइए। भारतीय पासपोर्ट वाले इंडियन पासपोर्ट काउंटर पर जाएँ।",
+          "te": "బోర్డులు చూస్తూ ఇమ్మిగ్రేషన్ వరకు వెళ్ళండి. భారతీయ పాస్‌పోర్ట్ ఉన్నవాళ్ళు ఇండియన్ పాస్‌పోర్ట్ కౌంటర్లకు వెళ్ళాలి.",
+          "stage": "immigration"
+        },
+        "dutyfree": {
+          "en": "After Immigration, walk through the Duty Free area.",
+          "hi": "इमिग्रेशन के बाद ड्यूटी फ़्री एरिया से होकर आगे जाइए।",
+          "te": "ఇమ్మిగ్రేషన్ తర్వాత డ్యూటీ ఫ్రీ ఏరియా దాటి ముందుకు వెళ్ళండి.",
           "stage": "immigration"
         },
         "bags": {
-          "en": "After Immigration, collect your bags from the baggage hall.",
-          "hi": "इमिग्रेशन के बाद बैगेज हॉल से अपना सामान लीजिए।",
-          "te": "ఇమ్మిగ్రేషన్ తర్వాత బ్యాగేజ్ హాల్ నుంచి మీ బ్యాగులు తీసుకోండి.",
+          "en": "Check the screens for your flight's baggage belt and collect your bags.",
+          "hi": "स्क्रीन पर अपनी फ़्लाइट का बैगेज बेल्ट देखिए और अपना सामान लीजिए।",
+          "te": "స్క్రీన్‌పై మీ ఫ్లైట్ బ్యాగేజ్ బెల్ట్ నంబర్ చూసి, మీ బ్యాగులు తీసుకోండి.",
           "stage": "baggage"
         },
         "customs": {
-          "en": "Walk out through Customs into the arrivals hall.",
-          "hi": "कस्टम्स से होकर बाहर अराइवल्स हॉल में आइए।",
-          "te": "కస్టమ్స్ దాటి బయట అరైవల్స్ హాల్‌లోకి రండి.",
+          "en": "Clear Customs: the Red Channel if you have goods to declare or aren't sure, the Green Channel if not.",
+          "hi": "कस्टम्स पार कीजिए: बताने लायक सामान हो या पक्का न हो तो रेड चैनल, वरना ग्रीन चैनल।",
+          "te": "కస్టమ్స్ దాటండి: డిక్లేర్ చేయాల్సిన వస్తువులు ఉంటే లేదా సందేహం ఉంటే రెడ్ చానెల్, లేకపోతే గ్రీన్ చానెల్.",
           "stage": "customs"
         },
         "counter": {
-          "en": "In the arrivals hall, look for the currency exchange signs. If you can't see them, ask at the info desk.",
-          "hi": "अराइवल्स हॉल में करेंसी एक्सचेंज के बोर्ड देखिए। न दिखें तो इन्फ़ॉर्मेशन डेस्क पर पूछिए।",
-          "te": "అరైవల్స్ హాల్‌లో కరెన్సీ ఎక్స్ఛేంజ్ బోర్డుల కోసం చూడండి. కనిపించకపోతే ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి.",
+          "en": "In the public Arrivals hall, look for EbixCash World Money near the Coca-Cola vending machine and the IndusInd Bank ATM. Punjab National Bank also has a counter here.",
+          "hi": "बाहर अराइवल्स हॉल में कोका-कोला वेंडिंग मशीन और इंडसइंड बैंक एटीएम के पास एबिक्सकैश वर्ल्ड मनी ढूँढिए। यहाँ पंजाब नेशनल बैंक का काउंटर भी है।",
+          "te": "బయట అరైవల్స్ హాల్‌లో కోకా-కోలా వెండింగ్ మెషీన్, ఇండస్‌ఇండ్ బ్యాంక్ ఏటీఎం దగ్గర ఎబిక్స్‌క్యాష్ వరల్డ్ మనీ కోసం చూడండి. ఇక్కడ పంజాబ్ నేషనల్ బ్యాంక్ కౌంటర్ కూడా ఉంది.",
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in rupees before you pay. Count the money at the counter and ask for a receipt.",
-          "hi": "पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
-          "te": "డబ్బు ఇచ్చే ముందు రూపాయల్లో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
+          "en": "Say how much you want to change, and ask for the final amount in rupees before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "जितने पैसे बदलने हैं बताइए, और पैसे देने से पहले रुपये में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "ఎంత మార్చాలో చెప్పండి. డబ్బు ఇచ్చే ముందు రూపాయలలో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
+          "stage": "arrivals"
+        },
+        "t1_bags": {
+          "en": "Collect your bags from the baggage belt.",
+          "hi": "बेल्ट से अपना सामान लीजिए।",
+          "te": "బెల్ట్ దగ్గర మీ బ్యాగులు తీసుకోండి.",
+          "stage": "baggage"
+        },
+        "t1_exit": {
+          "en": "Walk out into the Arrivals hall.",
+          "hi": "बाहर अराइवल्स हॉल में आइए।",
+          "te": "బయట అరైవల్స్ హాల్‌లోకి రండి.",
+          "stage": "arrivals"
+        },
+        "t1_counter": {
+          "en": "Punjab National Bank is the only exchange counter listed in Terminal 1 Arrivals.",
+          "hi": "टर्मिनल 1 अराइवल्स में सिर्फ़ पंजाब नेशनल बैंक का एक्सचेंज काउंटर है।",
+          "te": "టెర్మినల్ 1 అరైవల్స్‌లో పంజాబ్ నేషనల్ బ్యాంక్ ఒక్కటే ఎక్స్ఛేంజ్ కౌంటర్.",
           "stage": "arrivals"
         }
       },
       "routes": {
         "T1": [
-          "immigration",
-          "bags",
-          "customs",
-          "counter",
-          "final_amount"
-        ],
-        "T2": [
-          "immigration",
-          "bags",
-          "customs",
-          "counter",
+          "t1_bags",
+          "t1_exit",
+          "t1_counter",
           "final_amount"
         ],
         "T3": [
           "immigration",
+          "dutyfree",
           "bags",
           "customs",
           "counter",
@@ -524,15 +597,30 @@
       },
       "warnings": [
         {
-          "en": "Exchange counter details for this airport are still being checked. Ask at the info desk if anything looks different.",
-          "hi": "इस एयरपोर्ट के एक्सचेंज काउंटर की जानकारी अभी जाँची जा रही है। कुछ अलग लगे तो इन्फ़ॉर्मेशन डेस्क पर पूछिए।",
-          "te": "ఈ ఎయిర్‌పోర్ట్ ఎక్స్ఛేంజ్ కౌంటర్ వివరాలు ఇంకా చెక్ చేస్తున్నాం. ఏదైనా వేరుగా ఉంటే ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి."
+          "en": "Delhi Airport lists two exchange operators: EbixCash and Punjab National Bank.",
+          "hi": "दिल्ली एयरपोर्ट दो एक्सचेंज ऑपरेटर बताता है: एबिक्सकैश और पंजाब नेशनल बैंक।",
+          "te": "ఢిల్లీ ఎయిర్‌పోర్ట్ రెండు ఎక్స్ఛేంజ్ ఆపరేటర్లను చూపిస్తుంది: ఎబిక్స్‌క్యాష్, పంజాబ్ నేషనల్ బ్యాంక్."
+        },
+        {
+          "en": "Thomas Cook also has a counter in T3, but some travellers report weaker rates and worn or old notes. Compare first, and check your notes before you leave.",
+          "hi": "T3 में थॉमस कुक का काउंटर भी है, पर कुछ यात्री कम रेट और पुराने या घिसे नोट मिलने की बात कहते हैं। पहले तुलना कीजिए, और जाने से पहले नोट जाँच लीजिए।",
+          "te": "T3లో థామస్ కుక్ కౌంటర్ కూడా ఉంది, కానీ కొందరు ప్రయాణికులు తక్కువ రేటు, పాత లేదా నలిగిన నోట్లు వచ్చాయని చెబుతారు. ముందు పోల్చి చూడండి, వెళ్ళే ముందు నోట్లు చెక్ చేసుకోండి."
+        },
+        {
+          "en": "Buying foreign currency? Indian residents need a PAN card, and 50,000 rupees or more must be paid by card or bank transfer, not cash.",
+          "hi": "विदेशी करेंसी ख़रीद रहे हैं? भारतीय निवासियों को पैन कार्ड चाहिए, और 50,000 रुपये या उससे ज़्यादा का भुगतान कार्ड या बैंक ट्रांसफ़र से होगा, नकद नहीं।",
+          "te": "విదేశీ కరెన్సీ కొంటున్నారా? భారతీయులకు పాన్ కార్డ్ కావాలి, 50,000 రూపాయలు లేదా అంతకంటే ఎక్కువ అయితే కార్డ్ లేదా బ్యాంక్ ట్రాన్స్‌ఫర్‌తో కట్టాలి, నగదుతో కాదు."
         }
       ],
       "fallback": {
         "en": "Ask any airport staff member or the info desk for \"currency exchange\". Say \"ask staff\" for a card you can show them.",
         "hi": "किसी भी एयरपोर्ट स्टाफ़ या इन्फ़ॉर्मेशन डेस्क से \"करेंसी एक्सचेंज\" पूछिए। उन्हें दिखाने के लिए कार्ड चाहिए तो \"स्टाफ से पूछना है\" बोलिए।",
         "te": "ఏ ఎయిర్‌పోర్ట్ సిబ్బందినైనా లేదా ఇన్ఫర్మేషన్ డెస్క్‌ను \"కరెన్సీ ఎక్స్ఛేంజ్\" ఎక్కడ అని అడగండి. వాళ్ళకు చూపించడానికి కార్డ్ కావాలంటే \"స్టాఫ్‌ని అడగాలి\" అని చెప్పండి."
+      },
+      "terminalHint": {
+        "en": "International flights arrive at Terminal 3. Terminal 1 is domestic.",
+        "hi": "इंटरनेशनल फ़्लाइट्स टर्मिनल 3 पर आती हैं। टर्मिनल 1 डोमेस्टिक है।",
+        "te": "ఇంటర్నేషనల్ ఫ్లైట్లు టెర్మినల్ 3కి వస్తాయి. టెర్మినల్ 1 డొమెస్టిక్."
       }
     },
     "SIN": {
@@ -550,99 +638,149 @@
       ],
       "counters": [
         {
-          "id": "sin-t1",
+          "id": "sin-t1-prosegur",
           "terminal": "T1",
           "name": {
-            "en": "Money changers",
-            "hi": "मनी चेंजर",
-            "te": "మనీ ఛేంజర్లు"
+            "en": "Prosegur Change",
+            "hi": "प्रोसेगुर चेंज",
+            "te": "ప్రొసెగుర్ ఛేంజ్"
           },
           "side": "landside",
           "quality": "fair",
           "location": {
-            "en": "Public Arrivals Hall",
-            "hi": "पब्लिक अराइवल्स हॉल",
-            "te": "పబ్లిక్ అరైవల్స్ హాల్"
+            "en": "Arrival Meeting Hall, East and West",
+            "hi": "अराइवल मीटिंग हॉल, ईस्ट और वेस्ट",
+            "te": "అరైవల్ మీటింగ్ హాల్, ఈస్ట్, వెస్ట్"
           }
         },
         {
-          "id": "sin-t2",
+          "id": "sin-t1-travelex",
+          "terminal": "T1",
+          "name": {
+            "en": "Travelex",
+            "hi": "ट्रैवलेक्स",
+            "te": "ట్రావెలెక్స్"
+          },
+          "side": "landside",
+          "quality": "fair",
+          "location": {
+            "en": "Arrival Meeting Hall",
+            "hi": "अराइवल मीटिंग हॉल",
+            "te": "అరైవల్ మీటింగ్ హాల్"
+          }
+        },
+        {
+          "id": "sin-t2-prosegur",
           "terminal": "T2",
           "name": {
-            "en": "Money changers",
-            "hi": "मनी चेंजर",
-            "te": "మనీ ఛేంజర్లు"
+            "en": "Prosegur Change",
+            "hi": "प्रोसेगुर चेंज",
+            "te": "ప్రొసెగుర్ ఛేంజ్"
           },
           "side": "landside",
           "quality": "fair",
           "location": {
-            "en": "Public Arrivals Hall",
-            "hi": "पब्लिक अराइवल्स हॉल",
-            "te": "పబ్లిక్ అరైవల్స్ హాల్"
+            "en": "Arrival Hall",
+            "hi": "अराइवल हॉल",
+            "te": "అరైవల్ హాల్"
           }
         },
         {
-          "id": "sin-t3",
+          "id": "sin-t2-travelex",
+          "terminal": "T2",
+          "name": {
+            "en": "Travelex",
+            "hi": "ट्रैवलेक्स",
+            "te": "ట్రావెలెక్స్"
+          },
+          "side": "landside",
+          "quality": "fair",
+          "location": {
+            "en": "Arrival Hall",
+            "hi": "अराइवल हॉल",
+            "te": "అరైవల్ హాల్"
+          }
+        },
+        {
+          "id": "sin-t3-travelex",
           "terminal": "T3",
           "name": {
-            "en": "Money changers",
-            "hi": "मनी चेंजर",
-            "te": "మనీ ఛేంజర్లు"
+            "en": "Travelex",
+            "hi": "ट्रैवलेक्स",
+            "te": "ట్రావెలెక్స్"
           },
           "side": "landside",
           "quality": "fair",
           "location": {
-            "en": "Public Arrivals Hall",
-            "hi": "पब्लिक अराइवल्स हॉल",
-            "te": "పబ్లిక్ అరైవల్స్ హాల్"
+            "en": "Arrival Meeting Hall",
+            "hi": "अराइवल मीटिंग हॉल",
+            "te": "అరైవల్ మీటింగ్ హాల్"
           }
         },
         {
-          "id": "sin-t4",
+          "id": "sin-t4-prosegur",
           "terminal": "T4",
           "name": {
-            "en": "Money changers",
-            "hi": "मनी चेंजर",
-            "te": "మనీ ఛేంజర్లు"
+            "en": "Prosegur Change",
+            "hi": "प्रोसेगुर चेंज",
+            "te": "ప్రొసెగుర్ ఛేంజ్"
           },
           "side": "landside",
           "quality": "fair",
           "location": {
-            "en": "Public Arrivals Hall",
-            "hi": "पब्लिक अराइवल्स हॉल",
-            "te": "పబ్లిక్ అరైవల్స్ హాల్"
+            "en": "Arrival Central",
+            "hi": "अराइवल सेंट्रल",
+            "te": "అరైవల్ సెంట్రల్"
           }
         }
       ],
       "steps": {
         "immigration": {
-          "en": "Follow the Arrivals signs to Immigration.",
-          "hi": "अराइवल्स के बोर्ड देखते हुए इमिग्रेशन तक जाइए।",
-          "te": "అరైవల్స్ బోర్డులు చూస్తూ ఇమ్మిగ్రేషన్ వరకు వెళ్ళండి.",
+          "en": "Follow the signs to Immigration and use the automated gates. Children under 6 must use the manual counters.",
+          "hi": "बोर्ड देखते हुए इमिग्रेशन तक जाइए और ऑटोमैटिक गेट इस्तेमाल कीजिए। 6 साल से छोटे बच्चों को मैनुअल काउंटर पर जाना होगा।",
+          "te": "బోర్డులు చూస్తూ ఇమ్మిగ్రేషన్‌కి వెళ్ళి, ఆటోమేటిక్ గేట్లు వాడండి. 6 ఏళ్ళ లోపు పిల్లలు మాన్యువల్ కౌంటర్లకే వెళ్ళాలి.",
           "stage": "immigration"
         },
         "bags": {
-          "en": "Collect your bags from the baggage belt.",
-          "hi": "बैगेज बेल्ट से अपना सामान लीजिए।",
-          "te": "బ్యాగేజ్ బెల్ట్ నుంచి మీ బ్యాగులు తీసుకోండి.",
+          "en": "Collect your bags at Baggage Claim.",
+          "hi": "बैगेज क्लेम से अपना सामान लीजिए।",
+          "te": "బ్యాగేజ్ క్లెయిమ్ దగ్గర మీ బ్యాగులు తీసుకోండి.",
           "stage": "baggage"
         },
         "customs": {
-          "en": "Walk out through Customs into the public Arrivals Hall.",
-          "hi": "कस्टम्स से होकर बाहर पब्लिक अराइवल्स हॉल में आइए।",
-          "te": "కస్టమ్స్ దాటి పబ్లిక్ అరైవల్స్ హాల్‌లోకి రండి.",
+          "en": "Clear Customs and go out into the public Arrival Hall.",
+          "hi": "कस्टम्स पार करके बाहर अराइवल हॉल में आइए।",
+          "te": "కస్టమ్స్ దాటి బయట అరైవల్ హాల్‌లోకి రండి.",
           "stage": "customs"
         },
-        "counter": {
-          "en": "Look for the money changer signs in the Arrivals Hall. Check the rate on two counters if you can.",
-          "hi": "अराइवल्स हॉल में मनी चेंजर के बोर्ड ढूँढिए। हो सके तो दो काउंटर का रेट देखिए।",
-          "te": "అరైవల్స్ హాల్‌లో మనీ ఛేంజర్ బోర్డుల కోసం చూడండి. వీలైతే రెండు కౌంటర్ల రేటు చూడండి.",
+        "counter_t1": {
+          "en": "Look for Prosegur Change, in the East or West Arrival Meeting Hall, or Travelex. Neither charges commission. For a large amount, compare both boards.",
+          "hi": "ईस्ट या वेस्ट अराइवल मीटिंग हॉल में प्रोसेगुर चेंज, या ट्रैवलेक्स ढूँढिए। दोनों कमीशन नहीं लेते। बड़ी रकम हो तो दोनों के बोर्ड मिलाइए।",
+          "te": "ఈస్ట్ లేదా వెస్ట్ అరైవల్ మీటింగ్ హాల్‌లో ప్రొసెగుర్ ఛేంజ్, లేదా ట్రావెలెక్స్ కోసం చూడండి. రెండూ కమీషన్ తీసుకోవు. ఎక్కువ మొత్తం అయితే రెండు బోర్డులూ పోల్చండి.",
+          "stage": "arrivals"
+        },
+        "counter_t2": {
+          "en": "Prosegur Change and Travelex are both in the Arrival Hall. Neither charges commission. For a large amount, compare both boards.",
+          "hi": "प्रोसेगुर चेंज और ट्रैवलेक्स दोनों अराइवल हॉल में हैं। दोनों कमीशन नहीं लेते। बड़ी रकम हो तो दोनों के बोर्ड मिलाइए।",
+          "te": "ప్రొసెగుర్ ఛేంజ్, ట్రావెలెక్స్ రెండూ అరైవల్ హాల్‌లో ఉన్నాయి. రెండూ కమీషన్ తీసుకోవు. ఎక్కువ మొత్తం అయితే రెండు బోర్డులూ పోల్చండి.",
+          "stage": "arrivals"
+        },
+        "counter_t3": {
+          "en": "Look for Travelex in the Arrival Meeting Hall. It charges no commission.",
+          "hi": "अराइवल मीटिंग हॉल में ट्रैवलेक्स ढूँढिए। यह कमीशन नहीं लेता।",
+          "te": "అరైవల్ మీటింగ్ హాల్‌లో ట్రావెలెక్స్ కోసం చూడండి. అది కమీషన్ తీసుకోదు.",
+          "stage": "arrivals"
+        },
+        "counter_t4": {
+          "en": "Look for Prosegur Change at Arrival Central. It charges no commission.",
+          "hi": "अराइवल सेंट्रल में प्रोसेगुर चेंज ढूँढिए। यह कमीशन नहीं लेता।",
+          "te": "అరైవల్ సెంట్రల్‌లో ప్రొసెగుర్ ఛేంజ్ కోసం చూడండి. అది కమీషన్ తీసుకోదు.",
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in Singapore dollars before you pay. Count the money at the counter and ask for a receipt.",
-          "hi": "पैसे देने से पहले सिंगापुर डॉलर में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
-          "te": "డబ్బు ఇచ్చే ముందు సింగపూర్ డాలర్లలో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
+          "en": "Say how much you want to change, and ask for the final amount in Singapore dollars before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "जितने पैसे बदलने हैं बताइए, और पैसे देने से पहले सिंगापुर डॉलर में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "ఎంత మార్చాలో చెప్పండి. డబ్బు ఇచ్చే ముందు సింగపూర్ డాలర్లలో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
           "stage": "arrivals"
         }
       },
@@ -651,36 +789,46 @@
           "immigration",
           "bags",
           "customs",
-          "counter",
+          "counter_t1",
           "final_amount"
         ],
         "T2": [
           "immigration",
           "bags",
           "customs",
-          "counter",
+          "counter_t2",
           "final_amount"
         ],
         "T3": [
           "immigration",
           "bags",
           "customs",
-          "counter",
+          "counter_t3",
           "final_amount"
         ],
         "T4": [
           "immigration",
           "bags",
           "customs",
-          "counter",
+          "counter_t4",
           "final_amount"
         ]
       },
       "warnings": [
         {
-          "en": "Check the rate board and ask about any fee before you hand over cash.",
-          "hi": "पैसे देने से पहले रेट बोर्ड देखिए और कोई फ़ीस हो तो पूछिए।",
-          "te": "డబ్బు ఇచ్చే ముందు రేటు బోర్డు చూడండి, ఏదైనా ఫీజు ఉందేమో అడగండి."
+          "en": "Changi's money changers are run by Travelex and Prosegur Change. Neither charges commission, and their rates differ slightly by currency.",
+          "hi": "चांगी में पैसे बदलने के काउंटर ट्रैवलेक्स और प्रोसेगुर चेंज चलाते हैं। दोनों कमीशन नहीं लेते, और करेंसी के हिसाब से रेट थोड़ा अलग होता है।",
+          "te": "చాంగీలో మనీ ఛేంజర్లను ట్రావెలెక్స్, ప్రొసెగుర్ ఛేంజ్ నడుపుతాయి. రెండూ కమీషన్ తీసుకోవు, కరెన్సీని బట్టి రేట్లు కొంచెం మారతాయి."
+        },
+        {
+          "en": "For large amounts, licensed money changers in the city, such as at Lucky Plaza or Peninsula Plaza, usually give better rates than airport counters.",
+          "hi": "बड़ी रकम के लिए शहर के लाइसेंस वाले मनी चेंजर, जैसे लकी प्लाज़ा या पेनिनसुला प्लाज़ा में, अक्सर एयरपोर्ट से बेहतर रेट देते हैं।",
+          "te": "ఎక్కువ మొత్తానికి, సిటీలోని లైసెన్స్ ఉన్న మనీ ఛేంజర్లు, ఉదాహరణకు లక్కీ ప్లాజా లేదా పెనిన్సులా ప్లాజాలో, సాధారణంగా ఎయిర్‌పోర్ట్ కంటే మంచి రేటు ఇస్తారు."
+        },
+        {
+          "en": "Terminal 4 has no Skytrain. Take the free 24-hour shuttle bus to T1, T2 or T3, and allow 15 to 20 extra minutes.",
+          "hi": "टर्मिनल 4 में स्काईट्रेन नहीं है। T1, T2 या T3 के लिए 24 घंटे चलने वाली मुफ़्त शटल बस लीजिए, और 15 से 20 मिनट ज़्यादा रखिए।",
+          "te": "టెర్మినల్ 4లో స్కైట్రైన్ లేదు. T1, T2 లేదా T3కి 24 గంటలూ నడిచే ఉచిత షటిల్ బస్ ఎక్కండి, 15 నుంచి 20 నిమిషాలు ఎక్కువ పడుతుంది."
         }
       ],
       "fallback": {
@@ -689,7 +837,7 @@
         "te": "అరైవల్స్ హాల్‌లోని ఇన్ఫర్మేషన్ కౌంటర్‌లో దగ్గరలో ఉన్న మనీ ఛేంజర్ ఎక్కడ అని అడగండి. ఏదీ తెరిచి లేకపోతే ఏటీఎం నుంచి కొంచెం తీసుకోండి."
       },
       "staffLanguage": "en",
-      "lastChecked": "2026-11-27"
+      "lastChecked": "2026-10"
     },
     "BKK": {
       "name": {
@@ -706,78 +854,85 @@
           "id": "bkk-basement",
           "terminal": "MAIN",
           "name": {
-            "en": "Private exchange counters on the Airport Rail Link level",
-            "hi": "एयरपोर्ट रेल लिंक लेवल के प्राइवेट एक्सचेंज काउंटर",
-            "te": "ఎయిర్‌పోర్ట్ రైల్ లింక్ లెవల్‌లోని ప్రైవేట్ ఎక్స్ఛేంజ్ కౌంటర్లు"
+            "en": "SuperRich, Happy Rich and Value Plus",
+            "hi": "सुपररिच, हैप्पी रिच और वैल्यू प्लस",
+            "te": "సూపర్‌రిచ్, హ్యాపీ రిచ్, వాల్యూ ప్లస్"
           },
           "side": "landside",
           "quality": "good",
           "location": {
-            "en": "Basement level, near the Airport Rail Link",
-            "hi": "बेसमेंट लेवल, एयरपोर्ट रेल लिंक के पास",
-            "te": "బేస్‌మెంట్ లెవల్, ఎయిర్‌పోర్ట్ రైల్ లింక్ దగ్గర"
+            "en": "Basement Level B, by the 7-Eleven, on the way to the Airport Rail Link",
+            "hi": "बेसमेंट लेवल B, 7-इलेवन के पास, एयरपोर्ट रेल लिंक के रास्ते में",
+            "te": "బేస్‌మెంట్ లెవల్ B, 7-ఎలెవన్ దగ్గర, ఎయిర్‌పోర్ట్ రైల్ లింక్ దారిలో"
           }
         },
         {
-          "id": "bkk-arrivals-banks",
+          "id": "bkk-kiosks",
           "terminal": "MAIN",
           "name": {
-            "en": "Bank counters",
-            "hi": "बैंक काउंटर",
-            "te": "బ్యాంక్ కౌంటర్లు"
+            "en": "Bank kiosks (SCB, Kasikorn)",
+            "hi": "बैंक कियोस्क (SCB, कासिकोर्न)",
+            "te": "బ్యాంక్ కియోస్క్‌లు (SCB, కాసికార్న్)"
           },
-          "side": "airside",
+          "side": "landside",
           "quality": "pricey",
           "location": {
-            "en": "Baggage hall and Arrivals Hall",
-            "hi": "बैगेज हॉल और अराइवल्स हॉल",
-            "te": "బ్యాగేజ్ హాల్, అరైవల్స్ హాల్"
+            "en": "Level 2 and Level 4",
+            "hi": "लेवल 2 और लेवल 4",
+            "te": "లెవల్ 2, లెవల్ 4"
           }
         }
       ],
       "steps": {
         "immigration": {
-          "en": "Follow the Arrivals signs to Immigration.",
-          "hi": "अराइवल्स के बोर्ड देखते हुए इमिग्रेशन तक जाइए।",
-          "te": "అరైవల్స్ బోర్డులు చూస్తూ ఇమ్మిగ్రేషన్ వరకు వెళ్ళండి.",
+          "en": "Follow the Arrivals signs to Immigration. If you landed at the satellite building, take the underground train to the Main Terminal first.",
+          "hi": "अराइवल्स के बोर्ड देखते हुए इमिग्रेशन तक जाइए। अगर आप सैटेलाइट बिल्डिंग पर उतरे हैं, तो पहले अंडरग्राउंड ट्रेन से मेन टर्मिनल जाइए।",
+          "te": "అరైవల్స్ బోర్డులు చూస్తూ ఇమ్మిగ్రేషన్‌కి వెళ్ళండి. శాటిలైట్ బిల్డింగ్‌లో దిగితే, ముందు అండర్‌గ్రౌండ్ ట్రైన్‌లో మెయిన్ టెర్మినల్‌కి వెళ్ళండి.",
           "stage": "immigration"
         },
-        "bags_banks": {
-          "en": "Collect your bags. The bank counters near the baggage hall usually give lower rates, so change only a little here if you must.",
-          "hi": "अपना सामान लीजिए। बैगेज हॉल के पास वाले बैंक काउंटर आमतौर पर कम रेट देते हैं, ज़रूरत हो तो यहाँ बस थोड़े पैसे बदलिए।",
-          "te": "మీ బ్యాగులు తీసుకోండి. బ్యాగేజ్ హాల్ దగ్గర బ్యాంక్ కౌంటర్లు సాధారణంగా తక్కువ రేటు ఇస్తాయి. అవసరమైతే ఇక్కడ కొంచెమే మార్చండి.",
+        "bags": {
+          "en": "Collect your bags from your carousel.",
+          "hi": "अपने बेल्ट से सामान लीजिए।",
+          "te": "మీ బెల్ట్ దగ్గర బ్యాగులు తీసుకోండి.",
           "stage": "baggage"
         },
         "customs": {
-          "en": "Walk out through Customs into the Arrivals Hall.",
-          "hi": "कस्टम्स से होकर बाहर अराइवल्स हॉल में आइए।",
-          "te": "కస్టమ్స్ దాటి బయట అరైవల్స్ హాల్‌లోకి రండి.",
+          "en": "Clear Customs, the Green Channel if you have nothing to declare, and go out into the Arrivals Lobby on Level 2.",
+          "hi": "कस्टम्स पार कीजिए, कुछ बताने लायक न हो तो ग्रीन चैनल से, और लेवल 2 की अराइवल्स लॉबी में आइए।",
+          "te": "కస్టమ్స్ దాటండి, డిక్లేర్ చేయాల్సింది ఏమీ లేకపోతే గ్రీన్ చానెల్‌లో, తర్వాత లెవల్ 2లోని అరైవల్స్ లాబీలోకి రండి.",
           "stage": "customs"
         },
+        "signs": {
+          "en": "Look up and follow the \"Train to City\" or \"Airport Rail Link\" signs.",
+          "hi": "ऊपर देखिए और \"Train to City\" या \"Airport Rail Link\" के बोर्ड के पीछे चलिए।",
+          "te": "పైకి చూసి \"Train to City\" లేదా \"Airport Rail Link\" బోర్డులు చూస్తూ వెళ్ళండి.",
+          "stage": "arrivals"
+        },
         "go_down": {
-          "en": "Take the escalator or lift down to the basement level, following the Airport Rail Link signs.",
-          "hi": "एयरपोर्ट रेल लिंक के बोर्ड देखते हुए एस्केलेटर या लिफ़्ट से बेसमेंट लेवल पर जाइए।",
-          "te": "ఎయిర్‌పోర్ట్ రైల్ లింక్ బోర్డులు చూస్తూ ఎస్కలేటర్ లేదా లిఫ్ట్‌లో బేస్‌మెంట్ లెవల్‌కి వెళ్ళండి.",
+          "en": "Take the escalator or lift down past Level 1 to Basement Level B. Walk towards the rail station and look for the 7-Eleven sign.",
+          "hi": "एस्केलेटर या लिफ़्ट से लेवल 1 के नीचे, बेसमेंट लेवल B तक जाइए। रेल स्टेशन की तरफ़ चलिए और 7-इलेवन का बोर्ड देखिए।",
+          "te": "ఎస్కలేటర్ లేదా లిఫ్ట్‌లో లెవల్ 1 దాటి బేస్‌మెంట్ లెవల్ Bకి దిగండి. రైల్ స్టేషన్ వైపు నడుస్తూ 7-ఎలెవన్ బోర్డు కోసం చూడండి.",
           "stage": "arrivals"
         },
         "counter": {
-          "en": "The private exchange counters there usually give better rates than the ones upstairs. Compare two before you choose.",
-          "hi": "वहाँ के प्राइवेट एक्सचेंज काउंटर आमतौर पर ऊपर वालों से बेहतर रेट देते हैं। चुनने से पहले दो काउंटर देख लीजिए।",
-          "te": "అక్కడి ప్రైవేట్ ఎక్స్ఛేంజ్ కౌంటర్లు సాధారణంగా పైవాటికంటే మంచి రేటు ఇస్తాయి. ఎంచుకునే ముందు రెండు చూడండి.",
+          "en": "SuperRich Orange, SuperRich Green, Happy Rich and Value Plus are close together here, and none charges commission. Compare the boards and show your passport.",
+          "hi": "सुपररिच ऑरेंज, सुपररिच ग्रीन, हैप्पी रिच और वैल्यू प्लस यहाँ पास-पास हैं, और कोई कमीशन नहीं लेता। बोर्ड मिलाइए और अपना पासपोर्ट दिखाइए।",
+          "te": "సూపర్‌రిచ్ ఆరెంజ్, సూపర్‌రిచ్ గ్రీన్, హ్యాపీ రిచ్, వాల్యూ ప్లస్ ఇక్కడ దగ్గర దగ్గరగా ఉంటాయి, ఏదీ కమీషన్ తీసుకోదు. బోర్డులు పోల్చి, మీ పాస్‌పోర్ట్ చూపించండి.",
           "stage": "arrivals"
         },
         "final_amount": {
-          "en": "Ask for the final amount in baht before you pay. Count the money at the counter and ask for a receipt.",
-          "hi": "पैसे देने से पहले बाट में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
-          "te": "డబ్బు ఇచ్చే ముందు బాట్‌లో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
+          "en": "Say how much you want to change, and ask for the final amount in baht before you pay. Count the money at the counter and ask for a receipt.",
+          "hi": "जितने पैसे बदलने हैं बताइए, और पैसे देने से पहले बाट में फ़ाइनल अमाउंट पूछिए। काउंटर पर ही पैसे गिनिए और रसीद माँगिए।",
+          "te": "ఎంత మార్చాలో చెప్పండి. డబ్బు ఇచ్చే ముందు బాట్‌లో ఫైనల్ మొత్తం ఎంతో అడగండి. కౌంటర్ దగ్గరే డబ్బు లెక్కపెట్టుకుని, రసీదు అడగండి.",
           "stage": "arrivals"
         }
       },
       "routes": {
         "MAIN": [
           "immigration",
-          "bags_banks",
+          "bags",
           "customs",
+          "signs",
           "go_down",
           "counter",
           "final_amount"
@@ -785,9 +940,19 @@
       },
       "warnings": [
         {
-          "en": "Counters before Customs usually give the lowest rates.",
-          "hi": "कस्टम्स से पहले वाले काउंटर आमतौर पर सबसे कम रेट देते हैं।",
-          "te": "కస్టమ్స్ ముందు ఉండే కౌంటర్లు సాధారణంగా అతి తక్కువ రేటు ఇస్తాయి."
+          "en": "The bank kiosks upstairs, such as the purple SCB ones, have a high markup. Use them for small emergency amounts only.",
+          "hi": "ऊपर वाले बैंक कियोस्क, जैसे बैंगनी SCB वाले, ज़्यादा मार्जिन लेते हैं। इन्हें सिर्फ़ थोड़ी इमरजेंसी रकम के लिए इस्तेमाल कीजिए।",
+          "te": "పైన ఉన్న బ్యాంక్ కియోస్క్‌లు, ఉదాహరణకు ఊదా రంగు SCB వి, ఎక్కువ మార్జిన్ తీసుకుంటాయి. చిన్న అత్యవసర మొత్తానికి మాత్రమే వాడండి."
+        },
+        {
+          "en": "Thai bank ATMs charge a fee for each withdrawal with a foreign card, on top of your own bank's fee. Changing cash in Basement B avoids it.",
+          "hi": "थाई बैंक एटीएम विदेशी कार्ड से हर निकासी पर फ़ीस लेते हैं, और आपके बैंक की फ़ीस अलग। बेसमेंट B में नकद बदलने से यह बचता है।",
+          "te": "థాయ్ బ్యాంక్ ఏటీఎంలు విదేశీ కార్డ్‌తో ప్రతి విత్‌డ్రాకి ఫీజు తీసుకుంటాయి, మీ బ్యాంక్ ఫీజు వేరే. బేస్‌మెంట్ Bలో నగదు మార్చితే ఇది తప్పుతుంది."
+        },
+        {
+          "en": "Landed at the satellite building (SAT-1)? Allow 10 to 15 extra minutes for the train to the Main Terminal.",
+          "hi": "सैटेलाइट बिल्डिंग (SAT-1) पर उतरे हैं? मेन टर्मिनल की ट्रेन के लिए 10 से 15 मिनट ज़्यादा रखिए।",
+          "te": "శాటిలైట్ బిల్డింగ్ (SAT-1)లో దిగారా? మెయిన్ టెర్మినల్ ట్రైన్‌కి 10 నుంచి 15 నిమిషాలు ఎక్కువ పడుతుంది."
         }
       ],
       "fallback": {
@@ -796,7 +961,7 @@
         "te": "ఎయిర్‌పోర్ట్ సిబ్బందిని ఎయిర్‌పోర్ట్ రైల్ లింక్ ఎక్కడ అని అడగండి. ఎక్స్ఛేంజ్ కౌంటర్లు అదే లెవల్‌లో ఉంటాయి. దొరకకపోతే ఏటీఎం నుంచి కొంచెం తీసుకుని, మిగతాది నగరంలో మార్చండి."
       },
       "staffLanguage": "th",
-      "lastChecked": "2026-11-27"
+      "lastChecked": "2026-10"
     }
   }
 }

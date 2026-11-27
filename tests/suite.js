@@ -291,6 +291,41 @@ export const FLOW_CASES = [
     lang: 'en-IN',
     turns: [['Dubai T2', { kind: 'confirm' }], ['yes', { mode: 'route' }], ['start over', { kind: 'ask', expecting: 'airport' }]],
   },
+  // Website data (hackathon export, last verified October 2026)
+  {
+    name: 'Dubai, no terminal: the question says which airline uses which terminal',
+    lang: 'en-IN',
+    turns: [['Dubai change money', { kind: 'ask', expecting: 'terminal', has: 'Emirates uses Terminal 3' }]],
+  },
+  {
+    name: 'Delhi T2 is not listed: asks again, international is T3',
+    lang: 'en-IN',
+    turns: [
+      ['Delhi terminal 2 change money', { kind: 'ask', expecting: 'terminal', has: 'International flights arrive at Terminal 3' }],
+      ['3', { kind: 'confirm', terminal: 'T3' }],
+      ['yes', { kind: 'step', mode: 'route', has: 'Exchange counter: EbixCash' }],
+    ],
+  },
+  {
+    name: 'Bengaluru T1 has no counter: route ends with ATM / Terminal 2 advice',
+    lang: 'en-IN',
+    turns: [
+      ['Bengaluru terminal 1 change money', { kind: 'confirm' }],
+      ['yes', { kind: 'step', mode: 'route', step: 0 }],
+      ['next', { step: 1 }],
+      ['next', { step: 2, has: 'no exchange counter in Terminal 1' }],
+    ],
+  },
+  {
+    name: 'Bengaluru T2 (Hindi): Thomas Cook route',
+    lang: 'hi-IN',
+    turns: [['बेंगलुरु टर्मिनल २ पैसे बदलने हैं', { kind: 'confirm' }], ['हाँ', { kind: 'step', mode: 'route', has: 'थॉमस कुक' }]],
+  },
+  {
+    name: 'Bangkok (Telugu): best counters are in Basement B',
+    lang: 'te-IN',
+    turns: [['బ్యాంకాక్ డబ్బు మార్చాలి', { kind: 'confirm' }], ['అవును', { kind: 'step', mode: 'route', has: 'సూపర్‌రిచ్' }]],
+  },
 ];
 
 // ---------- Runner ----------

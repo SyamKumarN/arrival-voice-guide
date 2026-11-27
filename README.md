@@ -54,13 +54,15 @@ The microphone works on `localhost` and over `https`. Chrome blocks it on a plai
 
 ## Airports and what's covered
 
-| Airport | Exchange counter | SIM counter, taxi stand | Last checked |
+| Airport | Exchange route | SIM counter, taxi stand | Last checked |
 |---|---|---|---|
-| Dubai (DXB), T1–T3 | Full step-by-step route | Full step-by-step route | 27 Nov 2026 |
-| Bengaluru (BLR) | Safe general route: "ask at the info desk" (detailed data pending) | Short safe answer + ask-staff card | pending |
-| Delhi (DEL) | Safe general route: "ask at the info desk" (detailed data pending) | Short safe answer + ask-staff card | pending |
-| Singapore (SIN), T1–T4 | Route | Short safe answer + ask-staff card | 27 Nov 2026 |
-| Bangkok (BKK) | Route | Short safe answer + ask-staff card | 27 Nov 2026 |
+| Dubai (DXB), T1–T3 | Step by step to Al Ansari (T1), the central corridor (T2) or past the Customs Hall exit (T3), with baggage belt numbers | Full step-by-step route | Oct 2026 |
+| Bengaluru (BLR), T1–T2 | T2: the two Thomas Cook counters on Level 0. T1 has no listed counter, so it points to an ATM or T2 | Short safe answer + ask-staff card | Oct 2026 |
+| Delhi (DEL), T1 and T3 | T3: EbixCash in International Arrivals. T1: Punjab National Bank | Short safe answer + ask-staff card | Oct 2026 |
+| Singapore (SIN), T1–T4 | Travelex or Prosegur Change in the arrival hall of each terminal | Short safe answer + ask-staff card | Oct 2026 |
+| Bangkok (BKK) | Down to Basement B by the 7-Eleven (SuperRich, Happy Rich, Value Plus) | Short safe answer + ask-staff card | Oct 2026 |
+
+When you don't know your terminal, the question gives a hint, such as "Emirates uses Terminal 3". Counters whose rates haven't been compared yet are shown as "Exchange counter", not "Best option", with a note to check the board.
 
 The data is plain text in `public/data/airports.json`. Where something isn't confirmed, the guide says to ask at the info desk instead of guessing. Signs change, so check them on the day.
 
@@ -79,8 +81,8 @@ Copy `.env.example` to `.env` (never commit it), or for the live site, set them 
 
 ## Tests
 
-`npm test` runs 698 checks, all without keys or network:
-- **Unit tests:** the parser (120 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (11).
+`npm test` runs 703 checks, all without keys or network:
+- **Unit tests:** the parser (120 sentences in English, Hindi, Hinglish and Telugu, covering off-topic requests, advice topics and yes/no), numbers (18), the price check (9) and conversation flows (16, including the airport data cases: Delhi T2 not listed, Bengaluru T1 with no counter, terminal hints).
 - **Scenario matrix:** 520 conversations, one for every airport (5) × language style (4) × scenario (26). The scenarios cover:
   - **Routes:** exchange with confirm, missing airport, missing terminal, confirm "no", SIM, taxi, metro, the full route to the receipt step and the money tips.
   - **Commands:** next/repeat/back/can't find, the price check, I'm lost, ask staff.

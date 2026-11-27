@@ -1,6 +1,7 @@
 // decide.js — the "Decide" layer: pick the fair counter and build the route.
 
-const QUALITY_RANK = { good: 0, fair: 1, pricey: 2 };
+// "unknown" = the rate hasn't been compared yet: after fair counters, before pricier ones
+const QUALITY_RANK = { good: 0, fair: 1, unknown: 1.5, pricey: 2 };
 export const DESTINATIONS = ['exchange', 'sim', 'taxi'];
 
 /** Counters in one terminal, best first (better rate, then landside). */

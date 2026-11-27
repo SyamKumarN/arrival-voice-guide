@@ -34,7 +34,8 @@ const T = {
     askAirport: 'Which airport are you at? Dubai, Bangkok or Singapore?',
     askTerminal: (name, terms) => `Which terminal at ${name}? ${listNumbers(terms, 'en')}?`,
     badTerminal: (name, terms) => `${name} has terminals ${listNumbers(terms, 'en')}. Which one are you at?`,
-    intro: (r, lang) => `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. Best option: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. I'll take you there step by step.`,
+    intro: (r, lang) => `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. ${r.counter.quality === 'unknown' ? 'Exchange counter' : 'Best option'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. I'll take you there step by step.`,
+    introPlain: (r, lang) => `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. I'll take you step by step.`,
     step: (i, n, text) => `Step ${i} of ${n}. ${text}`,
     stepHint: 'Say next, repeat, or can\'t find.',
     done: 'You\'re there. Ask for the final amount before you pay. Safe travels!',
@@ -61,7 +62,8 @@ const T = {
     askAirport: 'आप किस एयरपोर्ट पर हैं? दुबई, बैंकॉक या सिंगापुर?',
     askTerminal: (name, terms) => `${name} में कौन सा टर्मिनल? ${listNumbers(terms, 'hi')}?`,
     badTerminal: (name, terms) => `${name} में टर्मिनल ${listNumbers(terms, 'hi')} हैं। आप किस पर हैं?`,
-    intro: (r, lang) => `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। सबसे अच्छा विकल्प: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}। मैं आपको एक-एक कदम बताऊँगी।`,
+    intro: (r, lang) => `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। ${r.counter.quality === 'unknown' ? 'एक्सचेंज काउंटर' : 'सबसे अच्छा विकल्प'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}। मैं आपको एक-एक कदम बताऊँगी।`,
+    introPlain: (r, lang) => `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। मैं आपको एक-एक कदम बताऊँगी।`,
     step: (i, n, text) => `${n} में से कदम ${i}। ${text}`,
     stepHint: 'आगे, दोबारा, या नहीं मिल रहा बोलिए।',
     done: 'आप पहुँच गए। पैसे देने से पहले फ़ाइनल अमाउंट पूछिए। शुभ यात्रा!',
@@ -88,7 +90,8 @@ const T = {
     askAirport: 'మీరు ఏ ఎయిర్‌పోర్ట్‌లో ఉన్నారు? దుబాయ్, బ్యాంకాక్, లేదా సింగపూర్?',
     askTerminal: (name, terms) => `${name}లో ఏ టెర్మినల్? ${listNumbers(terms, 'te')}?`,
     badTerminal: (name, terms) => `${name}లో టెర్మినల్స్ ${listNumbers(terms, 'te')} ఉన్నాయి. మీరు దేనిలో ఉన్నారు?`,
-    intro: (r, lang) => `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. మంచి ఎంపిక: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. ఒక్కో అడుగు చెప్తాను.`,
+    intro: (r, lang) => `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. ${r.counter.quality === 'unknown' ? 'ఎక్స్ఛేంజ్ కౌంటర్' : 'మంచి ఎంపిక'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. ఒక్కో అడుగు చెప్తాను.`,
+    introPlain: (r, lang) => `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. ఒక్కో అడుగు చెప్తాను.`,
     step: (i, n, text) => `${n}లో ${i}వ అడుగు. ${text}`,
     stepHint: 'నెక్స్ట్, మళ్ళీ, లేదా దొరకలేదు అని చెప్పండి.',
     done: 'మీరు చేరుకున్నారు. డబ్బు ఇచ్చే ముందు ఫైనల్ మొత్తం అడగండి. శుభ ప్రయాణం!',
@@ -135,7 +138,7 @@ const EXTRA = {
     unknown: "I can guide you to a fair exchange counter, a SIM counter or the taxi stand, and check a rate. Try: 'exchange money', 'SIM', 'taxi'.",
     commandsHint: "While I guide you, say next, repeat or can't find. Say 'ask staff' for a card to show airport staff.",
     intro: (r, lang) => r.dest === 'exchange'
-      ? `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. Best option: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. I'll take you there step by step.`
+      ? `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. ${r.counter.quality === 'unknown' ? 'Exchange counter' : 'Best option'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. I'll take you there step by step.`
       : `${terminalLabel(r.terminal, lang)}, ${pick(r.name, lang)}. Route to the ${DEST.en[r.dest]}. I'll take you there step by step.`,
     done: (dest) => ({
       exchange: "You're there. Ask for the final amount before you pay. Safe travels!",
@@ -157,7 +160,7 @@ const EXTRA = {
     unknown: "मैं आपको सही एक्सचेंज काउंटर, सिम काउंटर या टैक्सी स्टैंड तक ले जा सकती हूँ, और रेट जाँच सकती हूँ। ऐसे बोलिए: 'पैसे बदलने हैं', 'सिम', 'टैक्सी'।",
     commandsHint: "रास्ते में आगे, दोबारा या नहीं मिल रहा बोलिए। स्टाफ को दिखाने के लिए कार्ड चाहिए तो 'स्टाफ से पूछना है' बोलिए।",
     intro: (r, lang) => r.dest === 'exchange'
-      ? `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। सबसे अच्छा विकल्प: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}। मैं आपको एक-एक कदम बताऊँगी।`
+      ? `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। ${r.counter.quality === 'unknown' ? 'एक्सचेंज काउंटर' : 'सबसे अच्छा विकल्प'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}। मैं आपको एक-एक कदम बताऊँगी।`
       : `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}। ${DEST.hi[r.dest]} का रास्ता। मैं आपको एक-एक कदम बताऊँगी।`,
     done: (dest) => ({
       exchange: 'आप पहुँच गए। पैसे देने से पहले फ़ाइनल अमाउंट पूछिए। शुभ यात्रा!',
@@ -179,7 +182,7 @@ const EXTRA = {
     unknown: "మంచి ఎక్స్ఛేంజ్ కౌంటర్, సిమ్ కౌంటర్ లేదా టాక్సీ స్టాండ్‌కి దారి చూపించగలను, రేటు కూడా చెక్ చేయగలను. ఇలా చెప్పండి: 'డబ్బు మార్చాలి', 'సిమ్', 'టాక్సీ'.",
     commandsHint: "దారిలో నెక్స్ట్, మళ్ళీ, లేదా దొరకలేదు అని చెప్పండి. సిబ్బందికి చూపించే కార్డ్ కావాలంటే 'స్టాఫ్‌ని అడగాలి' అని చెప్పండి.",
     intro: (r, lang) => r.dest === 'exchange'
-      ? `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. మంచి ఎంపిక: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. ఒక్కో అడుగు చెప్తాను.`
+      ? `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. ${r.counter.quality === 'unknown' ? 'ఎక్స్ఛేంజ్ కౌంటర్' : 'మంచి ఎంపిక'}: ${pick(r.counter.name, lang)}, ${pick(r.counter.location, lang)}. ఒక్కో అడుగు చెప్తాను.`
       : `${pick(r.name, lang)}, ${terminalLabel(r.terminal, lang)}. ${DEST.te[r.dest]}కి దారి. ఒక్కో అడుగు చెప్తాను.`,
     done: (dest) => ({
       exchange: 'మీరు చేరుకున్నారు. డబ్బు ఇచ్చే ముందు ఫైనల్ మొత్తం అడగండి. శుభ ప్రయాణం!',
@@ -490,19 +493,19 @@ const UI_EXTRA = {
   en: {
     askStaff: 'Ask staff', staffTitle: 'Please show this to airport staff', close: 'Close', readAloud: 'Read aloud',
     dest: { exchange: 'Money exchange', sim: 'SIM card', taxi: 'Taxi' },
-    lastChecked: 'Last checked', pending: 'Details still being checked: ask at the info desk',
+    lastChecked: 'Last checked', counter: 'Exchange counter', notMeasured: "Rates here haven't been compared yet. Check the board and ask for the final amount.", pending: 'Details still being checked: ask at the info desk',
     tries: ['Dubai terminal 3, I need currency', 'I want a SIM', 'taxi stand', "I'm lost", 'ask staff', 'They give 1700 dirhams for 500 dollars'],
   },
   hi: {
     askStaff: 'स्टाफ से पूछें', staffTitle: 'यह एयरपोर्ट स्टाफ को दिखाइए', close: 'बंद करें', readAloud: 'सुनाइए',
     dest: { exchange: 'पैसे बदलना', sim: 'सिम कार्ड', taxi: 'टैक्सी' },
-    lastChecked: 'आख़िरी जाँच', pending: 'जानकारी अभी जाँची जा रही है: इन्फ़ॉर्मेशन डेस्क पर पूछिए',
+    lastChecked: 'आख़िरी जाँच', counter: 'एक्सचेंज काउंटर', notMeasured: 'यहाँ के रेट की तुलना अभी नहीं हुई है। बोर्ड देखिए और फ़ाइनल अमाउंट पूछिए।', pending: 'जानकारी अभी जाँची जा रही है: इन्फ़ॉर्मेशन डेस्क पर पूछिए',
     tries: ['dubai terminal teen, paise badalne hain', 'मुझे सिम चाहिए', 'होटल जाने के लिए टैक्सी', 'पता नहीं कहाँ हूँ', 'स्टाफ से पूछना है', '500 dollar ke satrah sau dirham de rahe hain'],
   },
   te: {
     askStaff: 'స్టాఫ్‌ని అడగండి', staffTitle: 'దయచేసి ఇది ఎయిర్‌పోర్ట్ సిబ్బందికి చూపించండి', close: 'మూసివేయి', readAloud: 'వినిపించు',
     dest: { exchange: 'డబ్బు మార్పిడి', sim: 'సిమ్ కార్డ్', taxi: 'టాక్సీ' },
-    lastChecked: 'చివరిగా చెక్ చేసింది', pending: 'వివరాలు ఇంకా చెక్ చేస్తున్నాం: ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి',
+    lastChecked: 'చివరిగా చెక్ చేసింది', counter: 'ఎక్స్ఛేంజ్ కౌంటర్', notMeasured: 'ఇక్కడి రేట్లు ఇంకా పోల్చి చూడలేదు. బోర్డు చూసి, ఫైనల్ మొత్తం అడగండి.', pending: 'వివరాలు ఇంకా చెక్ చేస్తున్నాం: ఇన్ఫర్మేషన్ డెస్క్‌లో అడగండి',
     tries: ['దుబాయ్ టెర్మినల్ 3, డబ్బు మార్చాలి', 'సిమ్ కావాలి', 'హోటల్‌కి టాక్సీ', 'నేను ఎక్కడున్నానో తెలియదు', 'స్టాఫ్‌ని అడగాలి', '500 డాలర్లకు 1700 దిర్హామ్‌లు ఇస్తున్నారు'],
   },
 };

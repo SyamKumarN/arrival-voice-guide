@@ -25,6 +25,12 @@ export function initialState(lang = 'hi-IN') {
 
 const reply = (kind, text, extra = {}) => ({ kind, text, ...extra });
 
+/** "Which terminal at Dubai? 1, 2 or 3?" plus a hint that helps people who don't know ("Emirates uses Terminal 3…"). */
+function askTerminal(lang, a, bad = false) {
+  const q = say(lang, bad ? 'badTerminal' : 'askTerminal')(pick(a.name, lang), a.terminals);
+  return a.terminalHint ? `${q} ${pick(a.terminalHint, lang)}` : q;
+}
+
 // Spoken list topics → which tip list they read
 const LIST_TOPICS = { tips: 'money', traps: 'traps', atm: 'atm', pickup: 'taxi', cards: 'cards' };
 // One-off advice topics
@@ -79,7 +85,7 @@ function endTips(state, data) {
   else if (prev.expecting === 'airport') tail = ' ' + say(state.lang, 'askAirport');
   else if (prev.expecting === 'terminal') {
     const a = data.airports[state.airport];
-    tail = ' ' + say(state.lang, 'askTerminal')(pick(a.name, state.lang), a.terminals);
+    tail = ' ' + askTerminal(state.lang, a);
   }
   return reply('tips', say(state.lang, 'tipsDone') + tail);
 }
@@ -224,7 +230,7 @@ export function handle(prev, sentence, data, rates) {
     if (state.expecting === 'airport') return out(state, reply('ask', say(lang, 'unknown') + ' ' + say(lang, 'askAirport')), { unknown: true });
     if (state.expecting === 'terminal') {
       const a = data.airports[state.airport];
-      return out(state, reply('ask', say(lang, 'askTerminal')(pick(a.name, lang), a.terminals)), { unknown: true });
+      return out(state, reply('ask', askTerminal(lang, a)), { unknown: true });
     }
     return out(state, reply('unknown', capabilities(lang)), { unknown: true });
   }
@@ -257,11 +263,11 @@ export function handle(prev, sentence, data, rates) {
   if (terms.length === 1) state.terminal = terms[0];
   if (state.terminal && !terms.includes(state.terminal)) {
     Object.assign(state, { terminal: null, mode: 'ask', expecting: 'terminal' });
-    return out(state, reply('ask', say(lang, 'badTerminal')(name, terms)));
+    return out(state, reply('ask', askTerminal(lang, airport, true)));
   }
   if (!state.terminal) {
     Object.assign(state, { mode: 'ask', expecting: 'terminal' });
-    return out(state, reply('ask', say(lang, 'askTerminal')(name, terms)));
+    return out(state, reply('ask', askTerminal(lang, airport)));
   }
 
   // Before guiding anyone anywhere: "Dubai, Terminal 3. Is that right?"
@@ -278,12 +284,13 @@ export function handle(prev, sentence, data, rates) {
 
   // 11. Everything known: build the route and read the first step
   const r = buildRoute(data, state.airport, state.terminal, state.dest);
-  if (!r || (state.dest === 'exchange' && !r.counter)) {
+  if (!r) {
     state.mode = 'ask';
     return out(state, reply('ask', say(lang, 'noRoute')));
   }
   Object.assign(state, { mode: 'route', expecting: null });
-  const intro = say(lang, 'intro')(r, lang);
+  // A terminal with no listed counter (Bengaluru T1) still gets its route: ATM or the other terminal
+  const intro = say(lang, r.counter || state.dest !== 'exchange' ? 'intro' : 'introPlain')(r, lang);
   return out(state, reply('step', intro + ' ' + stepText(state, r), { intro }));
 }
 

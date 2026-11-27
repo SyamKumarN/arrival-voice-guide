@@ -32,7 +32,9 @@ Open https://arrival-voice.vercel.app in **Chrome on Android** and allow the mic
 | "where is the ATM" | 4 ATM tips, one at a time. |
 | "my driver is picking me up" | 5 taxi and pickup tips (official pickup point, OTPs, luggage, small cash). |
 | "Bangkok, I want a SIM" | Short safe answer and a **Thai + English** card. |
-| "Delhi terminal 3, change money" → "yes" | Route with "Details still being checked: ask at the info desk". |
+| "Delhi terminal 3, change money" → "yes" | EbixCash route, "Last checked: October 2026". "Delhi terminal 2" asks again: T1 or T3. |
+| "Dubai, change money" | The terminal question says Emirates uses Terminal 3. |
+| "Bengaluru terminal 1, change money" → "yes" | Ends with: no counter in T1, use an ATM or Terminal 2. |
 | "where is the metro" | Safe answer and a staff card. Nothing invented. |
 
 ## 4. Telugu chip

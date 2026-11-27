@@ -312,6 +312,13 @@ function showHeard(text, interim) {
 
 function showNotice(msg) { $('notice').hidden = !msg; $('notice').textContent = msg || ''; }
 
+/** "2026-10" → "October 2026"; "2026-11-27" → "27 Nov 2026", in the app language. */
+function checkedDate(value, lang) {
+  const [y, m, d] = value.split('-').map(Number);
+  const date = new Date(y, m - 1, d || 1);
+  return date.toLocaleDateString(lang, d ? { day: 'numeric', month: 'short', year: 'numeric' } : { month: 'long', year: 'numeric' });
+}
+
 function render() {
   const { state, data } = app;
   const lang = state.lang;
@@ -372,14 +379,16 @@ function render() {
     $('best').hidden = !route.counter;          // SIM and taxi routes have no counter to rate
     if (route.counter) {
       const b = document.createElement('div');
-      b.textContent = L.best + ': ' + pick(route.counter.name, lang);
+      const unmeasured = route.counter.quality === 'unknown';   // rate not compared yet: don't call it "best"
+      b.textContent = (unmeasured ? L.counter : L.best) + ': ' + pick(route.counter.name, lang);
       const loc = document.createElement('span');
       loc.textContent = pick(route.counter.location, lang);
       b.append(loc);
+      if (unmeasured) { const n = document.createElement('span'); n.textContent = L.notMeasured; b.append(n); }
       $('best').append(b);
     }
     $('checked').textContent = route.pendingData ? L.pending
-      : route.lastChecked ? `${L.lastChecked}: ${new Date(route.lastChecked).toLocaleDateString(lang, { day: 'numeric', month: 'short', year: 'numeric' })}` : '';
+      : route.lastChecked ? `${L.lastChecked}: ${checkedDate(route.lastChecked, lang)}` : '';
 
     const ol = $('steps');
     ol.innerHTML = '';
