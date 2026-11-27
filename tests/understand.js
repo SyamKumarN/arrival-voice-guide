@@ -116,6 +116,14 @@ export async function runUnderstand(data, rates) {
   check('AI overview for "I landed in Dubai": the named place wins', formToParsed(G({ intent: 'overview' }), parse('I landed in Dubai', {}), initialState('en-IN')) === null);
   check('AI confused for "Where am I?": the lost flow wins', formToParsed(G({ intent: 'confused' }), parse('Where am I?', {}), initialState('en-IN')) === null);
   check('AI confused for a real confusion sentence is kept', !!formToParsed(G({ intent: 'confused' }), parse('there are two routes', {}), initialState('en-IN')));
+  {
+    const t = 'Where can I buy a phone charger?';
+    const pp = formToParsed(G({ intent: 'out_of_scope', answer: 'Electronics shops in the terminal may sell chargers; ask the information desk.' }), parse(t, {}), initialState('en-IN'));
+    const r = handle({ ...initialState('en-IN'), airport: 'DXB' }, t, data, rates, { parsed: pp });
+    check('AI out-of-scope answer + scope line, with the shops card', r.reply.topic === 'outofscope' && r.reply.text.startsWith('Electronics shops') &&
+      r.reply.text.includes('arrival guide for money') && r.reply.staff && r.reply.staff.intent === 'shop', r.reply.text);
+    check('Without an AI answer, the rules shops card stays', formToParsed(G({ intent: 'out_of_scope', answer: '' }), parse(t, {}), null) === null);
+  }
   check('AI form "none" → the rules decide', formToParsed(G({}), parse('next', {})) === null);
 
   // Guards: anything off the list is dropped, never passed on

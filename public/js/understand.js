@@ -130,7 +130,8 @@ export function formToParsed(form, rules, state = null) {
   const TALK = ['overview', 'confused', 'greeting', 'out_of_scope', 'none'];
   if (rules && TALK.includes(f.intent) && !rules.topic && (rules.airport || rules.terminal || rules.command)) return null;
   // "Out of scope" only when the rules found nothing they can answer from our data
-  if (f.intent === 'out_of_scope' && rules && (rules.intent || (rules.topic && rules.topic !== 'outofscope') || rules.command || rules.offtopic || rules.price ||
+  // (a shops / food / toilet question may still get the AI's short answer, with that staff card)
+  if (f.intent === 'out_of_scope' && rules && (rules.intent || (rules.topic && rules.topic !== 'outofscope') || rules.command || (rules.offtopic && !f.answer) || rules.price ||
     rules.amountQuery || rules.stage || rules.progress)) return null;
   // The rules read both amounts of a price ("100 dollars, they give 3200 baht"): keep that
   // "How much should they give for 500 dollars?" with one amount is a question about the fair amount
@@ -149,7 +150,7 @@ export function formToParsed(form, rules, state = null) {
   const i = f.intent;
   if (['exchange', 'sim', 'taxi', 'metro'].includes(i)) p.intent = i;
   else if (i === 'guide_out') p.intent = 'exit';
-  else if (i === 'out_of_scope') { p.topic = 'outofscope'; p.aiAnswer = f.answer || ''; }
+  else if (i === 'out_of_scope') { p.topic = 'outofscope'; p.aiAnswer = f.answer || ''; p.card = rules && rules.offtopic ? rules.offtopic : null; }
   else if (COMMAND_OF[i]) p.command = COMMAND_OF[i];
   else if (TOPIC_OF[i]) p.topic = TOPIC_OF[i];
   else if (OFFTOPIC_OF[i]) p.offtopic = OFFTOPIC_OF[i];

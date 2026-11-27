@@ -250,7 +250,8 @@ export function handle(prev, sentence, data, rates, opts = {}) {
   // Out of scope: the AI's short answer (already checked) plus what the guide does; without AI, a polite line
   if (p.topic === 'outofscope') {
     const text = p.aiAnswer ? p.aiAnswer + ' ' + say(lang, 'scopeLine') : say(lang, 'outOfScope');
-    return out(state, reply('info', text, { topic: 'outofscope', ai: !!p.aiAnswer }));
+    const extra = p.card ? { staff: { intent: p.card, airport: state.airport } } : {};
+    return out(state, reply('info', text, { topic: 'outofscope', ai: !!p.aiAnswer, ...extra }));
   }
 
   // 3. Nobody to ask: info desk signs plus the card to show anyone in uniform
